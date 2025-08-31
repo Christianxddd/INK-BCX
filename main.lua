@@ -3,7 +3,7 @@ local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/rel
 
 local Window = WindUI:CreateWindow({
 
-    Title = "MEOWL HUB | INK GAME",
+    Title = "XRNL HUB | INK GAME",
 
     Icon = "cat",
 
