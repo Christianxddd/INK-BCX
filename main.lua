@@ -1,3 +1,4 @@
+
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 
@@ -92,6 +93,25 @@ local DalgonaTab = Window:Tab({
 
     Locked = false,
 
+})
+
+-- ========================
+-- AUTO DALGONA INSTANT
+-- ========================
+
+DalgonaTab:Button({
+    Title = "Auto Dalgona (Instant)",
+    Desc = "Completa automáticamente la figura en cuanto presiones.",
+    Callback = function()
+        -- Escanea el workspace y dispara todos los prompts de Dalgona
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("ProximityPrompt") and string.find(obj.Name:lower(), "dalgona") then
+                pcall(function()
+                    fireproximityprompt(obj, 0) -- fuerza interacción instantánea
+                end)
+            end
+        end
+    end
 })
 
 
@@ -2334,3 +2354,237 @@ local toggleButton = RandomTab:Toggle({
 
     end
 })
+
+
+
+-- ========================
+-- ESP GENERAL PARA TODOS LOS JUGADORES
+-- ========================
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local GeneralESPEnabled = false
+local GeneralESPHighlights = {}
+
+local function enableGeneralESP()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            if not GeneralESPHighlights[player] then
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = player.Character
+                highlight.FillColor = Color3.fromRGB(0, 255, 255) -- Cian para diferenciar
+                highlight.OutlineColor = Color3.fromRGB(0, 255, 255)
+                highlight.FillTransparency = 0.3
+                highlight.Parent = game:GetService("CoreGui")
+                GeneralESPHighlights[player] = highlight
+            end
+        end
+    end
+end
+
+local function disableGeneralESP()
+    for player, highlight in pairs(GeneralESPHighlights) do
+        if highlight then
+            highlight:Destroy()
+        end
+    end
+    GeneralESPHighlights = {}
+end
+
+-- Escucha si entran nuevos jugadores para añadirles highlight
+Players.PlayerAdded:Connect(function(player)
+    if GeneralESPEnabled then
+        player.CharacterAdded:Connect(function(char)
+            task.wait(1) -- espera que cargue el character
+            if GeneralESPEnabled then
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = char
+                highlight.FillColor = Color3.fromRGB(0, 255, 255)
+                highlight.OutlineColor = Color3.fromRGB(0, 255, 255)
+                highlight.FillTransparency = 0.3
+                highlight.Parent = game:GetService("CoreGui")
+                GeneralESPHighlights[player] = highlight
+            end
+        end)
+    end
+end)
+
+-- Toggle para activar/desactivar
+RandomTab:Toggle({
+    Title = "ESP Players",
+    Desc = "Resalta todos los jugadores en el mapa.",
+    Default = false,
+    Callback = function(state)
+        GeneralESPEnabled = state
+        if state then
+            enableGeneralESP()
+        else
+            disableGeneralESP()
+        end
+    end
+})
+
+
+
+-- ========================
+-- WALK SPEED SLIDER
+-- ========================
+
+local WalkSpeedEnabled = false
+local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+LocalPlayer.CharacterAdded:Connect(function(char)
+    humanoid = char:WaitForChild("Humanoid")
+end)
+
+RandomTab:Toggle({
+    Title = "WalkSpeed",
+    Desc = "Activa/Desactiva velocidad personalizada",
+    Default = false,
+    Callback = function(state)
+        WalkSpeedEnabled = state
+        if not state and humanoid then
+            humanoid.WalkSpeed = 16 -- reset al desactivar
+        end
+    end
+})
+
+RandomTab:Slider({
+    Title = "WalkSpeed Value",
+    Desc = "Selecciona la velocidad deseada",
+    Min = 16,
+    Max = 200,
+    Default = 16,
+    Callback = function(value)
+        if WalkSpeedEnabled and humanoid then
+            humanoid.WalkSpeed = value
+        end
+    end
+})
+
+-- ========================
+-- TOUCH FLING
+-- ========================
+
+local flingEnabled = false
+local flingPower = 5000
+
+local function flingPlayer(target)
+    if target and target:FindFirstChild("HumanoidRootPart") then
+        local bv = Instance.new("BodyVelocity")
+        bv.Velocity = Vector3.new(0, flingPower, 0) + (target.HumanoidRootPart.CFrame.LookVector * flingPower)
+        bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+        bv.Parent = target.HumanoidRootPart
+        game.Debris:AddItem(bv, 0.2)
+    end
+end
+
+RandomTab:Toggle({
+    Title = "Touch Fling",
+    Desc = "Lanza jugadores al tocarlos",
+    Default = false,
+    Callback = function(state)
+        flingEnabled = state
+    end
+})
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if flingEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = LocalPlayer.Character.HumanoidRootPart
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                if (player.Character.HumanoidRootPart.Position - hrp.Position).Magnitude < 5 then
+                    flingPlayer(player.Character)
+                end
+            end
+        end
+    end
+end)
+
+-- ========================
+-- TP A JUGADORES
+-- ========================
+
+local selectedPlayer = nil
+
+local function teleportToPlayer()
+    if selectedPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local target = Players:FindFirstChild(selectedPlayer)
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        end
+    end
+end
+
+local playerList = {}
+for _, p in ipairs(Players:GetPlayers()) do
+    if p ~= LocalPlayer then
+        table.insert(playerList, p.Name)
+    end
+end
+
+Players.PlayerAdded:Connect(function(p)
+    table.insert(playerList, p.Name)
+end)
+Players.PlayerRemoving:Connect(function(p)
+    for i, name in ipairs(playerList) do
+        if name == p.Name then
+            table.remove(playerList, i)
+            break
+        end
+    end
+end)
+
+RandomTab:Dropdown({
+    Title = "Seleccionar Jugador",
+    Desc = "Selecciona a quién teletransportarte",
+    Values = playerList,
+    Multi = false,
+    Callback = function(value)
+        selectedPlayer = value
+    end
+})
+
+RandomTab:Button({
+    Title = "TP al jugador",
+    Desc = "Presiona para teletransportarte al jugador seleccionado",
+    Callback = function()
+        teleportToPlayer()
+    end
+})
+
+-- ========================
+-- ANTI FLING
+-- ========================
+
+local AntiFlingEnabled = false
+local RS = game:GetService("RunService")
+
+RandomTab:Toggle({
+    Title = "Anti-Fling",
+    Desc = "Evita que otros jugadores te lancen por el mapa.",
+    Default = false,
+    Callback = function(state)
+        AntiFlingEnabled = state
+    end
+})
+
+RS.Heartbeat:Connect(function()
+    if AntiFlingEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = LocalPlayer.Character.HumanoidRootPart
+        -- Revisa todos los BodyVelocity, BodyThrust y BodyAngularVelocity cercanos
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character then
+                for _, obj in ipairs(player.Character:GetDescendants()) do
+                    if obj:IsA("BodyVelocity") or obj:IsA("BodyAngularVelocity") or obj:IsA("BodyThrust") then
+                        -- Neutraliza la fuerza para que no te afecte
+                        obj.Velocity = Vector3.new(0, 0, 0)
+                        obj.MaxForce = Vector3.new(0, 0, 0)
+                    end
+                end
+            end
+        end
+        -- Asegura que tu RootPart no sea empujado
+        hrp.AssemblyLinearVelocity = Vector3.new(0, hrp.AssemblyLinearVelocity.Y, 0)
+    end
+end)
