@@ -1,5 +1,5 @@
 
-local WindUI = loadstring(game:HttpGet("https://github.com/Christianxddd/Biblioteca-SCripts-de-roblox/blob/f189dd349029abbf570f758bde62487b222b81ed/main%20(4).lua"))()
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 
 local Window = WindUI:CreateWindow({
