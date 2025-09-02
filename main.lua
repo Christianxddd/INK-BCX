@@ -2531,21 +2531,42 @@ PlayerTab:Button({
     end
 })
 
-PlayerTab:Button({
-    Title = "Speed x2",
-    Desc = "Duplica tu velocidad de caminata",
-    Callback = function()
+-- 🏃 Control de Velocidad con Slider
+local defaultSpeed = 16 -- Velocidad normal de Roblox
+local currentSpeed = defaultSpeed
+
+PlayerTab:Slider({
+    Title = "Velocidad",
+    Desc = "Ajusta tu velocidad de caminata",
+    Min = 16,   -- valor mínimo
+    Max = 200,  -- valor máximo (puedes aumentarlo si quieres más)
+    Default = defaultSpeed,
+    Callback = function(value)
+        currentSpeed = value
         local char = game.Players.LocalPlayer.Character
-        char:WaitForChild("Humanoid").WalkSpeed = char.Humanoid.WalkSpeed * 2
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = currentSpeed
+        end
     end
 })
 
-PlayerTab:Button({
-    Title = "Jump x2",
-    Desc = "Duplica tu poder de salto",
-    Callback = function()
+
+-- 🦘 Control de Salto con Slider
+local defaultJump = 50 -- JumpPower normal de Roblox
+local currentJump = defaultJump
+
+PlayerTab:Slider({
+    Title = "Poder de Salto",
+    Desc = "Ajusta qué tan alto saltas",
+    Min = 50,   -- valor mínimo recomendado
+    Max = 300,  -- valor máximo (puedes subirlo si quieres saltos extremos)
+    Default = defaultJump,
+    Callback = function(value)
+        currentJump = value
         local char = game.Players.LocalPlayer.Character
-        char:WaitForChild("Humanoid").JumpPower = char.Humanoid.JumpPower * 2
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.JumpPower = currentJump
+        end
     end
 })
 
