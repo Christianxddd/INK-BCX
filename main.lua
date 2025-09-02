@@ -2531,14 +2531,31 @@ PlayerTab:Button({
     end
 })
 
-PlayerTab:Button({
+-- 🏃 Speed x2 con Toggle que dura hasta que lo desactives
+local speedEnabled = false
+local defaultSpeed = 16 -- velocidad normal de Roblox
+local boostedSpeed = defaultSpeed * 2
+
+PlayerTab:Toggle({
     Title = "Speed x2",
-    Desc = "Duplica tu velocidad de caminata",
-    Callback = function()
+    Desc = "Duplica tu velocidad de caminata (ON/OFF)",
+    Default = false,
+    Callback = function(state)
+        speedEnabled = state
         local char = game.Players.LocalPlayer.Character
-        char:WaitForChild("Humanoid").WalkSpeed = char.Humanoid.WalkSpeed * 2
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = state and boostedSpeed or defaultSpeed
+        end
     end
 })
+
+-- Mantener velocidad después de respawn
+game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+    if speedEnabled then
+        task.wait(1) -- esperar a que cargue el personaje
+        char:WaitForChild("Humanoid").WalkSpeed = boostedSpeed
+    end
+end)
 
 PlayerTab:Button({
     Title = "Jump x2",
