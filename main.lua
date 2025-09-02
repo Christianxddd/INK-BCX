@@ -3,11 +3,11 @@ local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/rel
 
 local Window = WindUI:CreateWindow({
 
-    Title = "XRNL HUB | INK GAME",
+    Title = "MEOWL HUB | INK GAME",
 
     Icon = "cat",
 
-    Author = "https://www.instagram.com/roseb_astian/",
+    Author = "Https://discord.gg/MEOWLSCRIPTS",
 
     Folder = "RONALDO",
   
@@ -18,7 +18,7 @@ local Window = WindUI:CreateWindow({
 
 Window:EditOpenButton({
 
-    Title = "Open XRNL-HUB",
+    Title = "Open Meowl Hub",
 
     Icon = "cat",
 
@@ -2243,125 +2243,6 @@ local AutoKillToggle = HideSeekTab:Toggle({
 
 })
 
--- ========================
--- TP A JUGADORES
--- ========================
-
-local selectedPlayer = nil
-
-local function teleportToPlayer()
-    if selectedPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local target = Players:FindFirstChild(selectedPlayer)
-        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-            LocalPlayer.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
-        end
-    end
-end
-
-local playerList = {}
-for _, p in ipairs(Players:GetPlayers()) do
-    if p ~= LocalPlayer then
-        table.insert(playerList, p.Name)
-    end
-end
-
-Players.PlayerAdded:Connect(function(p)
-    table.insert(playerList, p.Name)
-end)
-Players.PlayerRemoving:Connect(function(p)
-    for i, name in ipairs(playerList) do
-        if name == p.Name then
-            table.remove(playerList, i)
-            break
-        end
-    end
-end)
-
-RandomTab:Dropdown({
-    Title = "Seleccionar Jugador",
-    Desc = "Selecciona a quién teletransportarte",
-    Values = playerList,
-    Multi = false,
-    Callback = function(value)
-        selectedPlayer = value
-    end
-})
-
-RandomTab:Button({
-    Title = "TP al jugador",
-    Desc = "Presiona para teletransportarte al jugador seleccionado",
-    Callback = function()
-        teleportToPlayer()
-    end
-})
-
--- ========================
--- ESP GENERAL PARA TODOS LOS JUGADORES
--- ========================
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
-local GeneralESPEnabled = false
-local GeneralESPHighlights = {}
-
-local function enableGeneralESP()
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character then
-            if not GeneralESPHighlights[player] then
-                local highlight = Instance.new("Highlight")
-                highlight.Adornee = player.Character
-                highlight.FillColor = Color3.fromRGB(0, 255, 255) -- Cian para diferenciar
-                highlight.OutlineColor = Color3.fromRGB(0, 255, 255)
-                highlight.FillTransparency = 0.3
-                highlight.Parent = game:GetService("CoreGui")
-                GeneralESPHighlights[player] = highlight
-            end
-        end
-    end
-end
-
-local function disableGeneralESP()
-    for player, highlight in pairs(GeneralESPHighlights) do
-        if highlight then
-            highlight:Destroy()
-        end
-    end
-    GeneralESPHighlights = {}
-end
-
--- Escucha si entran nuevos jugadores para añadirles highlight
-Players.PlayerAdded:Connect(function(player)
-    if GeneralESPEnabled then
-        player.CharacterAdded:Connect(function(char)
-            task.wait(1) -- espera que cargue el character
-            if GeneralESPEnabled then
-                local highlight = Instance.new("Highlight")
-                highlight.Adornee = char
-                highlight.FillColor = Color3.fromRGB(0, 255, 255)
-                highlight.OutlineColor = Color3.fromRGB(0, 255, 255)
-                highlight.FillTransparency = 0.3
-                highlight.Parent = game:GetService("CoreGui")
-                GeneralESPHighlights[player] = highlight
-            end
-        end)
-    end
-end)
-
--- Toggle para activar/desactivar
-RandomTab:Toggle({
-    Title = "ESP Players",
-    Desc = "Resalta todos los jugadores en el mapa.",
-    Default = false,
-    Callback = function(state)
-        GeneralESPEnabled = state
-        if state then
-            enableGeneralESP()
-        else
-            disableGeneralESP()
-        end
-    end
-})
 
 --// AUTO KILL PLAYERS (Todos os players)
 
