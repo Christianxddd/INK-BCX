@@ -227,6 +227,11 @@ local Toggle = PlayerTab:Toggle({
 
 })
 
+local Toggle = PlayerTab:Toggle({
+
+    Title = "By Pass pointer",
+
+    Desc = "It is 85% anti-cheat",
 
 -- Evento para permitir/desativar o Infinite Jump
 
