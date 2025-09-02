@@ -1,4 +1,3 @@
-
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 
@@ -11,6 +10,8 @@ local Window = WindUI:CreateWindow({
     Author = "https://www.instagram.com/roseb_astian/",
 
     Folder = "RONALDO",
+  
+    Size = UDim2.fromOffset(150, 150),
 
 })
 
@@ -44,7 +45,7 @@ Window:EditOpenButton({
 
 Window:Tag({
 
-    Title = "v2.8.6",
+    Title = "v7.34.98",
 
     Color = Color3.fromHex("#30ff6a")
 
@@ -93,25 +94,6 @@ local DalgonaTab = Window:Tab({
 
     Locked = false,
 
-})
-
--- ========================
--- AUTO DALGONA INSTANT
--- ========================
-
-DalgonaTab:Button({
-    Title = "Auto Dalgona (Instant)",
-    Desc = "Completa automáticamente la figura en cuanto presiones.",
-    Callback = function()
-        -- Escanea el workspace y dispara todos los prompts de Dalgona
-        for _, obj in ipairs(workspace:GetDescendants()) do
-            if obj:IsA("ProximityPrompt") and string.find(obj.Name:lower(), "dalgona") then
-                pcall(function()
-                    fireproximityprompt(obj, 0) -- fuerza interacción instantánea
-                end)
-            end
-        end
-    end
 })
 
 
@@ -2039,211 +2021,6 @@ local SaveToggle = RedTab:Toggle({
 })
 
 
-
-local Players = game:GetService("Players")
-
-local TweenService = game:GetService("TweenService")
-
-local LocalPlayer = Players.LocalPlayer
-
-local HRP = nil
-
-
-local AutoKillEnabled = false
-
-
-local AutoKillToggle = HideSeekTab:Toggle({
-
-    Title = "AUTO KILL HIDE",
-
-    Desc = "Automatically teleports to the player wearing BlueVest and follows them.",
-
-    Default = false,
-
-    Callback = function(Value)
-
-        AutoKillEnabled = Value
-
-
-        if AutoKillEnabled then
-
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-
-                HRP = LocalPlayer.Character.HumanoidRootPart
-
-
-                -- Procura o jogador com BlueVest
-
-                local targetPlayer = nil
-
-                for _, player in ipairs(Players:GetPlayers()) do
-
-                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Humanoid") then
-
-                        local vest = player.Character:FindFirstChild("BlueVest")
-
-                        if vest then
-
-                            targetPlayer = player
-
-                            break
-
-                        end
-
-                    end
-
-                end
-
-
-                if targetPlayer and targetPlayer.Character then
-
-                    -- Prioriza Torso no R6, senão usa UpperTorso no R15, e fallback pro HRP
-
-                    local targetTorso = targetPlayer.Character:FindFirstChild("Torso") or 
-
-                                        targetPlayer.Character:FindFirstChild("UpperTorso") or 
-
-                                        targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-
-
-                    if targetTorso then
-
-                        -- Teleporta uma vez para o alvo
-
-                        HRP.CFrame = targetTorso.CFrame + Vector3.new(0, 3, 0)
-
-
-                        -- Loop para seguir com Tween
-
-                        task.spawn(function()
-
-                            while AutoKillEnabled and targetPlayer.Character and targetTorso and targetTorso.Parent do
-
-                                local goal = {CFrame = targetTorso.CFrame + Vector3.new(0, 3, 0)}
-
-                                local tween = TweenService:Create(
-
-                                    HRP,
-
-                                    TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), -- Mais rápido
-
-                                    goal
-
-                                )
-
-                                tween:Play()
-
-                                tween.Completed:Wait()
-
-                                task.wait(0.05) -- Pequeno delay para suavizar
-
-                            end
-
-                        end)
-
-                    end
-
-                end
-
-            end
-
-        end
-
-    end
-
-})
-
-
-
-local Players = game:GetService("Players")
-
-local LocalPlayer = Players.LocalPlayer
-
-local HRP = nil
-
-
-local AutoKillAllEnabled = false
-
-
-local AutoKillAllToggle = LightsTab:Toggle({
-
-    Title = "AUTO KILL PLAYERS",
-
-    Desc = "Instantly teleports inside any player's torso and sticks to them.",
-
-    Default = false,
-
-    Callback = function(Value)
-
-        AutoKillAllEnabled = Value
-
-
-        if AutoKillAllEnabled then
-
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-
-                HRP = LocalPlayer.Character.HumanoidRootPart
-
-
-                task.spawn(function()
-
-                    while AutoKillAllEnabled do
-
-                        local targetPlayer = nil
-
-
-                        -- Procura qualquer player válido, exceto você
-
-                        for _, player in ipairs(Players:GetPlayers()) do
-
-                            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
-
-                                targetPlayer = player
-
-                                break
-
-                            end
-
-                        end
-
-
-                        if targetPlayer and targetPlayer.Character then
-
-                            -- Prioriza torso (R6), depois UpperTorso (R15), depois HRP
-
-                            local targetTorso = targetPlayer.Character:FindFirstChild("Torso") or
-
-                                                targetPlayer.Character:FindFirstChild("UpperTorso") or
-
-                                                targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-
-
-                            if targetTorso then
-
-                                -- Colar dentro do torso do jogador
-
-                                HRP.CFrame = targetTorso.CFrame
-
-                            end
-
-                        end
-
-
-                        task.wait() -- Atualiza a cada frame
-
-                    end
-
-                end)
-
-            end
-
-        end
-
-    end
-
-})
-
-
 -- Variável do toggle
 
 local AutoPullEnabled = false
@@ -2353,9 +2130,170 @@ local toggleButton = RandomTab:Toggle({
         end
 
     end
+
 })
 
 
+
+
+
+local Players = game:GetService("Players")
+
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+
+local HRP = nil
+
+
+local AutoKillEnabled = false
+
+local AutoKillAllEnabled = false
+
+
+local FollowConnection
+
+local FollowAllConnection
+
+
+--// AUTO KILL HIDE (BlueVest)
+
+local AutoKillToggle = HideSeekTab:Toggle({
+
+    Title = "AUTO KILL HIDE",
+
+    Desc = "Automatically stays 5 studs in front of the BlueVest player.",
+
+    Default = false,
+
+    Callback = function(Value)
+
+        AutoKillEnabled = Value
+
+
+        if FollowConnection then
+
+            FollowConnection:Disconnect()
+
+            FollowConnection = nil
+
+        end
+
+
+        if AutoKillEnabled then
+
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+
+                HRP = LocalPlayer.Character.HumanoidRootPart
+
+
+                -- Procura jogador com BlueVest
+
+                local targetPlayer = nil
+
+                for _, player in ipairs(Players:GetPlayers()) do
+
+                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("BlueVest") then
+
+                        targetPlayer = player
+
+                        break
+
+                    end
+
+                end
+
+
+                if targetPlayer and targetPlayer.Character then
+
+                    local targetTorso = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+                        or targetPlayer.Character:FindFirstChild("UpperTorso")
+
+                        or targetPlayer.Character:FindFirstChild("Torso")
+
+
+                    if targetTorso then
+
+                        FollowConnection = RunService.RenderStepped:Connect(function()
+
+                            if AutoKillEnabled and targetPlayer.Character and targetTorso and HRP and HRP.Parent then
+
+                                -- Posição 5 studs NA FRENTE do player alvo
+
+                                local frontPos = targetTorso.CFrame * CFrame.new(0, 0, -5)
+
+                                -- Faz o HRP ficar suavemente na frente do jogador
+
+                                HRP.CFrame = frontPos
+
+                            end
+
+                        end)
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+})
+
+-- ========================
+-- TP A JUGADORES
+-- ========================
+
+local selectedPlayer = nil
+
+local function teleportToPlayer()
+    if selectedPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local target = Players:FindFirstChild(selectedPlayer)
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        end
+    end
+end
+
+local playerList = {}
+for _, p in ipairs(Players:GetPlayers()) do
+    if p ~= LocalPlayer then
+        table.insert(playerList, p.Name)
+    end
+end
+
+Players.PlayerAdded:Connect(function(p)
+    table.insert(playerList, p.Name)
+end)
+Players.PlayerRemoving:Connect(function(p)
+    for i, name in ipairs(playerList) do
+        if name == p.Name then
+            table.remove(playerList, i)
+            break
+        end
+    end
+end)
+
+RandomTab:Dropdown({
+    Title = "Seleccionar Jugador",
+    Desc = "Selecciona a quién teletransportarte",
+    Values = playerList,
+    Multi = false,
+    Callback = function(value)
+        selectedPlayer = value
+    end
+})
+
+RandomTab:Button({
+    Title = "TP al jugador",
+    Desc = "Presiona para teletransportarte al jugador seleccionado",
+    Callback = function()
+        teleportToPlayer()
+    end
+})
 
 -- ========================
 -- ESP GENERAL PARA TODOS LOS JUGADORES
@@ -2425,166 +2363,100 @@ RandomTab:Toggle({
     end
 })
 
+--// AUTO KILL PLAYERS (Todos os players)
 
+local AutoKillAllToggle = LightsTab:Toggle({
 
--- ========================
--- WALK SPEED SLIDER
--- ========================
+    Title = "AUTO KILL PLAYERS",
 
-local WalkSpeedEnabled = false
-local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-LocalPlayer.CharacterAdded:Connect(function(char)
-    humanoid = char:WaitForChild("Humanoid")
-end)
+    Desc = "Stays 5 studs in front of the nearest player automatically.",
 
-RandomTab:Toggle({
-    Title = "WalkSpeed",
-    Desc = "Activa/Desactiva velocidad personalizada",
     Default = false,
-    Callback = function(state)
-        WalkSpeedEnabled = state
-        if not state and humanoid then
-            humanoid.WalkSpeed = 16 -- reset al desactivar
+
+    Callback = function(Value)
+
+        AutoKillAllEnabled = Value
+
+
+        if FollowAllConnection then
+
+            FollowAllConnection:Disconnect()
+
+            FollowAllConnection = nil
+
         end
-    end
-})
 
-RandomTab:Slider({
-    Title = "WalkSpeed Value",
-    Desc = "Selecciona la velocidad deseada",
-    Min = 16,
-    Max = 200,
-    Default = 16,
-    Callback = function(value)
-        if WalkSpeedEnabled and humanoid then
-            humanoid.WalkSpeed = value
-        end
-    end
-})
 
--- ========================
--- TOUCH FLING
--- ========================
+        if AutoKillAllEnabled then
 
-local flingEnabled = false
-local flingPower = 5000
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-local function flingPlayer(target)
-    if target and target:FindFirstChild("HumanoidRootPart") then
-        local bv = Instance.new("BodyVelocity")
-        bv.Velocity = Vector3.new(0, flingPower, 0) + (target.HumanoidRootPart.CFrame.LookVector * flingPower)
-        bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
-        bv.Parent = target.HumanoidRootPart
-        game.Debris:AddItem(bv, 0.2)
-    end
-end
+                HRP = LocalPlayer.Character.HumanoidRootPart
 
-RandomTab:Toggle({
-    Title = "Touch Fling",
-    Desc = "Lanza jugadores al tocarlos",
-    Default = false,
-    Callback = function(state)
-        flingEnabled = state
-    end
-})
 
-game:GetService("RunService").Heartbeat:Connect(function()
-    if flingEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local hrp = LocalPlayer.Character.HumanoidRootPart
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                if (player.Character.HumanoidRootPart.Position - hrp.Position).Magnitude < 5 then
-                    flingPlayer(player.Character)
-                end
-            end
-        end
-    end
-end)
+                FollowAllConnection = RunService.RenderStepped:Connect(function()
 
--- ========================
--- TP A JUGADORES
--- ========================
+                    if not AutoKillAllEnabled or not HRP or not HRP.Parent then return end
 
-local selectedPlayer = nil
 
-local function teleportToPlayer()
-    if selectedPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local target = Players:FindFirstChild(selectedPlayer)
-        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-            LocalPlayer.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
-        end
-    end
-end
+                    -- Procura o jogador mais próximo
 
-local playerList = {}
-for _, p in ipairs(Players:GetPlayers()) do
-    if p ~= LocalPlayer then
-        table.insert(playerList, p.Name)
-    end
-end
+                    local closestPlayer = nil
 
-Players.PlayerAdded:Connect(function(p)
-    table.insert(playerList, p.Name)
-end)
-Players.PlayerRemoving:Connect(function(p)
-    for i, name in ipairs(playerList) do
-        if name == p.Name then
-            table.remove(playerList, i)
-            break
-        end
-    end
-end)
+                    local shortestDistance = math.huge
 
-RandomTab:Dropdown({
-    Title = "Seleccionar Jugador",
-    Desc = "Selecciona a quién teletransportarte",
-    Values = playerList,
-    Multi = false,
-    Callback = function(value)
-        selectedPlayer = value
-    end
-})
 
-RandomTab:Button({
-    Title = "TP al jugador",
-    Desc = "Presiona para teletransportarte al jugador seleccionado",
-    Callback = function()
-        teleportToPlayer()
-    end
-})
+                    for _, player in ipairs(Players:GetPlayers()) do
 
--- ========================
--- ANTI FLING
--- ========================
+                        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
 
-local AntiFlingEnabled = false
-local RS = game:GetService("RunService")
+                            local torso = player.Character:FindFirstChild("HumanoidRootPart")
 
-RandomTab:Toggle({
-    Title = "Anti-Fling",
-    Desc = "Evita que otros jugadores te lancen por el mapa.",
-    Default = false,
-    Callback = function(state)
-        AntiFlingEnabled = state
-    end
-})
+                            if torso then
 
-RS.Heartbeat:Connect(function()
-    if AntiFlingEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local hrp = LocalPlayer.Character.HumanoidRootPart
-        -- Revisa todos los BodyVelocity, BodyThrust y BodyAngularVelocity cercanos
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer and player.Character then
-                for _, obj in ipairs(player.Character:GetDescendants()) do
-                    if obj:IsA("BodyVelocity") or obj:IsA("BodyAngularVelocity") or obj:IsA("BodyThrust") then
-                        -- Neutraliza la fuerza para que no te afecte
-                        obj.Velocity = Vector3.new(0, 0, 0)
-                        obj.MaxForce = Vector3.new(0, 0, 0)
+                                local distance = (HRP.Position - torso.Position).Magnitude
+
+                                if distance < shortestDistance then
+
+                                    shortestDistance = distance
+
+                                    closestPlayer = player
+
+                                end
+
+                            end
+
+                        end
+
                     end
-                end
+
+
+                    if closestPlayer and closestPlayer.Character then
+
+                        local targetTorso = closestPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+                            or closestPlayer.Character:FindFirstChild("UpperTorso")
+
+                            or closestPlayer.Character:FindFirstChild("Torso")
+
+
+                        if targetTorso then
+
+                            -- Fica 5 studs NA FRENTE do player mais próximo
+
+                            local frontPos = targetTorso.CFrame * CFrame.new(0, 0, -5)
+
+                            HRP.CFrame = frontPos
+
+                        end
+
+                    end
+
+                end)
+
             end
+
         end
-        -- Asegura que tu RootPart no sea empujado
-        hrp.AssemblyLinearVelocity = Vector3.new(0, hrp.AssemblyLinearVelocity.Y, 0)
+
     end
-end)
+})
