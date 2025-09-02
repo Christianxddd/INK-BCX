@@ -5,7 +5,7 @@ local Window = WindUI:CreateWindow({
 
     Title = "XRNL HUB | INK GAME",
 
-    Icon = "cat",
+    Icon = "skull",
 
     Author = "https://www.instagram.com/roseb_astian/",
 
