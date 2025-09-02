@@ -197,12 +197,6 @@ local SquidTab = Window:Tab({
 
 })
 
-local Toggle = PlayerTab:Toggle({
-
-    Title = "By Pass pointer",
-
-    Desc = "It is 85% anti-cheat",
-
 -- ========================
 
 -- INF JUMP TOGGLE
