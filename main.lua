@@ -20,7 +20,7 @@ Window:EditOpenButton({
 
     Title = "Open XRNL-HUB",
 
-    Icon = "cat",
+    Icon = "skull",
 
     CornerRadius = UDim.new(0,20),
 
