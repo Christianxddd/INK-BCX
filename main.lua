@@ -3,11 +3,11 @@ local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/rel
 
 local Window = WindUI:CreateWindow({
 
-    Title = "MEOWL HUB | INK GAME",
+    Title = "XRNL HUB | INK GAME",
 
     Icon = "cat",
 
-    Author = "Https://discord.gg/MEOWLSCRIPTS",
+    Author = "https://www.instagram.com/roseb_astian/",
 
     Folder = "RONALDO",
   
@@ -18,7 +18,7 @@ local Window = WindUI:CreateWindow({
 
 Window:EditOpenButton({
 
-    Title = "Open Meowl Hub",
+    Title = "Open XRNL-HUB",
 
     Icon = "cat",
 
@@ -2339,5 +2339,129 @@ local AutoKillAllToggle = LightsTab:Toggle({
 
         end
 
+    end
+})
+
+
+
+-- ================================
+-- 🔄 TELEPORT & ESP ADDED TO RANDOM TAB
+-- ================================
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- ================================
+-- TELEPORT TO PLAYER
+-- ================================
+local selectedPlayer = nil
+
+local function teleportToPlayer()
+    if selectedPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local target = Players:FindFirstChild(selectedPlayer)
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        end
+    end
+end
+
+-- Genera la lista de jugadores
+local playerList = {}
+for _, p in ipairs(Players:GetPlayers()) do
+    if p ~= LocalPlayer then
+        table.insert(playerList, p.Name)
+    end
+end
+
+-- Actualiza lista cuando jugadores entran/salen
+Players.PlayerAdded:Connect(function(p)
+    if p ~= LocalPlayer then
+        table.insert(playerList, p.Name)
+    end
+end)
+
+Players.PlayerRemoving:Connect(function(p)
+    for i, name in ipairs(playerList) do
+        if name == p.Name then
+            table.remove(playerList, i)
+            break
+        end
+    end
+end)
+
+-- Dropdown de selección
+RandomTab:Dropdown({
+    Title = "Seleccionar Jugador",
+    Desc = "Selecciona a quién teletransportarte",
+    Values = playerList,
+    Multi = false,
+    Callback = function(value)
+        selectedPlayer = value
+    end
+})
+
+-- Botón de teletransporte
+RandomTab:Button({
+    Title = "TP al jugador",
+    Desc = "Teletransporta al jugador seleccionado",
+    Callback = function()
+        teleportToPlayer()
+    end
+})
+
+-- ================================
+-- ESP BÁSICO PARA TODOS LOS PLAYERS
+-- ================================
+
+local espEnabled = false
+local highlights = {}
+
+local function toggleESP(state)
+    espEnabled = state
+    if espEnabled then
+        -- Crea highlights para cada jugador
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character then
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = p.Character
+                highlight.FillColor = Color3.fromRGB(0, 255, 0)
+                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                highlight.Parent = game:GetService("CoreGui")
+                highlights[p] = highlight
+            end
+        end
+    else
+        -- Borra highlights
+        for _, hl in pairs(highlights) do
+            hl:Destroy()
+        end
+        highlights = {}
+    end
+end
+
+Players.PlayerAdded:Connect(function(p)
+    if espEnabled then
+        local highlight = Instance.new("Highlight")
+        highlight.Adornee = p.Character or p.CharacterAdded:Wait()
+        highlight.FillColor = Color3.fromRGB(0, 255, 0)
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.Parent = game:GetService("CoreGui")
+        highlights[p] = highlight
+    end
+end)
+
+Players.PlayerRemoving:Connect(function(p)
+    if highlights[p] then
+        highlights[p]:Destroy()
+        highlights[p] = nil
+    end
+end)
+
+RandomTab:Toggle({
+    Title = "ESP Jugadores",
+    Desc = "Muestra a todos los jugadores con un highlight",
+    Default = false,
+    Callback = function(state)
+        toggleESP(state)
     end
 })
