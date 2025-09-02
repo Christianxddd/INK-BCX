@@ -2531,44 +2531,99 @@ PlayerTab:Button({
     end
 })
 
--- 🏃 Control de Velocidad con Slider
-local defaultSpeed = 16 -- Velocidad normal de Roblox
-local currentSpeed = defaultSpeed
+-- ================================
+-- 🏃 VELOCIDAD CON SLIDER + TOGGLE
+-- ================================
+local defaultSpeed = 16
+local selectedSpeed = defaultSpeed
+local speedEnabled = false
 
+-- Slider para elegir la velocidad
 PlayerTab:Slider({
     Title = "Velocidad",
-    Desc = "Ajusta tu velocidad de caminata",
-    Min = 16,   -- valor mínimo
-    Max = 200,  -- valor máximo (puedes aumentarlo si quieres más)
+    Desc = "Ajusta tu velocidad preferida",
+    Min = 16,
+    Max = 200,
     Default = defaultSpeed,
     Callback = function(value)
-        currentSpeed = value
-        local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("Humanoid") then
-            char.Humanoid.WalkSpeed = currentSpeed
+        selectedSpeed = value
+        if speedEnabled then
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("Humanoid") then
+                char.Humanoid.WalkSpeed = selectedSpeed
+            end
         end
     end
 })
 
+-- Toggle para activar/desactivar
+PlayerTab:Toggle({
+    Title = "Activar Velocidad",
+    Desc = "Mantiene la velocidad elegida siempre activa",
+    Default = false,
+    Callback = function(state)
+        speedEnabled = state
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = state and selectedSpeed or defaultSpeed
+        end
+    end
+})
 
--- 🦘 Control de Salto con Slider
-local defaultJump = 50 -- JumpPower normal de Roblox
-local currentJump = defaultJump
+-- Mantener la velocidad después de respawn
+game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+    if speedEnabled then
+        task.wait(1)
+        char:WaitForChild("Humanoid").WalkSpeed = selectedSpeed
+    end
+end)
 
+-- ================================
+-- 🦘 SALTO CON SLIDER + TOGGLE
+-- ================================
+local defaultJump = 50
+local selectedJump = defaultJump
+local jumpEnabled = false
+
+-- Slider para elegir el poder de salto
 PlayerTab:Slider({
     Title = "Poder de Salto",
-    Desc = "Ajusta qué tan alto saltas",
-    Min = 50,   -- valor mínimo recomendado
-    Max = 300,  -- valor máximo (puedes subirlo si quieres saltos extremos)
+    Desc = "Ajusta tu altura de salto",
+    Min = 50,
+    Max = 300,
     Default = defaultJump,
     Callback = function(value)
-        currentJump = value
-        local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("Humanoid") then
-            char.Humanoid.JumpPower = currentJump
+        selectedJump = value
+        if jumpEnabled then
+            local char = game.Players.LocalPlayer.Character
+            if char and char:FindFirstChild("Humanoid") then
+                char.Humanoid.JumpPower = selectedJump
+            end
         end
     end
 })
+
+-- Toggle para activar/desactivar
+PlayerTab:Toggle({
+    Title = "Activar Salto",
+    Desc = "Mantiene el salto elegido siempre activo",
+    Default = false,
+    Callback = function(state)
+        jumpEnabled = state
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.JumpPower = state and selectedJump or defaultJump
+        end
+    end
+})
+
+-- Mantener el salto después de respawn
+game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+    if jumpEnabled then
+        task.wait(1)
+        char:WaitForChild("Humanoid").JumpPower = selectedJump
+    end
+end)
 
 PlayerTab:Button({
     Title = "Fly (simple)",
