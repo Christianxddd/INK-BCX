@@ -2463,3 +2463,173 @@ RandomTab:Toggle({
         toggleESP(state)
     end
 })
+
+
+-- ================================
+-- 🔥 SCRIPTS ADICIONALES AGREGADOS
+-- ================================
+
+-- ================================
+-- 🔥 NUEVOS SCRIPTS PARA TAB PLAYER Y RANDOM FEATURES
+-- ================================
+
+-- 📌 TAB PLAYER: MÁS FUNCIONES
+PlayerTab:Button({
+    Title = "Reset Character",
+    Desc = "Respawnea instantáneamente",
+    Callback = function()
+        game.Players.LocalPlayer.Character:BreakJoints()
+    end
+})
+
+PlayerTab:Button({
+    Title = "God Mode (Humanoid Health)",
+    Desc = "Te da vida infinita",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.MaxHealth = math.huge
+            char.Humanoid.Health = math.huge
+        end
+    end
+})
+
+PlayerTab:Button({
+    Title = "Anti AFK",
+    Desc = "Evita ser expulsado por inactividad",
+    Callback = function()
+        local VirtualUser = game:GetService("VirtualUser")
+        game.Players.LocalPlayer.Idled:Connect(function()
+            VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+            task.wait(1)
+            VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+        end)
+    end
+})
+
+PlayerTab:Button({
+    Title = "Sit",
+    Desc = "Hace que tu personaje se siente",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.Sit = true
+        end
+    end
+})
+
+PlayerTab:Button({
+    Title = "No Fall Damage",
+    Desc = "Elimina daño por caídas",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        char:WaitForChild("Humanoid").StateChanged:Connect(function(_, new)
+            if new == Enum.HumanoidStateType.Freefall then
+                char.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end)
+    end
+})
+
+PlayerTab:Button({
+    Title = "Speed x2",
+    Desc = "Duplica tu velocidad de caminata",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        char:WaitForChild("Humanoid").WalkSpeed = char.Humanoid.WalkSpeed * 2
+    end
+})
+
+PlayerTab:Button({
+    Title = "Jump x2",
+    Desc = "Duplica tu poder de salto",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        char:WaitForChild("Humanoid").JumpPower = char.Humanoid.JumpPower * 2
+    end
+})
+
+PlayerTab:Button({
+    Title = "Fly (simple)",
+    Desc = "Activa vuelo básico",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/YwFhqYqt"))()
+    end
+})
+
+-- 📌 RANDOM TAB: MÁS FUNCIONES
+RandomTab:Button({
+    Title = "Remove KillParts",
+    Desc = "Elimina todas las partes que matan",
+    Callback = function()
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("TouchTransmitter") and obj.Parent.Name:lower():match("kill") then
+                obj.Parent:Destroy()
+            end
+        end
+    end
+})
+
+RandomTab:Button({
+    Title = "Delete Doors",
+    Desc = "Elimina todas las puertas",
+    Callback = function()
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj.Name:lower():match("door") then
+                obj:Destroy()
+            end
+        end
+    end
+})
+
+RandomTab:Button({
+    Title = "Invisible Character",
+    Desc = "Hace tu personaje invisible",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        for _, v in ipairs(char:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.Transparency = 1
+            end
+        end
+    end
+})
+
+RandomTab:Button({
+    Title = "Rejoin Game",
+    Desc = "Vuelve a entrar al mismo servidor",
+    Callback = function()
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+    end
+})
+
+RandomTab:Button({
+    Title = "Server Hop",
+    Desc = "Cambia a un servidor aleatorio",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/1gtVMUz3"))()
+    end
+})
+
+RandomTab:Button({
+    Title = "Lag Switch (F3)",
+    Desc = "Activa/desactiva lag presionando F3",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local NetworkClient = game:GetService("NetworkClient")
+        local StarterGui = game:GetService("StarterGui")
+        local toggle = false
+        game:GetService("UserInputService").InputBegan:Connect(function(input)
+            if input.KeyCode == Enum.KeyCode.F3 then
+                toggle = not toggle
+                if toggle then
+                    NetworkClient:SetOutgoingKBPSLimit(1)
+                    StarterGui:SetCore("SendNotification", {Title="Lag Switch", Text="ON"})
+                else
+                    NetworkClient:SetOutgoingKBPSLimit(math.huge)
+                    StarterGui:SetCore("SendNotification", {Title="Lag Switch", Text="OFF"})
+                end
+            end
+        end)
+    end
+})
