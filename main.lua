@@ -2531,99 +2531,23 @@ PlayerTab:Button({
     end
 })
 
--- ================================
--- 🏃 VELOCIDAD CON SLIDER + TOGGLE
--- ================================
-local defaultSpeed = 16
-local selectedSpeed = defaultSpeed
-local speedEnabled = false
-
--- Slider para elegir la velocidad
-PlayerTab:Slider({
-    Title = "Velocidad",
-    Desc = "Ajusta tu velocidad preferida",
-    Min = 16,
-    Max = 200,
-    Default = defaultSpeed,
-    Callback = function(value)
-        selectedSpeed = value
-        if speedEnabled then
-            local char = game.Players.LocalPlayer.Character
-            if char and char:FindFirstChild("Humanoid") then
-                char.Humanoid.WalkSpeed = selectedSpeed
-            end
-        end
-    end
-})
-
--- Toggle para activar/desactivar
-PlayerTab:Toggle({
-    Title = "Activar Velocidad",
-    Desc = "Mantiene la velocidad elegida siempre activa",
-    Default = false,
-    Callback = function(state)
-        speedEnabled = state
+PlayerTab:Button({
+    Title = "Speed x2",
+    Desc = "Duplica tu velocidad de caminata",
+    Callback = function()
         local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("Humanoid") then
-            char.Humanoid.WalkSpeed = state and selectedSpeed or defaultSpeed
-        end
+        char:WaitForChild("Humanoid").WalkSpeed = char.Humanoid.WalkSpeed * 2
     end
 })
 
--- Mantener la velocidad después de respawn
-game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-    if speedEnabled then
-        task.wait(1)
-        char:WaitForChild("Humanoid").WalkSpeed = selectedSpeed
-    end
-end)
-
--- ================================
--- 🦘 SALTO CON SLIDER + TOGGLE
--- ================================
-local defaultJump = 50
-local selectedJump = defaultJump
-local jumpEnabled = false
-
--- Slider para elegir el poder de salto
-PlayerTab:Slider({
-    Title = "Poder de Salto",
-    Desc = "Ajusta tu altura de salto",
-    Min = 50,
-    Max = 300,
-    Default = defaultJump,
-    Callback = function(value)
-        selectedJump = value
-        if jumpEnabled then
-            local char = game.Players.LocalPlayer.Character
-            if char and char:FindFirstChild("Humanoid") then
-                char.Humanoid.JumpPower = selectedJump
-            end
-        end
-    end
-})
-
--- Toggle para activar/desactivar
-PlayerTab:Toggle({
-    Title = "Activar Salto",
-    Desc = "Mantiene el salto elegido siempre activo",
-    Default = false,
-    Callback = function(state)
-        jumpEnabled = state
+PlayerTab:Button({
+    Title = "Jump x2",
+    Desc = "Duplica tu poder de salto",
+    Callback = function()
         local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("Humanoid") then
-            char.Humanoid.JumpPower = state and selectedJump or defaultJump
-        end
+        char:WaitForChild("Humanoid").JumpPower = char.Humanoid.JumpPower * 2
     end
 })
-
--- Mantener el salto después de respawn
-game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-    if jumpEnabled then
-        task.wait(1)
-        char:WaitForChild("Humanoid").JumpPower = selectedJump
-    end
-end)
 
 PlayerTab:Button({
     Title = "Fly (simple)",
