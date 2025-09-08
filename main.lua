@@ -2650,3 +2650,454 @@ RandomTab:Button({
         end)
     end
 })
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+
+-- ------------------------------------------------------------------
+-- TELEPORT (Dropdown + Refresh + Teleport) (usa RandomTab del hub)
+-- ------------------------------------------------------------------
+-- Asegúrate de tener RandomTab definido en tu script principal antes de cargar este archivo.
+
+if not RandomTab then
+    warn("RandomTab no existe. Crea la pestaña RandomTab en tu hub antes de usar este script.")
+else
+    local SelectedPlayer = nil
+
+    local function GetPlayerList()
+        local names = {}
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= LocalPlayer then
+                table.insert(names, plr.Name)
+            end
+        end
+        return names
+    end
+
+    local PlayerDropdown = RandomTab:Dropdown({
+        Title = "Seleccionar Jugador",
+        Values = GetPlayerList(),
+        Multi = false,
+        Callback = function(selected)
+            SelectedPlayer = selected
+            print("Jugador seleccionado: " .. tostring(SelectedPlayer))
+        end
+    })
+
+    RandomTab:Button({
+        Title = "🔄 Refresh Lista",
+        Desc = "Actualiza la lista de jugadores",
+        Callback = function()
+            PlayerDropdown:SetValues(GetPlayerList())
+            print("✅ Lista de jugadores actualizada.")
+        end
+    })
+
+    RandomTab:Button({
+        Title = "⚡ Teleportar al Jugador",
+        Desc = "Te teletransporta al jugador seleccionado",
+        Callback = function()
+            if SelectedPlayer then
+                local target = Players:FindFirstChild(SelectedPlayer)
+                if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        LocalPlayer.Character:PivotTo(target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0))
+                        print("✅ Teletransportado a " .. SelectedPlayer)
+                    else
+                        warn("Tu personaje no está listo.")
+                    end
+                else
+                    warn("No se pudo encontrar al jugador o su personaje.")
+                end
+            else
+                warn("No has seleccionado ningún jugador.")
+            end
+        end
+    })
+end
+
+-- ------------------------------------------------------------------
+-- WALK SPEED / JUMP POWER CONTROLS (PlayerTab)
+-- ------------------------------------------------------------------
+if PlayerTab then
+    local defaultWalkSpeed = 16
+    local walkSpeedValue = defaultWalkSpeed
+    local walkSpeedEnabled = false
+
+    PlayerTab:Button({
+        Title = "Speed +",
+        Desc = "Aumenta WalkSpeed en +5 (máx 300)",
+        Callback = function()
+            walkSpeedValue = math.clamp(walkSpeedValue + 5, 0, 300)
+            if walkSpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+                LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = walkSpeedValue
+            end
+            print("WalkSpeed = ", walkSpeedValue)
+        end
+    })
+
+    PlayerTab:Button({
+        Title = "Speed -",
+        Desc = "Disminuye WalkSpeed en -5",
+        Callback = function()
+            walkSpeedValue = math.clamp(walkSpeedValue - 5, 0, 300)
+            if walkSpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+                LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = walkSpeedValue
+            end
+            print("WalkSpeed = ", walkSpeedValue)
+        end
+    })
+
+    PlayerTab:Toggle({
+        Title = "Speed Toggle",
+        Desc = "Mantiene la WalkSpeed personalizada hasta desactivar",
+        Default = false,
+        Callback = function(state)
+            walkSpeedEnabled = state
+            local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = state and walkSpeedValue or defaultWalkSpeed
+            end
+        end
+    })
+
+    Players.LocalPlayer.CharacterAdded:Connect(function(char)
+        task.wait(0.8)
+        if walkSpeedEnabled and char and char:FindFirstChildOfClass("Humanoid") then
+            char:FindFirstChildOfClass("Humanoid").WalkSpeed = walkSpeedValue
+        end
+    end)
+
+    -- Jump Power
+    local defaultJumpPower = 50
+    local jumpPowerValue = defaultJumpPower
+    local jumpEnabled = false
+
+    PlayerTab:Button({
+        Title = "Jump +",
+        Desc = "Aumenta JumpPower +10 (máx 500)",
+        Callback = function()
+            jumpPowerValue = math.clamp(jumpPowerValue + 10, 0, 500)
+            if jumpEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+                LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpPower = jumpPowerValue
+            end
+            print("JumpPower = ", jumpPowerValue)
+        end
+    })
+
+    PlayerTab:Button({
+        Title = "Jump -",
+        Desc = "Disminuye JumpPower -10",
+        Callback = function()
+            jumpPowerValue = math.clamp(jumpPowerValue - 10, 0, 500)
+            if jumpEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+                LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpPower = jumpPowerValue
+            end
+            print("JumpPower = ", jumpPowerValue)
+        end
+    })
+
+    PlayerTab:Toggle({
+        Title = "Jump Toggle",
+        Desc = "Mantiene JumpPower personalizado",
+        Default = false,
+        Callback = function(state)
+            jumpEnabled = state
+            local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.JumpPower = state and jumpPowerValue or defaultJumpPower
+            end
+        end
+    })
+
+    Players.LocalPlayer.CharacterAdded:Connect(function(char)
+        task.wait(0.8)
+        if jumpEnabled and char and char:FindFirstChildOfClass("Humanoid") then
+            char:FindFirstChildOfClass("Humanoid").JumpPower = jumpPowerValue
+        end
+    end)
+else
+    warn("PlayerTab no existe. Skipping walk/jump controls.")
+end
+
+-- ------------------------------------------------------------------
+-- SIMPLE FLY (Hold 'F' to toggle) - Works on PC
+-- ------------------------------------------------------------------
+do
+    local flying = false
+    local flySpeed = 80
+    local bodyVelocity = nil
+    local bodyGyro = nil
+
+    local function startFly()
+        if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
+        flying = true
+        local hrp = LocalPlayer.Character.HumanoidRootPart
+        bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(1e5,1e5,1e5)
+        bodyVelocity.Velocity = Vector3.new(0,0,0)
+        bodyVelocity.Parent = hrp
+
+        bodyGyro = Instance.new("BodyGyro")
+        bodyGyro.MaxTorque = Vector3.new(1e5,1e5,1e5)
+        bodyGyro.Parent = hrp
+
+        RunService:BindToRenderStep("XRNL_Fly", Enum.RenderPriority.Character.Value, function()
+            if not flying or not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
+            local hrp = LocalPlayer.Character.HumanoidRootPart
+            local moveDir = Vector3.new(0,0,0)
+            if UserInputService:IsKeyDown(Enum.KeyCode.W) then moveDir = moveDir + workspace.CurrentCamera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.S) then moveDir = moveDir - workspace.CurrentCamera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.A) then moveDir = moveDir - workspace.CurrentCamera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.D) then moveDir = moveDir + workspace.CurrentCamera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.Space) then moveDir = moveDir + Vector3.new(0,1,0) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then moveDir = moveDir - Vector3.new(0,1,0) end
+            bodyVelocity.Velocity = moveDir.Unit * flySpeed
+            bodyGyro.CFrame = workspace.CurrentCamera.CFrame
+        end)
+    end
+
+    local function stopFly()
+        flying = false
+        if bodyVelocity then bodyVelocity:Destroy() bodyVelocity = nil end
+        if bodyGyro then bodyGyro:Destroy() bodyGyro = nil end
+        RunService:UnbindFromRenderStep("XRNL_Fly")
+    end
+
+    -- Añadir toggle en PlayerTab si existe
+    if PlayerTab then
+        PlayerTab:Toggle({
+            Title = "Fly (F toggle)",
+            Desc = "Mantén volando con controles WASD + espacio/ctrl",
+            Default = false,
+            Callback = function(state)
+                if state then
+                    startFly()
+                else
+                    stopFly()
+                end
+            end
+        })
+
+        PlayerTab:Button({
+            Title = "Fly Speed +",
+            Desc = "Aumenta la velocidad de vuelo",
+            Callback = function()
+                flySpeed = math.clamp(flySpeed + 10, 10, 500)
+                print("Fly speed:", flySpeed)
+            end
+        })
+
+        PlayerTab:Button({
+            Title = "Fly Speed -",
+            Desc = "Disminuye la velocidad de vuelo",
+            Callback = function()
+                flySpeed = math.clamp(flySpeed - 10, 10, 500)
+                print("Fly speed:", flySpeed)
+            end
+        })
+    end
+
+    -- Keybind para F
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        if input.KeyCode == Enum.KeyCode.F then
+            if flying then
+                stopFly()
+            else
+                startFly()
+            end
+        end
+    end)
+end
+
+-- ------------------------------------------------------------------
+-- AUTO DALGONA (Más robusto que solo firesignal)
+-- ------------------------------------------------------------------
+do
+    local function findDalgonaUI()
+        for _, gui in pairs(LocalPlayer.PlayerGui:GetChildren()) do
+            if gui:IsA("ScreenGui") and gui:FindFirstChild("Dalgona") then
+                return gui.Dalgona
+            end
+            -- Algunos juegos usan nombres diferentes
+            if gui:IsA("ScreenGui") and gui:FindFirstChild("Sugar") then
+                return gui.Sugar
+            end
+        end
+        return nil
+    end
+
+    local function autoDalgonaOnce()
+        local dal = findDalgonaUI()
+        if not dal then return false end
+        -- Buscar partes clicables dentro de la UI (botones o ImageButtons)
+        for _, v in pairs(dal:GetDescendants()) do
+            if v:IsA("ImageButton") or v:IsA("TextButton") then
+                pcall(function()
+                    -- Intentar diferentes formas de activar (firesignal o firetouchinterest)
+                    if v.MouseButton1Click then
+                        firesignal(v.MouseButton1Click)
+                    else
+                        v:Activate()
+                    end
+                end)
+            end
+        end
+        return true
+    end
+
+    local autoEnabled = false
+    if DalgonaTab then
+        DalgonaTab:Toggle({
+            Title = "Auto Dalgona",
+            Desc = "Intenta completar la Dalgona automáticamente",
+            Default = false,
+            Callback = function(state)
+                autoEnabled = state
+                print("AutoDalgona:", state)
+            end
+        })
+    else
+        warn("DalgonaTab no existe. Skipping Auto Dalgona toggle.")
+    end
+
+    -- Loop de chequeo
+    spawn(function()
+        while true do
+            task.wait(0.6)
+            if autoEnabled then
+                local ok = autoDalgonaOnce()
+                if ok then
+                    -- si completó, esperar un poco para evitar spam
+                    task.wait(1.5)
+                end
+            else
+                task.wait(1)
+            end
+        end
+    end)
+end
+
+-- ------------------------------------------------------------------
+-- SIMPLE ESP / GLASS VISION (Outline highlight + optional ESP)
+-- ------------------------------------------------------------------
+do
+    local espEnabled = false
+    local highlights = {}
+
+    local function addHighlight(character)
+        if not character or not character:IsA("Model") then return end
+        if highlights[character] then return end
+        local hrp = character:FindFirstChild("HumanoidRootPart") or character:FindFirstChildWhichIsA("BasePart")
+        if not hrp then return end
+        local hl = Instance.new("Highlight")
+        hl.Name = "XRNL_Highlight"
+        hl.Adornee = character
+        hl.Parent = character
+        highlights[character] = hl
+    end
+
+    local function removeHighlight(character)
+        if not character then return end
+        local hl = highlights[character]
+        if hl and hl.Parent then hl:Destroy() end
+        highlights[character] = nil
+    end
+
+    local function refreshHighlights()
+        for k, v in pairs(highlights) do
+            if not k.Parent then
+                removeHighlight(k)
+            end
+        end
+    end
+
+    if RandomTab then
+        RandomTab:Toggle({
+            Title = "ESP Players",
+            Desc = "Resalta a los jugadores con Highlight",
+            Default = false,
+            Callback = function(state)
+                espEnabled = state
+                if not state then
+                    for k,_ in pairs(highlights) do
+                        removeHighlight(k)
+                    end
+                end
+            end
+        })
+    end
+
+    Players.PlayerAdded:Connect(function(plr)
+        plr.CharacterAdded:Connect(function(char)
+            task.wait(0.5)
+            if espEnabled then addHighlight(char) end
+        end)
+    end)
+
+    Players.PlayerRemoving:Connect(function(plr)
+        if plr.Character then removeHighlight(plr.Character) end
+    end)
+
+    -- Toggle existing characters
+    RunService.Heartbeat:Connect(function()
+        if espEnabled then
+            for _, plr in ipairs(Players:GetPlayers()) do
+                if plr ~= LocalPlayer and plr.Character then
+                    addHighlight(plr.Character)
+                end
+            end
+        else
+            refreshHighlights()
+        end
+    end)
+end
+
+-- ------------------------------------------------------------------
+-- EXTRA: Teleport to spawn / to mouse / noclip quick buttons (optional)
+-- ------------------------------------------------------------------
+do
+    if RandomTab then
+        RandomTab:Button({
+            Title = "Teleport to Spawn",
+            Desc = "Ir al spawn del juego",
+            Callback = function()
+                local spawn = Workspace:FindFirstChild("SpawnLocation") or Workspace:FindFirstChild("Spawn")
+                if spawn and spawn:IsA("BasePart") and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    LocalPlayer.Character:PivotTo(spawn.CFrame + Vector3.new(0,3,0))
+                    print("Teleported to spawn.")
+                else
+                    warn("No se encontró spawn o tu personaje no está listo.")
+                end
+            end
+        })
+
+        RandomTab:Button({
+            Title = "Noclip (toggle)",
+            Desc = "Activa/Desactiva noclip en tu personaje",
+            Callback = function()
+                local noclip = false
+                local function noclipOn()
+                    noclip = true
+                    local conn
+                    conn = RunService.Stepped:Connect(function()
+                        if LocalPlayer.Character then
+                            for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                                if part:IsA("BasePart") and part.CanCollide then
+                                    part.CanCollide = false
+                                end
+                            end
+                        end
+                    end)
+                    -- Apagar después de 8 segundos si quieres auto-off
+                    delay(8, function() if conn then conn:Disconnect() end end)
+                end
+                noclipOn()
+                print("Noclip toggled (temporary).")
+            end
+        })
+    end
+end
