@@ -57,69 +57,6 @@ local RandomTab = Window:Tab({
     Locked = false,
 
 })
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
--- TAB donde pondremos el selector de jugadores (puedes cambiarlo si tienes otro)
-local TeleportTab = Window:Tab({
-    Title = "Teleport",
-    Icon = "map-pin",
-    Locked = false,
-})
-
--- Guardar el jugador seleccionado
-local SelectedPlayer = nil
-
--- Función para obtener lista de jugadores
-local function GetPlayerList()
-    local names = {}
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer then
-            table.insert(names, plr.Name)
-        end
-    end
-    return names
-end
-
--- Crear dropdown de jugadores
-local PlayerDropdown = TeleportTab:Dropdown({
-    Title = "Seleccionar Jugador",
-    Values = GetPlayerList(),
-    Multi = false,
-    Callback = function(selected)
-        SelectedPlayer = selected
-        print("Jugador seleccionado: "..tostring(SelectedPlayer))
-    end
-})
-
--- Botón para refrescar la lista
-TeleportTab:Button({
-    Title = "🔄 Refresh Lista",
-    Desc = "Actualiza la lista de jugadores",
-    Callback = function()
-        PlayerDropdown:SetValues(GetPlayerList())
-        print("✅ Lista de jugadores actualizada.")
-    end
-})
-
--- Botón para teletransportarse
-TeleportTab:Button({
-    Title = "⚡ Teleportar al Jugador",
-    Desc = "Te teletransporta al jugador seleccionado",
-    Callback = function()
-        if SelectedPlayer then
-            local target = Players:FindFirstChild(SelectedPlayer)
-            if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-                LocalPlayer.Character:PivotTo(target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0))
-                print("✅ Teletransportado a "..SelectedPlayer)
-            else
-                warn("❌ No se pudo encontrar al jugador o su personaje.")
-            end
-        else
-            warn("⚠️ No has seleccionado ningún jugador.")
-        end
-    end
-})
 
 local RedTab = Window:Tab({
 
@@ -2769,4 +2706,66 @@ local RemoveRopeButton = JumpTab:Button({
 
     end
 
+})
+-- Tu ventana ya creada
+local RandomTab = Window:Tab({
+    Title = "Random Features",
+    Icon = "dices",
+    Locked = false,
+})
+
+-- 🔽 Aquí empiezan las funciones de Teleport dentro de ESTA ventana
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local SelectedPlayer = nil
+
+-- Función para listar jugadores
+local function GetPlayerList()
+    local names = {}
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            table.insert(names, plr.Name)
+        end
+    end
+    return names
+end
+
+-- Dropdown para elegir jugador
+local PlayerDropdown = RandomTab:Dropdown({
+    Title = "Seleccionar Jugador",
+    Values = GetPlayerList(),
+    Multi = false,
+    Callback = function(selected)
+        SelectedPlayer = selected
+        print("Jugador seleccionado: " .. tostring(SelectedPlayer))
+    end
+})
+
+-- Botón para refrescar lista
+RandomTab:Button({
+    Title = "🔄 Refresh Lista",
+    Desc = "Actualiza la lista de jugadores",
+    Callback = function()
+        PlayerDropdown:SetValues(GetPlayerList())
+        print("✅ Lista de jugadores actualizada.")
+    end
+})
+
+-- Botón para teletransportarse al jugador seleccionado
+RandomTab:Button({
+    Title = "⚡ Teleportar al Jugador",
+    Desc = "Te teletransporta al jugador seleccionado",
+    Callback = function()
+        if SelectedPlayer then
+            local target = Players:FindFirstChild(SelectedPlayer)
+            if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                LocalPlayer.Character:PivotTo(target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0))
+                print("✅ Teletransportado a " .. SelectedPlayer)
+            else
+                warn("❌ No se pudo encontrar al jugador o su personaje.")
+            end
+        else
+            warn("⚠️ No has seleccionado ningún jugador.")
+        end
+    end
 })
