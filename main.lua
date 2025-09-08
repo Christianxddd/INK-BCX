@@ -1,18 +1,20 @@
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
+
 local Window = WindUI:CreateWindow({
 
-    Title = "by Christian",
+    Title = "XRNL HUB | INK GAME",
 
-    Icon = "star",
+    Icon = "skull",
 
     Author = "https://www.instagram.com/roseb_astian/",
 
-    Folder = "MeowlHubScript",
-
+    Folder = "RONALDO",
+  
     Size = UDim2.fromOffset(150, 150),
 
 })
+
 
 Window:EditOpenButton({
 
@@ -20,15 +22,15 @@ Window:EditOpenButton({
 
     Icon = "skull",
 
-    CornerRadius = UDim.new(0,0),
+    CornerRadius = UDim.new(0,20),
 
     StrokeThickness = 2,
 
-    Color = ColorSequence.new(
+    Color = ColorSequence.new( -- gradient
 
-        Color3.fromHex("8B4513"),
+        Color3.fromHex("FF0F7B"), 
 
-        Color3.fromHex("FFFFFF")
+        Color3.fromHex("F89B29")
 
     ),
 
@@ -40,13 +42,27 @@ Window:EditOpenButton({
 
 })
 
+
 Window:Tag({
 
-    Title = "v7.35.56 BETA VERSION",
+    Title = "v7.34.98",
 
     Color = Color3.fromHex("#30ff6a")
 
 })
+
+
+local PlayerTab = Window:Tab({
+
+    Title = "Tab Player",
+
+    Icon = "person-standing",
+
+    Locked = false,
+
+})
+
+
 
 local RandomTab = Window:Tab({
 
@@ -58,6 +74,7 @@ local RandomTab = Window:Tab({
 
 })
 
+
 local RedTab = Window:Tab({
 
     Title = "Red Light, Green light",
@@ -67,6 +84,7 @@ local RedTab = Window:Tab({
     Locked = false,
 
 })
+
 
 local DalgonaTab = Window:Tab({
 
@@ -78,7 +96,9 @@ local DalgonaTab = Window:Tab({
 
 })
 
-local LightTab = Window:Tab({
+
+
+local LightsTab = Window:Tab({
 
     Title = "Lights Out / Special Game",
 
@@ -88,15 +108,6 @@ local LightTab = Window:Tab({
 
 })
 
-local TugTab = Window:Tab({
-
-    Title = "Tug Of War",
-
-    Icon = "",
-
-    Locked = false,
-
-})
 
 local HideSeekTab = Window:Tab({
 
@@ -108,15 +119,29 @@ local HideSeekTab = Window:Tab({
 
 })
 
+
+local TugTab = Window:Tab({
+
+    Title = "Tug Of War",
+
+    Icon = "sword",
+
+    Locked = false,
+
+})
+
+
+
 local JumpTab = Window:Tab({
 
-    Title = "JumpRope",
+    Title = "Jump Rope",
 
     Icon = "shell",
 
     Locked = false,
 
 })
+
 
 local GlassTab = Window:Tab({
 
@@ -128,6 +153,7 @@ local GlassTab = Window:Tab({
 
 })
 
+
 local MingleTab = Window:Tab({
 
     Title = "Mingle",
@@ -137,6 +163,29 @@ local MingleTab = Window:Tab({
     Locked = false,
 
 })
+
+
+local SkyTab = Window:Tab({
+
+    Title = "Sky Squid Game",
+
+    Icon = "building-2",
+
+    Locked = false,
+
+})
+
+
+local DinnerTab = Window:Tab({
+
+    Title = "Final Dinner",
+
+    Icon = "utensils-crossed",
+
+    Locked = false,
+
+})
+
 
 local SquidTab = Window:Tab({
 
@@ -148,147 +197,1187 @@ local SquidTab = Window:Tab({
 
 })
 
+-- ========================
+
+-- INF JUMP TOGGLE
+
+-- ========================
+
+local InfiniteJumpEnabled = false
+
+local UserInputService = game:GetService("UserInputService")
+
+local player = game.Players.LocalPlayer
+
+
+local Toggle = PlayerTab:Toggle({
+
+    Title = "Inf Jump",
+
+    Desc = "Infinite Jump i think.",
+
+    Locked = false,
+
+    Callback = function(state)
+
+        InfiniteJumpEnabled = state -- Ativa/Desativa o toggle
+
+    end
+
+})
+
+-- Evento para permitir/desativar o Infinite Jump
+
+UserInputService.JumpRequest:Connect(function()
+
+    if InfiniteJumpEnabled then
+
+        local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+
+        if humanoid and humanoid.Parent then
+
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+
+        end
+
+    end
+
+end)
+
+
+
+-- ========================
+
+-- INSTA INTERACT TOGGLE
+
+-- ========================
+
+local InstaInteractEnabled = false
+
 local Players = game:GetService("Players")
 
 local LocalPlayer = Players.LocalPlayer
 
-local Workspace = game:GetService("Workspace")
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
--- Função segura de teleporte
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
-local function teleportToCFrame(cframe)
+local DISTANCIA_MAX = 999999999
 
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-        LocalPlayer.Character.HumanoidRootPart.CFrame = cframe
+-- Toggle na Wind UI
+
+local Button = PlayerTab:Toggle({
+
+    Title = "Insta Interact",
+
+    Desc = "Makes all ProximityPrompts instant.",
+
+    Locked = false,
+
+    Callback = function(state)
+
+        InstaInteractEnabled = state
+
+    end
+
+})
+
+
+-- Atualiza o HumanoidRootPart quando o player renascer
+
+LocalPlayer.CharacterAdded:Connect(function(char)
+
+    Character = char
+
+    HumanoidRootPart = char:WaitForChild("HumanoidRootPart")
+
+end)
+
+
+-- Função para forçar HoldDuration = 0
+
+local function tornarPromptInstantaneo(prompt)
+
+    if prompt:IsA("ProximityPrompt") then
+
+        -- Sempre que o HoldDuration mudar, forçamos para 0 se o toggle estiver ativo
+
+        prompt:GetPropertyChangedSignal("HoldDuration"):Connect(function()
+
+            if InstaInteractEnabled then
+
+                prompt.HoldDuration = 0
+
+            end
+
+        end)
+
+
+        -- Define inicialmente
+
+        if InstaInteractEnabled then
+
+            prompt.HoldDuration = 0
+
+        end
 
     end
 
 end
 
--- Botão 1: Teleport to End
 
-JumpTab:Button({
+-- Aplica aos prompts já existentes
 
-    Title = "TP End",
+for _, obj in pairs(workspace:GetDescendants()) do
 
-    Desc = "Quickly teleport to the end location.", -- descrição em inglês
+    if obj:IsA("ProximityPrompt") then
 
-    Callback = function()
+        tornarPromptInstantaneo(obj)
 
-        teleportToCFrame(CFrame.new(
+    end
 
-            737.156372, 193.805084, 920.952515,
+end
 
-            -1.1920929e-07, 0, -1.00000012,
 
-            0, 1, 0,
+-- Aplica aos prompts adicionados futuramente
 
-            1.00000012, 0, -1.1920929e-07
+workspace.DescendantAdded:Connect(function(obj)
 
-        ))
+    if obj:IsA("ProximityPrompt") then
+
+        tornarPromptInstantaneo(obj)
+
+    end
+
+end)
+
+
+-- Loop extra de segurança: força constantemente o HoldDuration = 0
+
+task.spawn(function()
+
+    while task.wait(0.1) do
+
+        if InstaInteractEnabled then
+
+            for _, prompt in pairs(workspace:GetDescendants()) do
+
+                if prompt:IsA("ProximityPrompt") and prompt.HoldDuration ~= 0 then
+
+                    prompt.HoldDuration = 0
+
+                end
+
+            end
+
+        end
+
+    end
+
+end)
+
+
+local Toggle = PlayerTab:Toggle({
+
+    Title = "Noclip",
+
+    Desc = "Auto-Explained",
+
+    Default = false,
+
+    Callback = function(state) 
+
+        print("Toggle Activated: " .. tostring(state))
+
+
+        -- Serviços
+
+        local Players = game:GetService("Players")
+
+        local RunService = game:GetService("RunService")
+
+        local LocalPlayer = Players.LocalPlayer
+
+
+        
+
+        if getgenv().NoclipConnection then
+
+            getgenv().NoclipConnection:Disconnect()
+
+            getgenv().NoclipConnection = nil
+
+            getgenv().NoclipEnabled = false
+
+            print("Noclip Off")
+
+        end
+
+
+
+        if state then
+
+            getgenv().NoclipEnabled = true
+
+            getgenv().NoclipConnection = RunService.Stepped:Connect(function()
+
+                if LocalPlayer.Character then
+
+                    for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+
+                        if part:IsA("BasePart") then
+
+                            part.CanCollide = false
+
+                        end
+
+                    end
+
+                end
+
+            end)
+
+            print("Noclip On")
+
+        end
 
     end
 
 })
 
--- Botão 2: Teleport to Start
 
-JumpTab:Button({
 
-    Title = "TP Start",
 
-    Desc = "Instantly teleport back to the start point.", -- descrição em inglês
 
-    Callback = function()
 
-        teleportToCFrame(CFrame.new(
+local Players = game:GetService("Players")
 
-            615.284424, 192.274277, 920.952515,
+local LocalPlayer = Players.LocalPlayer
 
-            -1.1920929e-07, 0, 1.00000012,
 
-            0, 1, 0,
+local originalPower = LocalPlayer:GetAttribute("_EquippedPower")
 
-            -1.00000012, 0, -1.1920929e-07
 
-        ))
+local Toggle = RandomTab:Toggle({
+
+    Title = "Phantom Step",
+
+    Desc = "Give u Phantom Step",
+
+    Default = false,
+
+    Callback = function(state) 
+
+        if state then
+
+            -- Ativar Phantom Step
+
+            LocalPlayer:SetAttribute("_EquippedPower", "PHANTOM STEP")
+
+            print("Phantom Step On")
+
+        else
+
+            LocalPlayer:SetAttribute("_EquippedPower", originalPower)
+
+            print("Phantom Step off")
+
+        end
+
+    end
+
+})
+
+
+
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+
+
+local function toggleFasterSprint(state)
+
+    local boostsFolder = LocalPlayer:FindFirstChild("Boosts")
+
+    if not boostsFolder then
+
+        warn("Boosts not found")
+
+        return
+
+    end
+
+
+    local sprintBoost = boostsFolder:FindFirstChild("Faster Sprint")
+
+    if not sprintBoost or not sprintBoost:IsA("NumberValue") then
+
+        warn("Faster Sprint not found")
+
+        return
+
+    end
+
+
+    if state then
+
+        sprintBoost.Value = 5  -- ativa
+
+        print("Faster Sprint on: 5")
+
+    else
+
+        sprintBoost.Value = 0  -- desativa
+
+        print("Faster Sprint off: 0")
+
+    end
+
+end
+
+
+
+local Toggle = RandomTab:Toggle({
+
+    Title = "Dash",
+
+    Desc = "Dash click lol",
+
+    Default = false,
+
+    Callback = function(state)
+
+        toggleFasterSprint(state)
 
     end
 
 })
 
-GlassTab:Button({
 
-    Title = "TP END",
 
-    Desc = "Teleport instantly to the END location.",
 
-    Callback = function()
+--// Variável para armazenar highlights
 
-        teleportToCFrame(CFrame.new(
+local ActiveHighlights = {}
 
-            -211.855881, 517.039062, -1534.7373,
 
-            -1.1920929e-07, 0, 1.00000012,
+-- Função para criar highlights amarelos
 
-            0, 1, 0,
+local function createHighlight(door)
 
-            -1.00000012, 0, -1.1920929e-07
+    if ActiveHighlights[door] then return end
 
-        ))
+    local highlight = Instance.new("Highlight")
+
+    highlight.Adornee = door
+
+    highlight.FillColor = Color3.fromRGB(255, 255, 0)
+
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 0)
+
+    highlight.FillTransparency = 0.3
+
+    highlight.Parent = door
+
+    ActiveHighlights[door] = highlight
+
+end
+
+
+-- Função para habilitar ESP
+
+local function enableESP()
+
+    -- Aqui, buscamos o Workspace e a pasta SOMENTE quando o toggle é ativado
+
+    local Workspace = game:GetService("Workspace")
+
+    local Map = Workspace:FindFirstChild("HideAndSeekMap")
+
+    if not Map then
+
+        warn("⚠️ HideAndSeekMap não encontrado!")
+
+        return
+
+    end
+
+
+    local DoorsFolder = Map:FindFirstChild("NEWFIXEDDOORS")
+
+    if not DoorsFolder then
+
+        warn("⚠️ NEWFIXEDDOORS não encontrado!")
+
+        return
+
+    end
+
+
+    -- Percorre todos os andares e procura portas corretas
+
+    for _, floor in ipairs(DoorsFolder:GetChildren()) do
+
+        local exitDoors = floor:FindFirstChild("EXITDOORS")
+
+        if exitDoors then
+
+            for _, door in ipairs(exitDoors:GetChildren()) do
+
+                if door:IsA("Model") and door:GetAttribute("ActuallyWorks") then
+
+                    createHighlight(door)
+
+                end
+
+            end
+
+        end
+
+    end
+
+end
+
+
+-- Função para desativar ESP
+
+local function disableESP()
+
+    for door, highlight in pairs(ActiveHighlights) do
+
+        if highlight and highlight.Parent then
+
+            highlight:Destroy()
+
+        end
+
+        ActiveHighlights[door] = nil
+
+    end
+
+end
+
+
+-- Criação do botão toggle na Wind UI
+
+HideSeekTab:Toggle({
+
+    Title = "ESP EXITDOOR",
+
+    Desc = "",
+
+    Default = false,
+
+    Callback = function(state)
+
+        if state then
+
+            enableESP()
+
+        else
+
+            disableESP()
+
+        end
 
     end
 
 })
+
 
 --// Serviços
 
+local Players = game:GetService("Players")
+
 local Workspace = game:GetService("Workspace")
 
---// Variáveis
+local LocalPlayer = Players.LocalPlayer
 
-local AllMingleDoorsFolder = Workspace:FindFirstChild("AllMingleDoors")
+local Effects = Workspace:WaitForChild("Effects")
 
-local OriginalCanCollide = {} -- tabela para armazenar os valores originais
 
---// Cria o Toggle no WindUI
+-- Variável para controlar o loop
 
-local NoclipToggle = MingleTab:Toggle({
+local Teleporting = false
 
-    Title = "NOCLIP MINGLE DOORS",
 
-    Desc = "Toggle collision of all objects in AllMingleDoors folder.",
+-- Função para encontrar o PrimaryPart de um Model
+
+local function getModelCFrame(model)
+
+    if model.PrimaryPart then
+
+        return model.PrimaryPart.CFrame
+
+    end
+
+    -- Se não tiver PrimaryPart definido, tenta achar uma BasePart dentro do Model
+
+    for _, part in ipairs(model:GetDescendants()) do
+
+        if part:IsA("BasePart") then
+
+            return part.CFrame
+
+        end
+
+    end
+
+    return nil
+
+end
+
+
+-- Função para teleportar para todas as chaves e voltar à posição original
+
+local function teleportKeys()
+
+    while Teleporting do
+
+        task.wait(0.5)
+
+
+        local char = LocalPlayer.Character
+
+        if not char or not char:FindFirstChild("HumanoidRootPart") then
+
+            continue
+
+        end
+
+
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+
+        local originalCFrame = hrp.CFrame -- salva posição atual
+
+
+        -- Procura pelas chaves
+
+        for _, obj in ipairs(Effects:GetChildren()) do
+
+            if obj:IsA("Model") and (
+
+                obj.Name == "DroppedKeyCircle" or
+
+                obj.Name == "DroppedKeySquare" or
+
+                obj.Name == "DroppedKeyTriangle"
+
+            ) then
+
+                -- Pega o CFrame correto da chave
+
+                local keyCFrame = getModelCFrame(obj)
+
+                if keyCFrame then
+
+                    -- Teleporta para a chave
+
+                    hrp.CFrame = keyCFrame + Vector3.new(0, 3, 0)
+
+                    task.wait(0.25)
+
+                    -- Volta para onde estava
+
+                    hrp.CFrame = originalCFrame
+
+                    task.wait(0.15)
+
+                end
+
+            end
+
+        end
+
+    end
+
+end
+
+
+-- Cria o botão toggle na Wind UI
+
+HideSeekTab:Toggle({
+
+    Title = "TP KEY",
+
+    Desc = "",
+
+    Default = false,
+
+    Callback = function(state)
+
+        Teleporting = state
+
+        if state then
+
+            teleportKeys()
+
+        end
+
+    end
+
+})
+
+
+local Button = RedTab:Button({
+
+    Title = "Teleport Final",
+
+    Desc = "001 ?",
+
+    Icon = "bird",
+
+    Callback = function()
+
+        local Players = game:GetService("Players")
+
+        local LocalPlayer = Players.LocalPlayer
+
+        local Character = LocalPlayer.Character
+
+        if Character and Character:FindFirstChild("HumanoidRootPart") then
+
+            -- CFrame que você passou
+
+            local targetCFrame = CFrame.new(
+
+                -41.7126923, 1021.32306, 134.34935,
+
+                0.811150551, 0.237830803, 0.534295142,
+
+                -8.95559788e-06, 0.913583994, -0.406650066,
+
+                -0.584837377, 0.32984966, 0.741056323
+
+            )
+
+
+            -- Adiciona 10 studs para cima
+
+            targetCFrame = targetCFrame + Vector3.new(0, 10, 0)
+
+
+            -- Teleporta o HumanoidRootPart
+
+            Character.HumanoidRootPart.CFrame = targetCFrame
+
+        end
+
+    end
+
+})
+
+
+--// Serviços
+
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+
+
+-- Função para destruir os folders, caso existam no seu personagem
+
+local function destroyFolders()
+
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+
+    -- Verifica e destrói o folder "Stun"
+
+    local stun = char:FindFirstChild("Stun")
+
+    if stun then
+
+        stun:Destroy()
+
+    end
+
+
+    -- Verifica e destrói o folder "InjuredWalking"
+
+    local injured = char:FindFirstChild("InjuredWalking")
+
+    if injured then
+
+        injured:Destroy()
+
+    end
+
+end
+
+
+-- Botão de clique único na Wind UI
+
+RedTab:Button({
+
+    Title = "REMOVER STUN & INJURED",
+
+    Desc = "Op",
+
+    Callback = function()
+
+        destroyFolders()
+
+    end
+
+})
+
+
+--// Serviços
+
+local Players = game:GetService("Players")
+
+local Workspace = game:GetService("Workspace")
+
+local LocalPlayer = Players.LocalPlayer
+
+
+-- Variáveis de controle
+
+local AutoDodge = false
+
+local humanoidRootPart
+
+local humanoid
+
+
+-- Configurações
+
+local DODGE_RANGE = 4 -- distância para detectar ataques
+
+local TELEPORT_HEIGHT = 75
+
+local THREATS = { "BOTTLE", "KNIFE", "FORK" } -- nomes das ferramentas perigosas
+
+
+-- Função para verificar se o jogador tem o item "DODGE!"
+
+local function hasDodgeItem()
+
+    local backpack = LocalPlayer:FindFirstChild("Backpack")
+
+    if backpack and backpack:FindFirstChild("DODGE!") then
+
+        return backpack:FindFirstChild("DODGE!")
+
+    end
+
+
+    -- Caso esteja equipado na mão
+
+    local character = LocalPlayer.Character
+
+    if character and character:FindFirstChild("DODGE!") then
+
+        return character:FindFirstChild("DODGE!")
+
+    end
+
+
+    return nil
+
+end
+
+
+-- Função para usar o item DODGE
+
+local function useDodgeItem()
+
+    local dodgeTool = hasDodgeItem()
+
+    if dodgeTool and dodgeTool:FindFirstChild("RemoteEvent") then
+
+        -- Aciona o RemoteEvent do DODGE!
+
+        pcall(function()
+
+            dodgeTool.RemoteEvent:FireServer()
+
+        end)
+
+        return true
+
+    end
+
+    return false
+
+end
+
+
+-- Função para teleportar para cima
+
+local function teleportUp()
+
+    if humanoidRootPart then
+
+        humanoidRootPart.CFrame = humanoidRootPart.CFrame + Vector3.new(0, TELEPORT_HEIGHT, 0)
+
+    end
+
+end
+
+
+-- Função para detectar ameaças próximas
+
+local function detectThreats()
+
+    for _, player in ipairs(Players:GetPlayers()) do
+
+        if player ~= LocalPlayer and player.Character then
+
+            local char = player.Character
+
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+
+            if hrp and (hrp.Position - humanoidRootPart.Position).Magnitude <= DODGE_RANGE then
+
+                -- Verifica ferramentas perigosas no personagem
+
+                for _, tool in ipairs(char:GetChildren()) do
+
+                    if tool:IsA("Tool") and table.find(THREATS, tool.Name:upper()) then
+
+                        return true
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+    return false
+
+end
+
+
+-- Loop principal do Auto Dodge
+
+local function startAutoDodge()
+
+    task.spawn(function()
+
+        while AutoDodge do
+
+            task.wait(0.15)
+
+
+            local char = LocalPlayer.Character
+
+            humanoidRootPart = char and char:FindFirstChild("HumanoidRootPart")
+
+            humanoid = char and char:FindFirstChildOfClass("Humanoid")
+
+
+            if not humanoidRootPart or not humanoid or humanoid.Health <= 0 then
+
+                continue
+
+            end
+
+
+            -- Se houver ameaça próxima
+
+            if detectThreats() then
+
+                if not useDodgeItem() then
+
+                    teleportUp()
+
+                end
+
+            end
+
+        end
+
+    end)
+
+end
+
+
+-- Botão toggle na aba Random
+
+RandomTab:Toggle({
+
+    Title = "AUTO DODGE",
+
+    Desc = "aop",
+
+    Default = false,
+
+    Callback = function(state)
+
+        AutoDodge = state
+
+        if state then
+
+            startAutoDodge()
+
+        end
+
+    end
+
+})
+
+
+
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+
+local RunService = game:GetService("RunService")
+
+
+-- Variável de controle
+
+local showGlassESP = false
+
+
+-- Função para verificar vidro real ou falso
+
+local function isRealGlass(part)
+
+    if part:GetAttribute("GlassPart") then
+
+        if part:GetAttribute("ActuallyKilling") ~= nil then
+
+            return false -- falso
+
+        end
+
+        return true -- real
+
+    end
+
+    return false
+
+end
+
+
+-- Função para aplicar cor nos vidros
+
+local function updateGlassColors()
+
+    for _, part in ipairs(workspace:GetDescendants()) do
+
+        if part:IsA("BasePart") and part:GetAttribute("GlassPart") then
+
+            if showGlassESP then
+
+                -- Glass correto/errado
+
+                if isRealGlass(part) then
+
+                    part.Color = Color3.fromRGB(0, 255, 0) -- verde real
+
+                else
+
+                    part.Color = Color3.fromRGB(255, 0, 0) -- vermelho falso
+
+                end
+
+                part.Material = Enum.Material.Neon
+
+
+                -- Adiciona atributo ExploitingIsEvil
+
+                part:SetAttribute("ExploitingIsEvil", true)
+
+            else
+
+                -- Resetar para cor original (opcional)
+
+                part.Color = Color3.fromRGB(163, 162, 165)
+
+                part.Material = Enum.Material.Glass
+
+
+                -- Remove atributo
+
+                part:SetAttribute("ExploitingIsEvil", nil)
+
+            end
+
+        end
+
+    end
+
+end
+
+
+local Toggle = GlassTab:Toggle({
+
+    Title = "Glass Vision",
+
+    Desc = "Op Glass vision.",
+
+    Icon = "bird",
+
+    Default = false,
+
+    Callback = function(state)
+
+        showGlassESP = state
+
+        if showGlassESP then
+
+            task.spawn(function()
+
+                while showGlassESP do
+
+                    updateGlassColors()
+
+                    task.wait(0.5)
+
+                end
+
+            end)
+
+        else
+
+            updateGlassColors()
+
+        end
+
+    end
+
+})
+
+
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+
+local HRP = nil
+
+local AntiFallEnabled = false
+
+local LastPosition = nil
+
+
+local AntiFallToggle = SkyTab:Toggle({
+
+    Title = "Anti Fall",
+
+    Description = "Prevents you from falling more than 5 studs by teleporting to the last safe position.",
 
     Default = false,
 
     Callback = function(Value)
 
-        if AllMingleDoorsFolder then
+        AntiFallEnabled = Value
 
-            for _, obj in ipairs(AllMingleDoorsFolder:GetDescendants()) do
 
-                if obj:IsA("BasePart") then
+        if AntiFallEnabled then  
 
-                    if Value then
+            -- Salva a posição exata ao ativar
 
-                        -- Salva o valor original antes de tirar colisão
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-                        OriginalCanCollide[obj] = obj.CanCollide
+                HRP = LocalPlayer.Character.HumanoidRootPart
 
-                        obj.CanCollide = false
+                LastPosition = HRP.Position -- posição exata onde ativou
+
+            end
+
+
+            -- Inicia loop
+
+            task.spawn(function()  
+
+                while AntiFallEnabled and task.wait(0.1) do  
+
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then  
+
+                        HRP = LocalPlayer.Character.HumanoidRootPart  
+
+
+                        -- Verifica se caiu 5 studs ou mais
+
+                        local YDiff = LastPosition.Y - HRP.Position.Y  
+
+                        if YDiff >= 5 then  
+
+                            -- Teleporta de volta para a posição exata onde ativou
+
+                            HRP.CFrame = CFrame.new(LastPosition)  
+
+                        end
+
+                    end  
+
+                end  
+
+            end)  
+
+        else  
+
+            -- Reset quando desligado
+
+            LastPosition = nil  
+
+        end  
+
+    end
+
+})
+
+
+local Players = game:GetService("Players")
+
+local ESPSeekEnabled = false
+
+local ESPSeekHighlights = {}
+
+
+local ESPSeekToggle = HideSeekTab:Toggle({
+
+    Title = "ESP Seek",
+
+    Description = "Highlights players wearing RedVest in red.",
+
+    Default = false,
+
+    Callback = function(Value)
+
+        ESPSeekEnabled = Value
+
+
+        task.spawn(function()
+
+            while ESPSeekEnabled and task.wait(0.5) do
+
+                for _, player in pairs(Players:GetPlayers()) do
+
+                    if player.Character and player.Character:FindFirstChild("RedVest") then
+
+                        if not ESPSeekHighlights[player] then
+
+                            local highlight = Instance.new("Highlight")
+
+                            highlight.FillColor = Color3.fromRGB(255, 0, 0)
+
+                            highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+
+                            highlight.Adornee = player.Character
+
+                            highlight.Parent = game:GetService("CoreGui")
+
+                            ESPSeekHighlights[player] = highlight
+
+                        end
 
                     else
 
-                        -- Restaura o valor original
+                        if ESPSeekHighlights[player] then
 
-                        if OriginalCanCollide[obj] ~= nil then
+                            ESPSeekHighlights[player]:Destroy()
 
-                            obj.CanCollide = OriginalCanCollide[obj]
-
-                        else
-
-                            obj.CanCollide = true
+                            ESPSeekHighlights[player] = nil
 
                         end
 
@@ -298,107 +1387,79 @@ local NoclipToggle = MingleTab:Toggle({
 
             end
 
-        end
+
+            -- Cleanup highlights ao desativar
+
+            if not ESPSeekEnabled then
+
+                for _, hl in pairs(ESPSeekHighlights) do
+
+                    hl:Destroy()
+
+                end
+
+                ESPSeekHighlights = {}
+
+            end
+
+        end)
 
     end
 
 })
 
-local Section = HideSeekTab:Section({ 
 
-    Title = "Seeker Features",
+local ESPHideEnabled = false
 
-    TextXAlignment = "Left",
+local ESPHideHighlights = {}
 
-    TextSize = 17, -- Default Size
 
-})
+local ESPHideToggle = HideSeekTab:Toggle({
 
-local Players = game:GetService("Players")
+    Title = "ESP Hide",
 
-local RunService = game:GetService("RunService")
-
-local LocalPlayer = Players.LocalPlayer
-
-local HRP = nil
-
-local AutoKillEnabled = false
-
-local AutoKillAllEnabled = false
-
-local FollowConnection
-
-local FollowAllConnection
-
---// AUTO KILL HIDE (BlueVest)
-
-local AutoKillToggle = HideSeekTab:Toggle({
-
-    Title = "AUTO KILL HIDE",
-
-    Desc = "Automatically stays 5 studs in front of the BlueVest player.",
+    Description = "Highlights players wearing BlueVest in blue.",
 
     Default = false,
 
     Callback = function(Value)
 
-        AutoKillEnabled = Value
+        ESPHideEnabled = Value
 
-        if FollowConnection then
 
-            FollowConnection:Disconnect()
+        task.spawn(function()
 
-            FollowConnection = nil
+            while ESPHideEnabled and task.wait(0.5) do
 
-        end
+                for _, player in pairs(Players:GetPlayers()) do
 
-        if AutoKillEnabled then
+                    if player.Character and player.Character:FindFirstChild("BlueVest") then
 
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        if not ESPHideHighlights[player] then
 
-                HRP = LocalPlayer.Character.HumanoidRootPart
+                            local highlight = Instance.new("Highlight")
 
-                -- Procura jogador com BlueVest
+                            highlight.FillColor = Color3.fromRGB(0, 0, 255)
 
-                local targetPlayer = nil
+                            highlight.OutlineColor = Color3.fromRGB(0, 0, 255)
 
-                for _, player in ipairs(Players:GetPlayers()) do
+                            highlight.Adornee = player.Character
 
-                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("BlueVest") then
+                            highlight.Parent = game:GetService("CoreGui")
 
-                        targetPlayer = player
+                            ESPHideHighlights[player] = highlight
 
-                        break
+                        end
 
-                    end
+                    else
 
-                end
+                        if ESPHideHighlights[player] then
 
-                if targetPlayer and targetPlayer.Character then
+                            ESPHideHighlights[player]:Destroy()
 
-                    local targetTorso = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+                            ESPHideHighlights[player] = nil
 
-                        or targetPlayer.Character:FindFirstChild("UpperTorso")
-
-                        or targetPlayer.Character:FindFirstChild("8Torso")
-
-                    if targetTorso then
-
-                        FollowConnection = RunService.RenderStepped:Connect(function()
-
-                            if AutoKillEnabled and targetPlayer.Character and targetTorso and HRP and HRP.Parent then
-
-                                -- Posição 5 studs NA FRENTE do player alvo
-
-                                local frontPos = targetTorso.CFrame * CFrame.new(0, 0, -5)
-
-                                -- Faz o HRP ficar suavemente na frente do jogador
-
-                                HRP.CFrame = frontPos
-
-                            end
-
-                        end)
+                        end
 
                     end
 
@@ -406,21 +1467,65 @@ local AutoKillToggle = HideSeekTab:Toggle({
 
             end
 
-        end
+
+            -- Cleanup highlights ao desativar
+
+            if not ESPHideEnabled then
+
+                for _, hl in pairs(ESPHideHighlights) do
+
+                    hl:Destroy()
+
+                end
+
+                ESPHideHighlights = {}
+
+            end
+
+        end)
 
     end
 
 })
 
-local Section = HideSeekTab:Section({ 
 
-    Title = "Hider Features",
+local FullBrightEnabled = false
 
-    TextXAlignment = "Left",
 
-    TextSize = 17, -- Default Size
+local FullBrightToggle = RandomTab:Toggle({
+
+    Title = "Full Bright",
+
+    Description = "Keeps the game fully bright in a loop.",
+
+    Default = false,
+
+    Callback = function(Value)
+
+        FullBrightEnabled = Value
+
+
+        task.spawn(function()
+
+            local Lighting = game:GetService("Lighting")
+
+            while FullBrightEnabled and task.wait(1) do
+
+                Lighting.ClockTime = 14 -- Manter dia
+
+                Lighting.Brightness = 2
+
+                Lighting.GlobalShadows = false
+
+            end
+
+        end)
+
+    end
 
 })
+
+
 
 HideSeekTab:Button({
 
@@ -436,15 +1541,18 @@ HideSeekTab:Button({
 
         local hrp = player.Character.HumanoidRootPart
 
+
         -- Procura todos os EXITDOORs com atributo ActuallyWorks
 
         local map = game.Workspace:WaitForChild("HideAndSeekMap")
 
         local newDoors = map:WaitForChild("NEWFIXEDDOORS")
 
+
         local closestDoor = nil
 
         local shortestDistance = math.huge
+
 
         -- Percorre todos os pisos e EXITDOORS
 
@@ -482,6 +1590,7 @@ HideSeekTab:Button({
 
         end
 
+
         -- Teleporta para a frente da porta
 
         if closestDoor then
@@ -502,167 +1611,406 @@ HideSeekTab:Button({
 
 })
 
--- Serviços necessários
+
+-- Serviços
 
 local Players = game:GetService("Players")
 
 local LocalPlayer = Players.LocalPlayer
 
-local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
--- Função para teleporte
+-- Variável da plataforma
 
-local function teleportTo(cframe)
+local SafePlatform = nil
 
-    if not cframe then return end
 
-    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+-- Toggle Wind UI
 
-    local hrp = char:WaitForChild("HumanoidRootPart")
+local SafePlatformToggle = JumpTab:Toggle({
 
-    hrp.CFrame = cframe
+    Title = "Safe Platform",
 
-end
+    Desc = "Op for many games.",
 
--- Função para pegar o CFrame do modelo no workspace
+    Icon = "building-2",
 
-local function getPositionFromWorkspace(objectName)
+    Default = false,
 
-    local obj = workspace:FindFirstChild(objectName)
+    Callback = function(state)
 
-    if obj then
+        if state then
 
-        if obj:IsA("Model") and obj.PrimaryPart then
+            -- Cria a plataforma se não existir
 
-            return obj.PrimaryPart.CFrame
+            if not SafePlatform then
 
-        elseif obj:IsA("BasePart") then
+                local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-            return obj.CFrame
+                local HRP = Character:WaitForChild("HumanoidRootPart")
 
-        end
 
-    end
+                SafePlatform = Instance.new("Part")
 
-    return nil
+                SafePlatform.Name = "SafePlatform"
 
-end
+                SafePlatform.Size = Vector3.new(1000, 1, 1000)
 
--- Tabela que relaciona o nome do Dropdown com o nome real no Workspace
+                SafePlatform.Anchored = true
 
-local Positions = {
+                SafePlatform.CanCollide = true
 
-    ["none"] = nil,
+                SafePlatform.Transparency = 0.5
 
-    ["PERBET 1"] = "FREEPEABERT1",
+                SafePlatform.Material = Enum.Material.Neon
 
-    ["PERBET 2"] = "FREEPEABERT2",
+                SafePlatform.Color = Color3.fromRGB(0, 255, 0)
 
-    ["PERBET 3"] = "FREEPEABERT3",
 
-    ["PERBET 4"] = "FREEPEABERT4",
+                -- Posiciona 6 studs abaixo do player e fica parada
 
-    ["PERBET 5"] = "FREEPEABERT5",
+                SafePlatform.Position = HRP.Position - Vector3.new(0, 6, 0)
 
-    ["PERBET 6"] = "FREEPEABERT6",
-
-}
-
--- Criação do Dropdown
-
-local Dropdown = RandomTab:Dropdown({
-
-    Title = "Teleporte PERBET",
-
-    Values = { "none", "PERBET 1", "PERBET 2", "PERBET 3", "PERBET 4", "PERBET 5", "PERBET 6" },
-
-    Value = "none",
-
-    Callback = function(option)
-
-        local targetName = Positions[option]
-
-        if targetName then
-
-            local targetCFrame = getPositionFromWorkspace(targetName)
-
-            if targetCFrame then
-
-                teleportTo(targetCFrame)
-
-                print("Teleported to: " .. option)
-
-            else
-
-                warn("❌ Não encontrei o objeto no workspace: " .. targetName)
+                SafePlatform.Parent = workspace
 
             end
 
         else
 
-            print("Nenhuma posição selecionada.")
+            -- Remove a plataforma ao desativar
+
+            if SafePlatform then
+
+                SafePlatform:Destroy()
+
+                SafePlatform = nil
+
+            end
 
         end
 
     end
 
 })
+
+
+-- Serviços
 
 local Players = game:GetService("Players")
 
 local LocalPlayer = Players.LocalPlayer
 
--- DESTROY INJURED + STUN
 
-local DestroyInjuredButton = RedTab:Button({
+-- Variável da plataforma
 
-    Title = "Destroy Injured/Stun",
+local SafePlatform = nil
 
-    Desc = "Removes all InjuredWalking & Stun parts from the game.",
 
-    Callback = function()
+-- Toggle Wind UI
 
-        local count = 0
+local SafePlatformToggle = SkyTab:Toggle({
 
-        for _, obj in ipairs(workspace:GetDescendants()) do
+    Title = "Safe Platform",
 
-            if obj.Name == "InjuredWalking" or obj.Name:lower() == "stun" then
+    Desc = "Op for many games.",
 
-                obj:Destroy()
+    Icon = "building-2",
 
-                count += 1
+    Default = false,
+
+    Callback = function(state)
+
+        if state then
+
+            -- Cria a plataforma se não existir
+
+            if not SafePlatform then
+
+                local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+                local HRP = Character:WaitForChild("HumanoidRootPart")
+
+
+                SafePlatform = Instance.new("Part")
+
+                SafePlatform.Name = "SafePlatform"
+
+                SafePlatform.Size = Vector3.new(1000, 1, 1000)
+
+                SafePlatform.Anchored = true
+
+                SafePlatform.CanCollide = true
+
+                SafePlatform.Transparency = 0.5
+
+                SafePlatform.Material = Enum.Material.Neon
+
+                SafePlatform.Color = Color3.fromRGB(0, 255, 0)
+
+
+                -- Posiciona 6 studs abaixo do player e fica parada
+
+                SafePlatform.Position = HRP.Position - Vector3.new(0, 6, 0)
+
+                SafePlatform.Parent = workspace
+
+            end
+
+        else
+
+            -- Remove a plataforma ao desativar
+
+            if SafePlatform then
+
+                SafePlatform:Destroy()
+
+                SafePlatform = nil
 
             end
 
         end
 
-        print("Destroyed:", count, "InjuredWalking/Stun objects.")
-
     end
 
 })
 
--- REMOVE SPIKES
 
-local RemoveSpikesButton = HideSeekTab:Button({
 
-    Title = "Remove Spikes",
+local Players = game:GetService("Players")
 
-    Desc = "Deletes KillingParts from HideAndSeekMap.",
+local LocalPlayer = Players.LocalPlayer
+
+local RunService = game:GetService("RunService")
+
+
+-- Definindo CFrame do local seguro
+
+local safeCFrame = CFrame.new(
+
+    -41.7126923, 1021.32306, 134.34935,
+
+    0.811150551, 0.237830803, 0.534295142,
+
+    -8.95559788e-06, 0.913583994, -0.406650066,
+
+    -0.584837377, 0.32984966, 0.741056323
+
+) + Vector3.new(0, 10, 0)
+
+
+-- Parte para onde vamos teleportar no TP Starting
+
+local startingPart = workspace:FindFirstChild("startingcrossedover")
+
+
+-- Função para encontrar o jogador mais próximo com CarryPrompt e sem SafeRedLightGreenLight
+
+local function getNearestValidPlayer()
+
+    local closestPlayer = nil
+
+    local shortestDistance = math.huge
+
+
+    for _, player in ipairs(Players:GetPlayers()) do
+
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+
+            -- Ignora jogadores com SafeRedLightGreenLight
+
+            if not player.Character:FindFirstChild("SafeRedLightGreenLight") then
+
+                local prompt = player.Character:FindFirstChild("CarryPrompt", true)
+
+                if prompt then
+
+                    local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+
+                    if distance < shortestDistance then
+
+                        shortestDistance = distance
+
+                        closestPlayer = player
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+
+    return closestPlayer
+
+end
+
+
+-- Função para salvar 1 jogador e teleportar para o safeCFrame
+
+local function saveRandomPlayer()
+
+    local target = getNearestValidPlayer()
+
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+
+        warn("Nenhum jogador próximo com CarryPrompt válido encontrado!")
+
+        return
+
+    end
+
+
+    local prompt = target.Character:FindFirstChild("CarryPrompt", true)
+
+    if prompt then
+
+        local humanoidRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+        if humanoidRoot then
+
+            -- Teleporta para perto do jogador
+
+            humanoidRoot.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+
+
+            -- Interage com o CarryPrompt
+
+            task.wait(0.15)
+
+            fireproximityprompt(prompt)
+
+
+            -- Teleporta para o safeCFrame
+
+            task.wait(0.25)
+
+            humanoidRoot.CFrame = safeCFrame
+
+        end
+
+    end
+
+end
+
+
+-- Função para salvar 1 jogador e teleportar para startingcrossedover
+
+local function tpToStarting()
+
+    local target = getNearestValidPlayer()
+
+    if not startingPart then
+
+        warn("A part 'startingcrossedover' não foi encontrada!")
+
+        return
+
+    end
+
+
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+
+        warn("Nenhum jogador válido para CarryPrompt encontrado!")
+
+        return
+
+    end
+
+
+    local prompt = target.Character:FindFirstChild("CarryPrompt", true)
+
+    if prompt then
+
+        local humanoidRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+        if humanoidRoot then
+
+            -- Teleporta para perto do jogador
+
+            humanoidRoot.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+
+
+            -- Usa o CarryPrompt
+
+            task.wait(0.15)
+
+            fireproximityprompt(prompt)
+
+
+            -- Teleporta para o ponto inicial
+
+            task.wait(0.25)
+
+            humanoidRoot.CFrame = startingPart.CFrame + Vector3.new(0, 5, 0)
+
+        end
+
+    end
+
+end
+
+
+-- Variável para controle do AUTO SAVE
+
+local autoSave = false
+
+local autoSaveConnection
+
+
+-- Botão CLICK → Salvar 1 jogador
+
+local SaveButton = RedTab:Button({
+
+    Title = "Save Random Player",
+
+    Desc = "Carry and save one player.",
 
     Callback = function()
 
-        local map = workspace:FindFirstChild("HideAndSeekMap")
+        saveRandomPlayer()
 
-        if map and map:FindFirstChild("KillingParts") then
+    end
 
-            map.KillingParts:Destroy()
+})
 
-            warn("Removed all KillingParts successfully!")
+
+-- Botão TOGGLE → Salvar jogadores infinitamente
+
+local SaveToggle = RedTab:Toggle({
+
+    Title = "AUTO Save",
+
+    Desc = "Carry and save all players randomtime.",
+
+    Icon = "user-check",
+
+    Default = false,
+
+    Callback = function(state)
+
+        autoSave = state
+
+        if autoSave then
+
+            autoSaveConnection = RunService.Heartbeat:Connect(function()
+
+                saveRandomPlayer()
+
+                task.wait(0.5)
+
+            end)
 
         else
 
-            warn("No KillingParts found in HideAndSeekMap.")
+            if autoSaveConnection then
+
+                autoSaveConnection:Disconnect()
+
+                autoSaveConnection = nil
+
+            end
 
         end
 
@@ -670,57 +2018,74 @@ local RemoveSpikesButton = HideSeekTab:Button({
 
 })
 
-local RemovePhotoWallButton = DalgonaTab:Button({
 
-    Title = "Remove Photo Wall",
+-- Variável do toggle
 
-    Desc = "Deletes startingcrossedoverCOLLISION inside StairWalkWay.Custom.",
+local AutoPullEnabled = false
 
-    Callback = function()
 
-        -- Caminho exato para o objeto
+-- Função que dispara o QTE
 
-        local stair = workspace:FindFirstChild("StairWalkWay")
+local function AutoPull()
 
-        if not stair then
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-            warn("[ERROR] StairWalkWay not found in workspace.")
+    local Remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("TemporaryReachedBindable")
 
-            return
+    local args = {
 
-        end
+        { IHateYou = true }
 
-        local custom = stair:FindFirstChild("Custom")
+    }
 
-        if not custom then
+    Remote:FireServer(unpack(args))
 
-            warn("[ERROR] 'Custom' folder not found inside StairWalkWay.")
+end
 
-            return
 
-        end
+-- Loop automático do AutoPull
 
-        local wall = custom:FindFirstChild("startingcrossedoverCOLLISION")
+local RunService = game:GetService("RunService")
 
-        if wall then
+local AutoPullConnection
 
-            wall:Destroy()
+AutoPullConnection = RunService.Heartbeat:Connect(function()
 
-            warn("[SUCCESS] startingcrossedoverCOLLISION removed successfully!")
+    if AutoPullEnabled then
 
-        else
+        AutoPull()
 
-            warn("[INFO] startingcrossedoverCOLLISION was not found inside StairWalkWay.Custom.")
+        task.wait(0.25) -- loop de 0.25 segundos
 
-        end
+    end
+
+end)
+
+
+TugTab:Toggle({
+
+    Name = "AUTO PULL",
+
+    Desc = "Automatically pull in Tug-of-War mini-game",
+
+    CheckBox = false,
+
+    Icon = nil,
+
+    Callback = function(value)
+
+        AutoPullEnabled = value
 
     end
 
 })
+
+
 
 local Players = game:GetService("Players")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 
 local autoSkipEnabled = false
 
@@ -766,807 +2131,120 @@ local toggleButton = RandomTab:Toggle({
 
 })
 
--- Variável do toggle
 
-local AutoPullEnabled = false
 
--- Função que dispara o QTE
 
-local function AutoPull()
 
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-    local Remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("TemporaryReachedBindable")
-
-    local args = {
-
-        { IHateYou = true }
-
-    }
-
-    Remote:FireServer(unpack(args))
-
-end
-
--- Loop automático do AutoPull
+local Players = game:GetService("Players")
 
 local RunService = game:GetService("RunService")
 
-local AutoPullConnection
-
-AutoPullConnection = RunService.Heartbeat:Connect(function()
-
-    if AutoPullEnabled then
-
-        AutoPull()
-
-        task.wait(0.25) -- loop de 0.25 segundos
-
-    end
-
-end)
-
-TugTab:Toggle({
-
-    Title= "AUTO PULL",
-
-    Desc = "Automatically pull in Tug-of-War mini-game",
-
-    CheckBox = false,
-
-    Icon = nil,
-
-    Callback = function(value)
-
-        AutoPullEnabled = value
-
-    end
-
-})
-
-local Players = game:GetService("Players")
-
 local LocalPlayer = Players.LocalPlayer
 
-local originalPower = LocalPlayer:GetAttribute("_EquippedPower")
+local HRP = nil
 
-local Toggle = RandomTab:Toggle({
 
-    Title = "Phantom Step",
+local AutoKillEnabled = false
 
-    Desc = "You gain the Phantom Step dash ability",
+local AutoKillAllEnabled = false
+
+
+local FollowConnection
+
+local FollowAllConnection
+
+
+--// AUTO KILL HIDE (BlueVest)
+
+local AutoKillToggle = HideSeekTab:Toggle({
+
+    Title = "AUTO KILL HIDE",
+
+    Desc = "Automatically stays 5 studs in front of the BlueVest player.",
 
     Default = false,
 
-    Callback = function(state) 
+    Callback = function(Value)
 
-        if state then
+        AutoKillEnabled = Value
 
-            -- Ativar Phantom Step
 
-            LocalPlayer:SetAttribute("_EquippedPower", "PHANTOM STEP")
+        if FollowConnection then
 
-            print("Phantom Step On")
+            FollowConnection:Disconnect()
 
-        else
-
-            LocalPlayer:SetAttribute("_EquippedPower", originalPower)
-
-            print("Phantom Step off")
+            FollowConnection = nil
 
         end
 
-    end
 
-})
+        if AutoKillEnabled then
 
-local Players = game:GetService("Players")
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-local LocalPlayer = Players.LocalPlayer
+                HRP = LocalPlayer.Character.HumanoidRootPart
 
-local function toggleFasterSprint(state)
 
-    local boostsFolder = LocalPlayer:FindFirstChild("Boosts")
+                -- Procura jogador com BlueVest
 
-    if not boostsFolder then
+                local targetPlayer = nil
 
-        warn("Boosts not found")
+                for _, player in ipairs(Players:GetPlayers()) do
 
-        return
+                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("BlueVest") then
 
-    end
+                        targetPlayer = player
 
-    local sprintBoost = boostsFolder:FindFirstChild("Faster Sprint")
+                        break
 
-    if not sprintBoost or not sprintBoost:IsA("NumberValue") then
-
-        warn("Faster Sprint not found")
-
-        return
-
-    end
-
-    if state then
-
-        sprintBoost.Value = 5  -- ativa
-
-        print("Faster Sprint on: 5")
-
-    else
-
-        sprintBoost.Value = 0  -- desativa
-
-        print("Faster Sprint off: 0")
-
-    end
-
-end
-
-local Toggle = RandomTab:Toggle({
-
-    Title = "Dash",
-
-    Desc = "You gain the ability to dash",
-
-    Default = false,
-
-    Callback = function(state)
-
-        toggleFasterSprint(state)
-
-    end
-
-})
-
-local Players = game:GetService("Players")
-
-local LocalPlayer = Players.LocalPlayer
-
-local originalPower = LocalPlayer:GetAttribute("_EquippedPower")
-
-local Toggle = RandomTab:Toggle({
-
-    Title = "Parkour Artist",
-
-    Desc = "You gain the Parkour Artist dash ability",
-
-    Default = false,
-
-    Callback = function(state) 
-
-        if state then
-
-            -- Ativar Parkour Artist
-
-            LocalPlayer:SetAttribute("_EquippedPower", "PARKOUR ARTIST")
-
-            print("Parkour Artist On")
-
-        else
-
-            LocalPlayer:SetAttribute("_EquippedPower", originalPower)
-
-            print("Parkour Artist Off")
-
-        end
-
-    end
-
-})
-
-local Players = game:GetService("Players")
-
-local LocalPlayer = Players.LocalPlayer
-
-local RunService = game:GetService("RunService")
-
--- Variável de controle
-
-local showGlassPlatforms = false
-
-local glassPlatforms = {} -- Armazena as plataformas criadas
-
--- Função para verificar vidro real ou falso
-
-local function isFakeGlass(part)
-
-    if part:GetAttribute("GlassPart") then
-
-        if part:GetAttribute("ActuallyKilling") ~= nil then
-
-            return true -- falso
-
-        end
-
-    end
-
-    return false
-
-end
-
--- Função para criar plataformas em cima dos vidros falsos
-
-local function createPlatforms()
-
-    -- Remove plataformas antigas antes de criar novas
-
-    for _, platform in ipairs(glassPlatforms) do
-
-        if platform and platform.Parent then
-
-            platform:Destroy()
-
-        end
-
-    end
-
-    glassPlatforms = {}
-
-    -- Procura por todos os vidros falsos
-
-    for _, part in ipairs(workspace:GetDescendants()) do
-
-        if part:IsA("BasePart") and isFakeGlass(part) then
-
-            -- Cria uma plataforma acima do vidro falso
-
-            local platform = Instance.new("Part")
-
-            platform.Size = Vector3.new(10, 0.5, 10) -- 7 studs de comprimento e largura
-
-            platform.CFrame = part.CFrame * CFrame.new(0, 2, 0) -- Fica 3 studs acima do vidro
-
-            platform.Anchored = true
-
-            platform.CanCollide = true
-
-            platform.Transparency = 0.3
-
-            platform.Material = Enum.Material.Neon
-
-            platform.Color = Color3.fromRGB(255, 0, 0) -- Vermelho = vidro falso
-
-            platform.Parent = workspace
-
-            -- Armazena a plataforma para remover depois
-
-            table.insert(glassPlatforms, platform)
-
-        end
-
-    end
-
-end
-
--- Função para remover todas as plataformas
-
-local function removePlatforms()
-
-    for _, platform in ipairs(glassPlatforms) do
-
-        if platform and platform.Parent then
-
-            platform:Destroy()
-
-        end
-
-    end
-
-    glassPlatforms = {}
-
-end
-
--- Toggle WindUI
-
-local Toggle = GlassTab:Toggle({
-
-    Title = "Glass Platforms",
-
-    Desc = "Creates platforms above fake glasses.",
-
-    Default = false,
-
-    Callback = function(state)
-
-        showGlassPlatforms = state
-
-        if showGlassPlatforms then
-
-            task.spawn(function()
-
-                while showGlassPlatforms do
-
-                    createPlatforms()
-
-                    task.wait(1) -- Atualiza as plataformas a cada 1 segundo
+                    end
 
                 end
 
-            end)
 
-        else
+                if targetPlayer and targetPlayer.Character then
 
-            removePlatforms()
+                    local targetTorso = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
 
-        end
+                        or targetPlayer.Character:FindFirstChild("UpperTorso")
 
-    end
+                        or targetPlayer.Character:FindFirstChild("Torso")
 
-})
 
-local Players = game:GetService("Players")
+                    if targetTorso then
 
-local LocalPlayer = Players.LocalPlayer
+                        FollowConnection = RunService.RenderStepped:Connect(function()
 
-local RunService = game:GetService("RunService")
+                            if AutoKillEnabled and targetPlayer.Character and targetTorso and HRP and HRP.Parent then
 
--- Variável de controle
+                                -- Posição 5 studs NA FRENTE do player alvo
 
-local showGlassESP = false
+                                local frontPos = targetTorso.CFrame * CFrame.new(0, 0, -5)
 
--- Função para verificar vidro real ou falso
+                                -- Faz o HRP ficar suavemente na frente do jogador
 
-local function isRealGlass(part)
+                                HRP.CFrame = frontPos
 
-    if part:GetAttribute("GlassPart") then
+                            end
 
-        if part:GetAttribute("ActuallyKilling") ~= nil then
+                        end)
 
-            return false -- falso
-
-        end
-
-        return true -- real
-
-    end
-
-    return false
-
-end
-
--- Função para aplicar cor nos vidros
-
-local function updateGlassColors()
-
-    for _, part in ipairs(workspace:GetDescendants()) do
-
-        if part:IsA("BasePart") and part:GetAttribute("GlassPart") then
-
-            if showGlassESP then
-
-                -- Glass correto/errado
-
-                if isRealGlass(part) then
-
-                    part.Color = Color3.fromRGB(0, 255, 0) -- verde real
-
-                else
-
-                    part.Color = Color3.fromRGB(255, 0, 0) -- vermelho falso
-
-                end
-
-                part.Material = Enum.Material.Neon
-
-                -- Adiciona atributo ExploitingIsEvil
-
-                part:SetAttribute("ExploitingIsEvil", true)
-
-            else
-
-                -- Resetar para cor original (opcional)
-
-                part.Color = Color3.fromRGB(163, 162, 165)
-
-                part.Material = Enum.Material.Glass
-
-                -- Remove atributo
-
-                part:SetAttribute("ExploitingIsEvil", nil)
-
-            end
-
-        end
-
-    end
-
-end
-
-local Toggle = GlassTab:Toggle({
-
-    Title = "Glass Vision",
-
-    Desc = "Op Glass vision.",
-
-    Icon = "bird",
-
-    Default = false,
-
-    Callback = function(state)
-
-        showGlassESP = state
-
-        if showGlassESP then
-
-            task.spawn(function()
-
-                while showGlassESP do
-
-                    updateGlassColors()
-
-                    task.wait(0.5)
-
-                end
-
-            end)
-
-        else
-
-            updateGlassColors()
-
-        end
-
-    end
-
-})
-
--- Serviços  
-
-local Players = game:GetService("Players")  
-
-local LocalPlayer = Players.LocalPlayer  
-
-local Workspace = game:GetService("Workspace")  
-
--- Função para encontrar o DroppedBandage mais próximo  
-
-local function getClosestBandage()  
-
-    local character = LocalPlayer.Character  
-
-    if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end  
-
-    local hrp = character.HumanoidRootPart  
-
-    local closest = nil  
-
-    local minDistance = math.huge  
-
-    for _, bandage in ipairs(Workspace.Effects:GetChildren()) do  
-
-        if bandage.Name == "DroppedBandage" and bandage:IsA("Model") then  
-
-            local primary = bandage.PrimaryPart or bandage:FindFirstChildWhichIsA("BasePart")
-
-            if primary then
-
-                local distance = (hrp.Position - primary.Position).Magnitude
-
-                if distance < minDistance then
-
-                    minDistance = distance
-
-                    closest = bandage
+                    end
 
                 end
 
             end
 
-        end  
-
-    end  
-
-    return closest  
-
-end  
-
--- Botão na aba Random  
-
-RandomTab:Button({  
-
-    Title = "TP Bandage",  
-
-    Desc = "Teleports to the closest DroppedBandage and returns",  
-
-    Callback = function()  
-
-        local character = LocalPlayer.Character  
-
-        if not character or not character:FindFirstChild("HumanoidRootPart") then return end  
-
-        local hrp = character.HumanoidRootPart  
-
-        local originalPosition = hrp.CFrame  
-
-        local bandage = getClosestBandage()  
-
-        if bandage then  
-
-            local primary = bandage.PrimaryPart or bandage:FindFirstChildWhichIsA("BasePart")
-
-            if primary then
-
-                -- Teleporta para o bandage
-
-                hrp.CFrame = primary.CFrame + Vector3.new(0, 3, 0)
-
-                wait(0.5) -- espera meio segundo no bandage
-
-                -- Volta para posição original
-
-                hrp.CFrame = originalPosition
-
-            end
-
-        else  
-
-            warn("No DroppedBandage found!")  
-
-        end  
-
-    end  
-
-})
-
-local Players = game:GetService("Players")
-
-local LocalPlayer = Players.LocalPlayer
-
--- Aguarda até o Character estar carregado
-
-local function getSwingSpeed()
-
-    local liveFolder = workspace:WaitForChild("Live")
-
-    local playerModel = liveFolder:WaitForChild(LocalPlayer.Name) -- Pega o modelo do jogador atual
-
-    local swingSpeed = playerModel:WaitForChild("SwingSpeed")
-
-    return swingSpeed
-
-end
-
--- Criação do Input
-
-local Input = RandomTab:Input({
-
-    Title = "Swing Speed (BETA)",
-
-    Desc = "Set a custom swing speed between 0 and 50",
-
-    Value = tostring(getSwingSpeed().Value), -- valor inicial do jogador atual
-
-    InputIcon = "zap",
-
-    Type = "Input",
-
-    Placeholder = "Enter speed (0-50)...",
-
-    Callback = function(input)
-
-        -- Converte o valor digitado para número
-
-        local value = tonumber(input)
-
-        -- Validação do número
-
-        if not value then
-
-            warn("Invalid input, enter a number!")
-
-            return
-
-        end
-
-        -- Limitar entre 0 e 50
-
-        if value < 0 then
-
-            value = 0
-
-        elseif value > 50 then
-
-            value = 50
-
-        end
-
-        -- Atualiza o SwingSpeed do jogador atual
-
-        local swingSpeed = getSwingSpeed()
-
-        if swingSpeed and swingSpeed:IsA("NumberValue") then
-
-            swingSpeed.Value = value
-
-            print("Swing Speed set to:", value)
-
-        else
-
-            warn("SwingSpeed not found or invalid for this player!")
-
         end
 
     end
 
 })
 
--- Serviços
-
-local Players = game:GetService("Players")
-
-local LocalPlayer = Players.LocalPlayer
-
-local RunService = game:GetService("RunService")
-
-local Workspace = game:GetService("Workspace")
-
--- Função para teleporte com +10 studs
-
-local function teleportTo(cframe)
-
-    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-
-    local hrp = character:WaitForChild("HumanoidRootPart")
-
-    hrp.CFrame = cframe + Vector3.new(0, 10, 0)
-
-end
-
--- [1] Botão TP START
-
-local TPStart = RedTab:Button({
-
-    Title = "TP START",
-
-    Desc = "Teleports you to the starting point.",
-
-    Callback = function()
-
-        teleportTo(CFrame.new(-49.8884354, 1020.104, -512.157776, 1, 0, 0, 0, 1, 0, 0, 0, 1))
-
-    end
-
-})
-
--- [2] Botão TP SAFE PLACE (LightsTab)
-
-local TPSafeLights = LightTab:Button({
-
-    Title = "TP SAFE PLACE",
-
-    Desc = "Teleports to a hidden safe place.",
-
-    Callback = function()
-
-        teleportTo(CFrame.new(195.255814, 112.202904, -85.3726807, -1, 0, 0, 0, 1, 0, 0, 0, -1))
-
-    end
-
-})
-
--- [3] Botão TP SAFE PLACE (RedTab)
-
-local TPSafeRed = RedTab:Button({
-
-    Title = "TP SAFE PLACE",
-
-    Desc = "Teleports to a secondary safe place.",
-
-    Callback = function()
-
-        teleportTo(CFrame.new(197.452408, 51.3870239, -95.6055298, 0, 1, 0, -1, 0, 0, 0, 0, 1))
-
-    end
-
-})
-
--- [4] Botão BRIG OUT
-
-local BrigOut = MingleTab:Button({
-
-    Title = "Bring person out",
-
-    Desc = "It works like this: You use Power hold / player 120 / Hercules, you use the skill on a player and press Bring out then you will return to the place you were (YOU WILL STAY AT LEAST 10 SECONDS OUTSIDE )",
-
-    Callback = function()
-
-        teleportTo(CFrame.new(1210.03967, 414.071106, -574.103088, 0, 0.747953832, -0.663750827, 1, 0, 0, 0, -0.663750827, -0.747953892))
-
-    end
-
-})
-
--- [5] Toggle DONT EXIT OF SQUID (Cria caixa oca 50x50x50 ao redor do jogador)
-
-local BoxParts = {}
-
-local BoxEnabled = false
-
-local DontExit = SquidTab:Toggle({
-
-    Title = "DONT EXIT OF SQUID",
-
-    Description = "It works like this: You need to use it in the middle if he tries to push you out you won't get out because of the box which is better, next time I'll add anti-exit",
-
-    Default = false,
-
-    NoIcon = true, -- sem ícone
-
-    NoCheckbox = true, -- sem checkbox
-
-    Callback = function(state)
-
-        BoxEnabled = state
-
-        -- Remover caixas antigas
-
-        for _, part in ipairs(BoxParts) do
-
-            part:Destroy()
-
-        end
-
-        BoxParts = {}
-
-        if state then
-
-            local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-
-            local hrp = char:WaitForChild("HumanoidRootPart")
-
-            local size = Vector3.new(50, 50, 50)
-
-            local thickness = 3
-
-            -- Função auxiliar para criar paredes
-
-            local function createWall(pos, size)
-
-                local part = Instance.new("Part")
-
-                part.Size = size
-
-                part.Anchored = true
-
-                part.CanCollide = true
-
-                part.Transparency = 0.5
-
-                part.Material = Enum.Material.ForceField
-
-                part.Color = Color3.fromRGB(255, 0, 0)
-
-                part.CFrame = hrp.CFrame:ToWorldSpace(CFrame.new(pos))
-
-                part.Parent = Workspace
-
-                table.insert(BoxParts, part)
-
-            end
-
-            -- Criar paredes da caixa
-
-            createWall(Vector3.new(25, 0, 0), Vector3.new(thickness, size.Y, size.Z)) -- Direita
-
-            createWall(Vector3.new(-25, 0, 0), Vector3.new(thickness, size.Y, size.Z)) -- Esquerda
-
-            createWall(Vector3.new(0, 0, 25), Vector3.new(size.X, size.Y, thickness)) -- Frente
-
-            createWall(Vector3.new(0, 0, -25), Vector3.new(size.X, size.Y, thickness)) -- Trás
-
-            createWall(Vector3.new(0, 25, 0), Vector3.new(size.X, thickness, size.Z)) -- Teto
-
-            createWall(Vector3.new(0, -25, 0), Vector3.new(size.X, thickness, size.Z)) -- Chão
-
-        end
-
-    end
-
-})
 
 --// AUTO KILL PLAYERS (Todos os players)
 
-local AutoKillAllToggle = LightTab:Toggle({
+local AutoKillAllToggle = LightsTab:Toggle({
 
     Title = "AUTO KILL PLAYERS",
 
@@ -1578,6 +2256,7 @@ local AutoKillAllToggle = LightTab:Toggle({
 
         AutoKillAllEnabled = Value
 
+
         if FollowAllConnection then
 
             FollowAllConnection:Disconnect()
@@ -1586,21 +2265,25 @@ local AutoKillAllToggle = LightTab:Toggle({
 
         end
 
+
         if AutoKillAllEnabled then
 
             if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
                 HRP = LocalPlayer.Character.HumanoidRootPart
 
+
                 FollowAllConnection = RunService.RenderStepped:Connect(function()
 
                     if not AutoKillAllEnabled or not HRP or not HRP.Parent then return end
+
 
                     -- Procura o jogador mais próximo
 
                     local closestPlayer = nil
 
                     local shortestDistance = math.huge
+
 
                     for _, player in ipairs(Players:GetPlayers()) do
 
@@ -1626,6 +2309,7 @@ local AutoKillAllToggle = LightTab:Toggle({
 
                     end
 
+
                     if closestPlayer and closestPlayer.Character then
 
                         local targetTorso = closestPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -1633,6 +2317,7 @@ local AutoKillAllToggle = LightTab:Toggle({
                             or closestPlayer.Character:FindFirstChild("UpperTorso")
 
                             or closestPlayer.Character:FindFirstChild("Torso")
+
 
                         if targetTorso then
 
@@ -1653,1119 +2338,315 @@ local AutoKillAllToggle = LightTab:Toggle({
         end
 
     end
-
 })
+
+
+
+-- ================================
+-- 🔄 TELEPORT & ESP ADDED TO RANDOM TAB
+-- ================================
 
 local Players = game:GetService("Players")
-
 local LocalPlayer = Players.LocalPlayer
 
-local RunService = game:GetService("RunService")
+-- ================================
+-- TELEPORT TO PLAYER
+-- ================================
+local selectedPlayer = nil
 
--- Definindo CFrame do local seguro
-
-local safeCFrame = CFrame.new(
-
-    -41.7126923, 1021.32306, 134.34935,
-
-    0.811150551, 0.237830803, 0.534295142,
-
-    -8.95559788e-06, 0.913583994, -0.406650066,
-
-    -0.584837377, 0.32984966, 0.741056323
-
-) + Vector3.new(0, 10, 0)
-
--- Definindo CFrame do local de troll
-
-local trollCFrame = CFrame.new(
-
-    -49.8884354, 1020.104, -512.157776,
-
-    1, 0, 0,
-
-    0, 1, 0,
-
-    0, 0, 1
-
-)
-
--- Função para encontrar o jogador mais próximo com CarryPrompt e sem SafeRedLightGreenLight
-
-local function getNearestValidPlayer()
-
-    local closestPlayer = nil
-
-    local shortestDistance = math.huge
-
-    for _, player in ipairs(Players:GetPlayers()) do
-
-        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-
-            if not player.Character:FindFirstChild("SafeRedLightGreenLight") then
-
-                local prompt = player.Character:FindFirstChild("CarryPrompt", true)
-
-                if prompt then
-
-                    local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
-
-                    if distance < shortestDistance then
-
-                        shortestDistance = distance
-
-                        closestPlayer = player
-
-                    end
-
-                end
-
-            end
-
+local function teleportToPlayer()
+    if selectedPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local target = Players:FindFirstChild(selectedPlayer)
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
         end
-
     end
-
-    return closestPlayer
-
 end
 
--- Função para salvar um jogador
+-- Genera la lista de jugadores
+local playerList = {}
+for _, p in ipairs(Players:GetPlayers()) do
+    if p ~= LocalPlayer then
+        table.insert(playerList, p.Name)
+    end
+end
 
-local function saveRandomPlayer()
+-- Actualiza lista cuando jugadores entran/salen
+Players.PlayerAdded:Connect(function(p)
+    if p ~= LocalPlayer then
+        table.insert(playerList, p.Name)
+    end
+end)
 
-    local target = getNearestValidPlayer()
-
-    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
-
-    local prompt = target.Character:FindFirstChild("CarryPrompt", true)
-
-    if prompt then
-
-        local humanoidRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-
-        if humanoidRoot then
-
-            humanoidRoot.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
-
-            task.wait(0.15)
-
-            fireproximityprompt(prompt)
-
-            task.wait(0.25)
-
-            humanoidRoot.CFrame = safeCFrame
-
+Players.PlayerRemoving:Connect(function(p)
+    for i, name in ipairs(playerList) do
+        if name == p.Name then
+            table.remove(playerList, i)
+            break
         end
-
     end
+end)
 
-end
-
--- Função para trollar um jogador
-
-local function trollRandomPlayer()
-
-    local target = getNearestValidPlayer()
-
-    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
-
-    local prompt = target.Character:FindFirstChild("CarryPrompt", true)
-
-    if prompt then
-
-        local humanoidRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-
-        if humanoidRoot then
-
-            humanoidRoot.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
-
-            task.wait(0.15)
-
-            fireproximityprompt(prompt)
-
-            task.wait(0.25)
-
-            humanoidRoot.CFrame = trollCFrame
-
-        end
-
+-- Dropdown de selección
+RandomTab:Dropdown({
+    Title = "Seleccionar Jugador",
+    Desc = "Selecciona a quién teletransportarte",
+    Values = playerList,
+    Multi = false,
+    Callback = function(value)
+        selectedPlayer = value
     end
+})
 
-end
-
--- Variáveis de controle dos loops
-
-local autoSave = false
-
-local autoTroll = false
-
--- Loop do Auto Save
-
-local function autoSaveLoop()
-
-    while autoSave do
-
-        saveRandomPlayer()
-
-        task.wait(0.5)
-
-    end
-
-end
-
--- Loop do Auto Troll
-
-local function autoTrollLoop()
-
-    while autoTroll do
-
-        trollRandomPlayer()
-
-        task.wait(0.5)
-
-    end
-
-end
-
--- Botão: Save Random Player (original)
-
-local SaveButton = RedTab:Button({
-
-    Title = "Save Random Player",
-
-    Desc = "Carry and save one player.",
-
+-- Botón de teletransporte
+RandomTab:Button({
+    Title = "TP al jugador",
+    Desc = "Teletransporta al jugador seleccionado",
     Callback = function()
-
-        saveRandomPlayer()
-
+        teleportToPlayer()
     end
-
 })
 
--- 1. Botão Troll Random Player
-
-local TrollButton = RedTab:Button({
-
-    Title = "Troll Random Player",
-
-    Desc = "Carry a random player and teleport to troll location.",
-
-    Callback = function()
-
-        trollRandomPlayer()
-
-    end
-
-})
-
--- 2. Toggle Auto Save Players
-
-local AutoSaveToggle = RedTab:Toggle({
-
-    Title = "Auto Save Players",
-
-    Desc = "Automatically saves players in a loop.",
-
-    Default = false,
-
-    Callback = function(Value)
-
-        autoSave = Value
-
-        if autoSave then
-
-            task.spawn(autoSaveLoop)
-
-        end
-
-    end
-
-})
-
--- 3. Toggle Auto Troll Players
-
-local AutoTrollToggle = RedTab:Toggle({
-
-    Title = "Auto Troll Players",
-
-    Desc = "Automatically trolls players in a loop.",
-
-    Default = false,
-
-    Callback = function(Value)
-
-        autoTroll = Value
-
-        if autoTroll then
-
-            task.spawn(autoTrollLoop)
-
-        end
-
-    end
-
-})
-
-local Button = HideSeekTab:Button({
-
-    Title = "TP SAFE PLACE",
-
-    Desc = "TP Safe place",
-
-    Locked = false,
-
-    Callback = function()
-
-        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-
-            LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(146.46, 1055.28, 54.50)
-
-        end
-
-    end
-
-})
-
---// Variável para armazenar highlights
-
-local ActiveHighlights = {}
-
--- Função para criar highlights amarelos
-
-local function createHighlight(door)
-
-    if ActiveHighlights[door] then return end
-
-    local highlight = Instance.new("Highlight")
-
-    highlight.Adornee = door
-
-    highlight.FillColor = Color3.fromRGB(255, 255, 0)
-
-    highlight.OutlineColor = Color3.fromRGB(255, 255, 0)
-
-    highlight.FillTransparency = 0.3
-
-    highlight.Parent = door
-
-    ActiveHighlights[door] = highlight
-
-end
-
--- Função para habilitar ESP
-
-local function enableESP()
-
-    -- Aqui, buscamos o Workspace e a pasta SOMENTE quando o toggle é ativado
-
-    local Workspace = game:GetService("Workspace")
-
-    local Map = Workspace:FindFirstChild("HideAndSeekMap")
-
-    if not Map then
-
-        warn("⚠️ HideAndSeekMap não encontrado!")
-
-        return
-
-    end
-
-    local DoorsFolder = Map:FindFirstChild("NEWFIXEDDOORS")
-
-    if not DoorsFolder then
-
-        warn("⚠️ NEWFIXEDDOORS não encontrado!")
-
-        return
-
-    end
-
-    -- Percorre todos os andares e procura portas corretas
-
-    for _, floor in ipairs(DoorsFolder:GetChildren()) do
-
-        local exitDoors = floor:FindFirstChild("EXITDOORS")
-
-        if exitDoors then
-
-            for _, door in ipairs(exitDoors:GetChildren()) do
-
-                if door:IsA("Model") and door:GetAttribute("ActuallyWorks") then
-
-                    createHighlight(door)
-
-                end
-
+-- ================================
+-- ESP BÁSICO PARA TODOS LOS PLAYERS
+-- ================================
+
+local espEnabled = false
+local highlights = {}
+
+local function toggleESP(state)
+    espEnabled = state
+    if espEnabled then
+        -- Crea highlights para cada jugador
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character then
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = p.Character
+                highlight.FillColor = Color3.fromRGB(0, 255, 0)
+                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                highlight.Parent = game:GetService("CoreGui")
+                highlights[p] = highlight
             end
-
         end
-
+    else
+        -- Borra highlights
+        for _, hl in pairs(highlights) do
+            hl:Destroy()
+        end
+        highlights = {}
     end
-
 end
 
--- Função para desativar ESP
-
-local function disableESP()
-
-    for door, highlight in pairs(ActiveHighlights) do
-
-        if highlight and highlight.Parent then
-
-            highlight:Destroy()
-
-        end
-
-        ActiveHighlights[door] = nil
-
+Players.PlayerAdded:Connect(function(p)
+    if espEnabled then
+        local highlight = Instance.new("Highlight")
+        highlight.Adornee = p.Character or p.CharacterAdded:Wait()
+        highlight.FillColor = Color3.fromRGB(0, 255, 0)
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.Parent = game:GetService("CoreGui")
+        highlights[p] = highlight
     end
+end)
 
-end
-
--- Criação do botão toggle na Wind UI
-
-HideSeekTab:Toggle({
-
-    Title = "ESP EXITDOOR",
-
-    Desc = "",
-
-    Default = false,
-
-    Callback = function(state)
-
-        if state then
-
-            enableESP()
-
-        else
-
-            disableESP()
-
-        end
-
+Players.PlayerRemoving:Connect(function(p)
+    if highlights[p] then
+        highlights[p]:Destroy()
+        highlights[p] = nil
     end
-
-})
-
---// Serviços
-
-local Players = game:GetService("Players")
-
-local Workspace = game:GetService("Workspace")
-
-local LocalPlayer = Players.LocalPlayer
-
-local Effects = Workspace:WaitForChild("Effects")
-
--- Variável para controlar o loop
-
-local Teleporting = false
-
--- Função para encontrar o PrimaryPart de um Model
-
-local function getModelCFrame(model)
-
-    if model.PrimaryPart then
-
-        return model.PrimaryPart.CFrame
-
-    end
-
-    -- Se não tiver PrimaryPart definido, tenta achar uma BasePart dentro do Model
-
-    for _, part in ipairs(model:GetDescendants()) do
-
-        if part:IsA("BasePart") then
-
-            return part.CFrame
-
-        end
-
-    end
-
-    return nil
-
-end
-
--- Função para teleportar para todas as chaves e voltar à posição original
-
-local function teleportKeys()
-
-    while Teleporting do
-
-        task.wait(0.5)
-
-        local char = LocalPlayer.Character
-
-        if not char or not char:FindFirstChild("HumanoidRootPart") then
-
-            continue
-
-        end
-
-        local hrp = char:FindFirstChild("HumanoidRootPart")
-
-        local originalCFrame = hrp.CFrame -- salva posição atual
-
-        -- Procura pelas chaves
-
-        for _, obj in ipairs(Effects:GetChildren()) do
-
-            if obj:IsA("Model") and (
-
-                obj.Name == "DroppedKeyCircle" or
-
-                obj.Name == "DroppedKeySquare" or
-
-                obj.Name == "DroppedKeyTriangle"
-
-            ) then
-
-                -- Pega o CFrame correto da chave
-
-                local keyCFrame = getModelCFrame(obj)
-
-                if keyCFrame then
-
-                    -- Teleporta para a chave
-
-                    hrp.CFrame = keyCFrame + Vector3.new(0, 3, 0)
-
-                    task.wait(0.25)
-
-                    -- Volta para onde estava
-
-                    hrp.CFrame = originalCFrame
-
-                    task.wait(0.15)
-
-                end
-
-            end
-
-        end
-
-    end
-
-end
-
--- Cria o botão toggle na Wind UI
-
-HideSeekTab:Toggle({
-
-    Title = "TP KEY",
-
-    Desc = "",
-
-    Default = false,
-
-    Callback = function(state)
-
-        Teleporting = state
-
-        if state then
-
-            teleportKeys()
-
-        end
-
-    end
-
-})
-
-local FullBrightEnabled = false
-
-local FullBrightToggle = RandomTab:Toggle({
-
-    Title = "Full Bright",
-
-    Description = "Keeps the game fully bright in a loop.",
-
-    Default = false,
-
-    Callback = function(Value)
-
-        FullBrightEnabled = Value
-
-        task.spawn(function()
-
-            local Lighting = game:GetService("Lighting")
-
-            while FullBrightEnabled and task.wait(1) do
-
-                Lighting.ClockTime = 14 -- Manter dia
-
-                Lighting.Brightness = 2
-
-                Lighting.GlobalShadows = false
-
-            end
-
-        end)
-
-    end
-
-})
-
---// Serviços
-
-local Players = game:GetService("Players")
-
-local Workspace = game:GetService("Workspace")
-
-local LocalPlayer = Players.LocalPlayer
-
--- Variáveis de controle
-
-local AutoDodge = false
-
-local humanoidRootPart
-
-local humanoid
-
--- Configurações
-
-local DODGE_RANGE = 4 -- distância para detectar ataques
-
-local TELEPORT_HEIGHT = 75
-
-local THREATS = { "BOTTLE", "KNIFE", "FORK" } -- nomes das ferramentas perigosas
-
--- Função para verificar se o jogador tem o item "DODGE!"
-
-local function hasDodgeItem()
-
-    local backpack = LocalPlayer:FindFirstChild("Backpack")
-
-    if backpack and backpack:FindFirstChild("DODGE!") then
-
-        return backpack:FindFirstChild("DODGE!")
-
-    end
-
-    -- Caso esteja equipado na mão
-
-    local character = LocalPlayer.Character
-
-    if character and character:FindFirstChild("DODGE!") then
-
-        return character:FindFirstChild("DODGE!")
-
-    end
-
-    return nil
-
-end
-
--- Função para usar o item DODGE
-
-local function useDodgeItem()
-
-    local dodgeTool = hasDodgeItem()
-
-    if dodgeTool and dodgeTool:FindFirstChild("RemoteEvent") then
-
-        -- Aciona o RemoteEvent do DODGE!
-
-        pcall(function()
-
-            dodgeTool.RemoteEvent:FireServer()
-
-        end)
-
-        return true
-
-    end
-
-    return false
-
-end
-
--- Função para teleportar para cima
-
-local function teleportUp()
-
-    if humanoidRootPart then
-
-        humanoidRootPart.CFrame = humanoidRootPart.CFrame + Vector3.new(0, TELEPORT_HEIGHT, 0)
-
-    end
-
-end
-
--- Função para detectar ameaças próximas
-
-local function detectThreats()
-
-    for _, player in ipairs(Players:GetPlayers()) do
-
-        if player ~= LocalPlayer and player.Character then
-
-            local char = player.Character
-
-            local hrp = char:FindFirstChild("HumanoidRootPart")
-
-            if hrp and (hrp.Position - humanoidRootPart.Position).Magnitude <= DODGE_RANGE then
-
-                -- Verifica ferramentas perigosas no personagem
-
-                for _, tool in ipairs(char:GetChildren()) do
-
-                    if tool:IsA("Tool") and table.find(THREATS, tool.Name:upper()) then
-
-                        return true
-
-                    end
-
-                end
-
-            end
-
-        end
-
-    end
-
-    return false
-
-end
-
--- Loop principal do Auto Dodge
-
-local function startAutoDodge()
-
-    task.spawn(function()
-
-        while AutoDodge do
-
-            task.wait(0.15)
-
-            local char = LocalPlayer.Character
-
-            humanoidRootPart = char and char:FindFirstChild("HumanoidRootPart")
-
-            humanoid = char and char:FindFirstChildOfClass("Humanoid")
-
-            if not humanoidRootPart or not humanoid or humanoid.Health <= 0 then
-
-                continue
-
-            end
-
-            -- Se houver ameaça próxima
-
-            if detectThreats() then
-
-                if not useDodgeItem() then
-
-                    teleportUp()
-
-                end
-
-            end
-
-        end
-
-    end)
-
-end
-
--- Botão toggle na aba Random
+end)
 
 RandomTab:Toggle({
-
-    Title = "AUTO DODGE",
-
-    Desc = "aop",
-
+    Title = "ESP Jugadores",
+    Desc = "Muestra a todos los jugadores con un highlight",
     Default = false,
-
     Callback = function(state)
-
-        AutoDodge = state
-
-        if state then
-
-            startAutoDodge()
-
-        end
-
+        toggleESP(state)
     end
-
 })
 
-local Button = RedTab:Button({
 
-    Title = "Teleport Final",
+-- ================================
+-- 🔥 SCRIPTS ADICIONALES AGREGADOS
+-- ================================
 
-    Desc = "001 ?",
+-- ================================
+-- 🔥 NUEVOS SCRIPTS PARA TAB PLAYER Y RANDOM FEATURES
+-- ================================
 
-    Icon = "bird",
-
+-- 📌 TAB PLAYER: MÁS FUNCIONES
+PlayerTab:Button({
+    Title = "Reset Character",
+    Desc = "Respawnea instantáneamente",
     Callback = function()
+        game.Players.LocalPlayer.Character:BreakJoints()
+    end
+})
 
-        local Players = game:GetService("Players")
-
-        local LocalPlayer = Players.LocalPlayer
-
-        local Character = LocalPlayer.Character
-
-        if Character and Character:FindFirstChild("HumanoidRootPart") then
-
-            -- CFrame que você passou
-
-            local targetCFrame = CFrame.new(
-
-                -41.7126923, 1021.32306, 134.34935,
-
-                0.811150551, 0.237830803, 0.534295142,
-
-                -8.95559788e-06, 0.913583994, -0.406650066,
-
-                -0.584837377, 0.32984966, 0.741056323
-
-            )
-
-            -- Adiciona 10 studs para cima
-
-            targetCFrame = targetCFrame + Vector3.new(0, 10, 0)
-
-            -- Teleporta o HumanoidRootPart
-
-            Character.HumanoidRootPart.CFrame = targetCFrame
-
+PlayerTab:Button({
+    Title = "God Mode (Humanoid Health)",
+    Desc = "Te da vida infinita",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.MaxHealth = math.huge
+            char.Humanoid.Health = math.huge
         end
-
     end
-
 })
 
--- ========================
-
--- INF JUMP TOGGLE
-
--- ========================
-
-local InfiniteJumpEnabled = false
-
-local UserInputService = game:GetService("UserInputService")
-
-local player = game.Players.LocalPlayer
-
-local Toggle = RandomTab:Toggle({
-
-    Title = "Inf Jump",
-
-    Desc = "Infinite Jump i think.",
-
-    Locked = false,
-
-    Callback = function(state)
-
-        InfiniteJumpEnabled = state -- Ativa/Desativa o toggle
-
-    end
-
-})
-
--- Evento para permitir/desativar o Infinite Jump
-
-UserInputService.JumpRequest:Connect(function()
-
-    if InfiniteJumpEnabled then
-
-        local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-
-        if humanoid and humanoid.Parent then
-
-            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-
-        end
-
-    end
-
-end)
-
--- ========================
-
--- INSTA INTERACT TOGGLE
-
--- ========================
-
-local InstaInteractEnabled = false
-
-local Players = game:GetService("Players")
-
-local LocalPlayer = Players.LocalPlayer
-
-local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-
-local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-
-local DISTANCIA_MAX = 999999999
-
--- Toggle na Wind UI
-
-local Button = RandomTab:Toggle({
-
-    Title = "Insta Interact",
-
-    Desc = "Makes all ProximityPrompts instant.",
-
-    Locked = false,
-
-    Callback = function(state)
-
-        InstaInteractEnabled = state
-
-    end
-
-})
-
--- Atualiza o HumanoidRootPart quando o player renascer
-
-LocalPlayer.CharacterAdded:Connect(function(char)
-
-    Character = char
-
-    HumanoidRootPart = char:WaitForChild("HumanoidRootPart")
-
-end)
-
--- Função para forçar HoldDuration = 0
-
-local function tornarPromptInstantaneo(prompt)
-
-    if prompt:IsA("ProximityPrompt") then
-
-        -- Sempre que o HoldDuration mudar, forçamos para 0 se o toggle estiver ativo
-
-        prompt:GetPropertyChangedSignal("HoldDuration"):Connect(function()
-
-            if InstaInteractEnabled then
-
-                prompt.HoldDuration = 0
-
-            end
-
+PlayerTab:Button({
+    Title = "Anti AFK",
+    Desc = "Evita ser expulsado por inactividad",
+    Callback = function()
+        local VirtualUser = game:GetService("VirtualUser")
+        game.Players.LocalPlayer.Idled:Connect(function()
+            VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+            task.wait(1)
+            VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
         end)
+    end
+})
 
-        -- Define inicialmente
-
-        if InstaInteractEnabled then
-
-            prompt.HoldDuration = 0
-
+PlayerTab:Button({
+    Title = "Sit",
+    Desc = "Hace que tu personaje se siente",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.Sit = true
         end
-
     end
+})
 
-end
-
--- Aplica aos prompts já existentes
-
-for _, obj in pairs(workspace:GetDescendants()) do
-
-    if obj:IsA("ProximityPrompt") then
-
-        tornarPromptInstantaneo(obj)
-
-    end
-
-end
-
--- Aplica aos prompts adicionados futuramente
-
-workspace.DescendantAdded:Connect(function(obj)
-
-    if obj:IsA("ProximityPrompt") then
-
-        tornarPromptInstantaneo(obj)
-
-    end
-
-end)
-
--- Loop extra de segurança: força constantemente o HoldDuration = 0
-
-task.spawn(function()
-
-    while task.wait(0.1) do
-
-        if InstaInteractEnabled then
-
-            for _, prompt in pairs(workspace:GetDescendants()) do
-
-                if prompt:IsA("ProximityPrompt") and prompt.HoldDuration ~= 0 then
-
-                    prompt.HoldDuration = 0
-
-                end
-
+PlayerTab:Button({
+    Title = "No Fall Damage",
+    Desc = "Elimina daño por caídas",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        char:WaitForChild("Humanoid").StateChanged:Connect(function(_, new)
+            if new == Enum.HumanoidStateType.Freefall then
+                char.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
             end
-
-        end
-
+        end)
     end
+})
 
-end)
+-- 🏃 Speed x2 con Toggle que dura hasta que lo desactives
+local speedEnabled = false
+local defaultSpeed = 16 -- velocidad normal de Roblox
+local boostedSpeed = defaultSpeed * 2
 
-local Toggle = RandomTab:Toggle({
-
-    Title = "Noclip",
-
-    Desc = "Auto-Explained",
-
+PlayerTab:Toggle({
+    Title = "Speed x2",
+    Desc = "Duplica tu velocidad de caminata (ON/OFF)",
     Default = false,
-
-    Callback = function(state) 
-
-        print("Toggle Activated: " .. tostring(state))
-
-        -- Serviços
-
-        local Players = game:GetService("Players")
-
-        local RunService = game:GetService("RunService")
-
-        local LocalPlayer = Players.LocalPlayer
-
-        
-
-        if getgenv().NoclipConnection then
-
-            getgenv().NoclipConnection:Disconnect()
-
-            getgenv().NoclipConnection = nil
-
-            getgenv().NoclipEnabled = false
-
-            print("Noclip Off")
-
+    Callback = function(state)
+        speedEnabled = state
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = state and boostedSpeed or defaultSpeed
         end
-
-        if state then
-
-            getgenv().NoclipEnabled = true
-
-            getgenv().NoclipConnection = RunService.Stepped:Connect(function()
-
-                if LocalPlayer.Character then
-
-                    for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
-
-                        if part:IsA("BasePart") then
-
-                            part.CanCollide = false
-
-                        end
-
-                    end
-
-                end
-
-            end)
-
-            print("Noclip On")
-
-        end
-
     end
-
 })
 
---// Serviços
+-- Mantener velocidad después de respawn
+game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+    if speedEnabled then
+        task.wait(1) -- esperar a que cargue el personaje
+        char:WaitForChild("Humanoid").WalkSpeed = boostedSpeed
+    end
+end)
 
-local Workspace = game:GetService("Workspace")
-
---// Botão para remover o Rope
-
-local RemoveRopeButton = JumpTab:Button({
-
-    Title = "Remove Rope",
-
-    Desc = "Removes the rope effect from the game.",
-
+PlayerTab:Button({
+    Title = "Jump x2",
+    Desc = "Duplica tu poder de salto",
     Callback = function()
-
-        local rope = Workspace:FindFirstChild("Effects") and Workspace.Effects:FindFirstChild("rope")
-
-        if rope then
-
-            rope:Destroy()
-
-            print("[WindUI] Rope removed successfully!")
-
-        else
-
-            warn("[WindUI] Rope not found.")
-
-        end
-
-    end
-
-})
--- Tu ventana ya creada
-local RandomTab = Window:Tab({
-    Title = "Random Features",
-    Icon = "dices",
-    Locked = false,
-})
-
--- 🔽 Aquí empiezan las funciones de Teleport dentro de ESTA ventana
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local SelectedPlayer = nil
-
--- Función para listar jugadores
-local function GetPlayerList()
-    local names = {}
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer then
-            table.insert(names, plr.Name)
-        end
-    end
-    return names
-end
-
--- Dropdown para elegir jugador
-local PlayerDropdown = RandomTab:Dropdown({
-    Title = "Seleccionar Jugador",
-    Values = GetPlayerList(),
-    Multi = false,
-    Callback = function(selected)
-        SelectedPlayer = selected
-        print("Jugador seleccionado: " .. tostring(SelectedPlayer))
+        local char = game.Players.LocalPlayer.Character
+        char:WaitForChild("Humanoid").JumpPower = char.Humanoid.JumpPower * 2
     end
 })
 
--- Botón para refrescar lista
+PlayerTab:Button({
+    Title = "Fly (simple)",
+    Desc = "Activa vuelo básico",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/YwFhqYqt"))()
+    end
+})
+
+-- 📌 RANDOM TAB: MÁS FUNCIONES
 RandomTab:Button({
-    Title = "🔄 Refresh Lista",
-    Desc = "Actualiza la lista de jugadores",
+    Title = "Remove KillParts",
+    Desc = "Elimina todas las partes que matan",
     Callback = function()
-        PlayerDropdown:SetValues(GetPlayerList())
-        print("✅ Lista de jugadores actualizada.")
-    end
-})
-
--- Botón para teletransportarse al jugador seleccionado
-RandomTab:Button({
-    Title = "⚡ Teleportar al Jugador",
-    Desc = "Te teletransporta al jugador seleccionado",
-    Callback = function()
-        if SelectedPlayer then
-            local target = Players:FindFirstChild(SelectedPlayer)
-            if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-                LocalPlayer.Character:PivotTo(target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0))
-                print("✅ Teletransportado a " .. SelectedPlayer)
-            else
-                warn("❌ No se pudo encontrar al jugador o su personaje.")
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("TouchTransmitter") and obj.Parent.Name:lower():match("kill") then
+                obj.Parent:Destroy()
             end
-        else
-            warn("⚠️ No has seleccionado ningún jugador.")
         end
+    end
+})
+
+RandomTab:Button({
+    Title = "Delete Doors",
+    Desc = "Elimina todas las puertas",
+    Callback = function()
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj.Name:lower():match("door") then
+                obj:Destroy()
+            end
+        end
+    end
+})
+
+RandomTab:Button({
+    Title = "Invisible Character",
+    Desc = "Hace tu personaje invisible",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        for _, v in ipairs(char:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.Transparency = 1
+            end
+        end
+    end
+})
+
+RandomTab:Button({
+    Title = "Rejoin Game",
+    Desc = "Vuelve a entrar al mismo servidor",
+    Callback = function()
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+    end
+})
+
+RandomTab:Button({
+    Title = "Server Hop",
+    Desc = "Cambia a un servidor aleatorio",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/1gtVMUz3"))()
+    end
+})
+
+RandomTab:Button({
+    Title = "Lag Switch (F3)",
+    Desc = "Activa/desactiva lag presionando F3",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local NetworkClient = game:GetService("NetworkClient")
+        local StarterGui = game:GetService("StarterGui")
+        local toggle = false
+        game:GetService("UserInputService").InputBegan:Connect(function(input)
+            if input.KeyCode == Enum.KeyCode.F3 then
+                toggle = not toggle
+                if toggle then
+                    NetworkClient:SetOutgoingKBPSLimit(1)
+                    StarterGui:SetCore("SendNotification", {Title="Lag Switch", Text="ON"})
+                else
+                    NetworkClient:SetOutgoingKBPSLimit(math.huge)
+                    StarterGui:SetCore("SendNotification", {Title="Lag Switch", Text="OFF"})
+                end
+            end
+        end)
     end
 })
