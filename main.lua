@@ -2,11 +2,11 @@ local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/rel
 
 local Window = WindUI:CreateWindow({
 
-    Title = "MEOWL HUB",
+    Title = "by Christian",
 
     Icon = "star",
 
-    Author = "https://discord.gg/HZpuJanpyF",
+    Author = "https://www.instagram.com/roseb_astian/",
 
     Folder = "MeowlHubScript",
 
@@ -16,7 +16,7 @@ local Window = WindUI:CreateWindow({
 
 Window:EditOpenButton({
 
-    Title = "Open Meowl's Hub",
+    Title = "Open XRNL-HUB",
 
     Icon = "skull",
 
