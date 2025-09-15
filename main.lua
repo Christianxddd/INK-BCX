@@ -1,34 +1,34 @@
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
+
 local Window = WindUI:CreateWindow({
 
-    Title = "XRNL-HUB",
+    Title = "XRNL HUB | INK GAME",
 
-    Icon = "star",
+    Icon = "cat",
 
-    Author = "https://discord.gg/HZpuJanpyF",
+    Author = "https://www.instagram.com/roseb_astian/",
 
-    Folder = "MeowlHubScript",
-
-    Size = UDim2.fromOffset(150, 150),
+    Folder = "RONALDO",
 
 })
+
 
 Window:EditOpenButton({
 
     Title = "Open XRNL-HUB",
 
-    Icon = "skull",
+    Icon = "cat",
 
-    CornerRadius = UDim.new(0,0),
+    CornerRadius = UDim.new(0,20),
 
     StrokeThickness = 2,
 
-    Color = ColorSequence.new(
+    Color = ColorSequence.new( -- gradient
 
-        Color3.fromHex("8B4513"),
+        Color3.fromHex("FF0F7B"), 
 
-        Color3.fromHex("FFFFFF")
+        Color3.fromHex("F89B29")
 
     ),
 
@@ -40,13 +40,27 @@ Window:EditOpenButton({
 
 })
 
+
 Window:Tag({
 
-    Title = "v7.35.56 BETA VERSION",
+    Title = "v2.8.6",
 
     Color = Color3.fromHex("#30ff6a")
 
 })
+
+
+local PlayerTab = Window:Tab({
+
+    Title = "Tab Player",
+
+    Icon = "person-standing",
+
+    Locked = false,
+
+})
+
+
 
 local RandomTab = Window:Tab({
 
@@ -58,6 +72,7 @@ local RandomTab = Window:Tab({
 
 })
 
+
 local RedTab = Window:Tab({
 
     Title = "Red Light, Green light",
@@ -68,6 +83,7 @@ local RedTab = Window:Tab({
 
 })
 
+
 local DalgonaTab = Window:Tab({
 
     Title = "Dalgona",
@@ -77,8 +93,7 @@ local DalgonaTab = Window:Tab({
     Locked = false,
 
 })
-
-local LightTab = Window:Tab({
+local LightsTab = Window:Tab({
 
     Title = "Lights Out / Special Game",
 
@@ -88,15 +103,6 @@ local LightTab = Window:Tab({
 
 })
 
-local TugTab = Window:Tab({
-
-    Title = "Tug Of War",
-
-    Icon = "",
-
-    Locked = false,
-
-})
 
 local HideSeekTab = Window:Tab({
 
@@ -108,15 +114,29 @@ local HideSeekTab = Window:Tab({
 
 })
 
+
+local TugTab = Window:Tab({
+
+    Title = "Tug Of War",
+
+    Icon = "sword",
+
+    Locked = false,
+
+})
+
+
+
 local JumpTab = Window:Tab({
 
-    Title = "JumpRope",
+    Title = "Jump Rope",
 
     Icon = "shell",
 
     Locked = false,
 
 })
+
 
 local GlassTab = Window:Tab({
 
@@ -128,6 +148,7 @@ local GlassTab = Window:Tab({
 
 })
 
+
 local MingleTab = Window:Tab({
 
     Title = "Mingle",
@@ -137,6 +158,29 @@ local MingleTab = Window:Tab({
     Locked = false,
 
 })
+
+
+local SkyTab = Window:Tab({
+
+    Title = "Sky Squid Game",
+
+    Icon = "building-2",
+
+    Locked = false,
+
+})
+
+
+local DinnerTab = Window:Tab({
+
+    Title = "Final Dinner",
+
+    Icon = "utensils-crossed",
+
+    Locked = false,
+
+})
+
 
 local SquidTab = Window:Tab({
 
