@@ -784,58 +784,25 @@ GroupBoxes["Funciones aleatorias"]:AddButton({
 
 -- Velocidad de giro de entrada
 
-GroupBoxes["Funciones aleatorias"]:AddInput("SwingSpeedInput", {
-
+GroupBoxes["Funciones aleatorias"]:AddSlider("SwingSpeedSlider", {
     Texto = "Velocidad",
+    Valor = 10,         -- valor inicial
+    Mínimo = 0,         -- mínimo del slider
+    Máximo = 50,        -- máximo del slider
+    Paso = 1,           -- incrementos
+    Información sobre herramientas = "Velocidad de giro del jugador",
+    Devolución de llamada = function(valor)
+        local CarpetaLive = workspace:WaitForChild("Live")
+        local ModeloJugador = CarpetaLive:WaitForChild(JugadorLocal.Nombre)
+        local swingSpeed = ModeloJugador:FindFirstChild("SwingSpeed")
 
-    Valor predeterminado = "10",
-
-    Información sobre herramientas = "Velocidad omitida sin parchear. ",
-
-    Marcador de posición = "Ingrese la velocidad (0-50)...",
-
-    Devolución de llamada = función(entrada)
-
-        valor local = tonumber(entrada)
-
-        Si no es valor entonces
-
-            warn("Entrada inválida, ingrese un número!")
-
-            devolver
-
-        fin
-
-        si valor < 0 entonces
-
-            valor = 0
-
-        de lo contrario, si el valor es > 50 entonces
-
-            valor = 50
-
-        fin
-
-        carpetaLiveFolder local = espacio de trabajo:WaitForChild("Live")
-
-        modeloDeJugadorLocal = CarpetaEnVivo:EsperaRico(JugadorLocal.Nombre)
-
-        Velocidad de swing local = ModeloJugador:BuscarPrimerHijo("Velocidad de Swing")
-
-        si swingSpeed ​​y swingSpeed:IsA("NumberValue") entonces
-
+        if swingSpeed and swingSpeed:IsA("NumberValue") then
             swingSpeed.Value = valor
-
             print("Velocidad de giro establecida en:", valor)
-
-        demás
-
-            warn("¡SwingSpeed ​​no encontrado o no válido para este jugador!")
-
-        fin
-
-    fin
-
+        else
+            warn("¡SwingSpeed no encontrado o no válido para este jugador!")
+        end
+    end
 })
 
 -- ===============================
