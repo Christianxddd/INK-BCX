@@ -1,298 +1,298 @@
--- Interfaz de usuario de obsidiana de Carrega
+-- Carrega Obsidian UI
 
-repositorio local = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
+local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 
-Biblioteca local = loadstring(juego:HttpGet(repo .. "Library.lua"))()
+local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 
-ThemeManager local = loadstring(juego:HttpGet(repo .. "addons/ThemeManager.lua"))()
+local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 
-SaveManager local = loadstring(juego:HttpGet(repo .. "addons/SaveManager.lua"))()
+local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 
 -- Cria a janela principal
 
-Ventana local = Biblioteca:CreateWindow({
+local Window = Library:CreateWindow({
 
-Título = "CENTRO MEOWL",
+Title = "XRNL-HUB",
 
-Pie de página = "v7.40.39 [BETA HUB]",
+Footer = "v7.40.39 [BETA HUB]",
 
-Icono = 95816097006870,
+Icon = 95816097006870,
 
-NotifySide = "Derecha",
+NotifySide = "Right",
 
-ShowCustomCursor = verdadero,
+ShowCustomCursor = true,
 
 })
 
--- Director de Aba
+-- Aba principal
 
-local MainTab = Ventana:AddTab("Principal", "casa")
+local MainTab = Window:AddTab("Main", "house")
 
 -- Função de teleporte
 
-Jugadores locales = juego:GetService("Jugadores")
+local Players = game:GetService("Players")
 
-local LocalPlayer = Jugadores.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 
-Espacio de trabajo local = juego:GetService("Espacio de trabajo")
+local Workspace = game:GetService("Workspace")
 
-función local teleportToCFrame(cframe)
+local function teleportToCFrame(cframe)
 
-si LocalPlayer.Character y LocalPlayer.Character:FindFirstChild("HumanoidRootPart") entonces
+if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-Jugador local.Personaje.ParteRaízHumanoid.CFrame = cframe
+LocalPlayer.Character.HumanoidRootPart.CFrame = cframe
 
-fin
+end
 
-fin
+end
 
--- Crianza de GroupBoxes 2x2
+-- Criação de GroupBoxes 2x2
 
-Cuadros de grupo locales = {}
+local GroupBoxes = {}
 
-nombres locales = {
+local names = {
 
-"Juego automático", "Funciones aleatorias", "FUNCIONES F2P", "Luz roja, luz verde",
+"Auto Play","Random Features","F2P FEATURES","Red Light, Green Light",
 
-"Dalgona", "Luces apagadas / Juego especial", "Escondite", "Tira y afloja",
+"Dalgona","Lights Out / Special Game","Hide 'N' Seek","Tug Of War",
 
-"Saltar la cuerda", "Puente de cristal", "Mingle", "Cena final",
+"JumpRope","Glass bridge","Mingle",
 
-"El juego del calamar", "El juego del calamar", "Rebel Features"
+"Sky Squid Game","Squid Game","Rebel Features (Beta)"
 
 }
 
--- Alternando entre izquierda y derecha para diseño 2x2
+-- Alternando entre left e right para layout 2x2
 
-para i, nombre en ipairs(nombres) hacer
+for i, name in ipairs(names) do
 
-si i % 2 == 1 entonces
+if i % 2 == 1 then
 
-GroupBoxes[nombre] = MainTab:AddLeftGroupbox(nombre)
+GroupBoxes[name] = MainTab:AddLeftGroupbox(name)
 
-demás
+else
 
-GroupBoxes[nombre] = MainTab:AddRightGroupbox(nombre)
+GroupBoxes[name] = MainTab:AddRightGroupbox(name)
 
-fin
+end
 
-fin
-
--- ============================
-
--- Ejemplo de botones y conmutadores
+end
 
 -- ============================
 
--- Saltar la cuerda
+-- Exemplo de botões e toggles
 
-Cuadros de grupo["JumpRope"]:AgregarBotón({
+-- ============================
 
-Texto = "TP Fin",
+-- JumpRope
 
-Información sobre herramientas = "Teletransportarse rápidamente a la ubicación final."
+GroupBoxes["JumpRope"]:AddButton({
 
-Func = función()
+Text = "TP End",
 
-teletransportarseACFrame(CFrame.new(737.156372, 193.805084, 920.952515))
+Tooltip = "Quickly teleport to the end location.",
 
-fin
+Func = function()
 
-})
+teleportToCFrame(CFrame.new(737.156372, 193.805084, 920.952515))
 
-Cuadros de grupo["JumpRope"]:AgregarBotón({
-
-Texto = "TP Inicio",
-
-Información sobre herramientas = "Teletransportarse instantáneamente de regreso al punto de inicio."
-
-Func = función()
-
-teletransportarseACFrame(CFrame.new(615.284424, 192.274277, 920.952515))
-
-fin
+end
 
 })
 
--- Puente de cristal
+GroupBoxes["JumpRope"]:AddButton({
 
-GroupBoxes["Puente de cristal"]:AddButton({
+Text = "TP Start",
 
-Texto = "TP FIN",
+Tooltip = "Instantly teleport back to the start point.",
 
-Información sobre herramientas = "Teletransportarse instantáneamente a la ubicación FIN."
+Func = function()
 
-Func = función()
+teleportToCFrame(CFrame.new(615.284424, 192.274277, 920.952515))
 
-teletransportarseACFrame(CFrame.new(-211.855881, 517.039062, -1534.7373))
+end
 
-fin
+})
+
+-- Glass bridge
+
+GroupBoxes["Glass bridge"]:AddButton({
+
+Text = "TP END",
+
+Tooltip = "Teleport instantly to the END location.",
+
+Func = function()
+
+teleportToCFrame(CFrame.new(-211.855881, 517.039062, -1534.7373))
+
+end
 
 })
 
   
 
-  -- Escondite: Muerte automática
+  -- Hide 'N' Seek: Auto Kill
 
-GroupBoxes["Escondite"]:AddToggle("AUTO KILL HIDE", {
+GroupBoxes["Hide 'N' Seek"]:AddToggle("AUTO KILL HIDE", {
 
-    Texto = "AUTO KILL OCULTACIÓN",
+    Text = "AUTO KILL HIDE",
 
-    Devolución de llamada = función(Valor)
+    Callback = function(Value)
 
-        AutoKillEnabled = Valor
+        AutoKillEnabled = Value
 
-        Si FollowConnection entonces
+        if FollowConnection then
 
-            SeguirConexión:Desconectar()
+            FollowConnection:Disconnect()
 
-            FollowConnection = nulo
+            FollowConnection = nil
 
-        fin
+        end
 
-        Si AutoKillEnabled entonces
+        if AutoKillEnabled then
 
-            si LocalPlayer.Character y LocalPlayer.Character:FindFirstChild("HumanoidRootPart") entonces
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-                HRP = JugadorLocal.Personaje.ParteRaízHumanoid
+                HRP = LocalPlayer.Character.HumanoidRootPart
 
-                objetivoJugador local = nulo
+                local targetPlayer = nil
 
-                para _, jugador en ipairs(Players:GetPlayers()) hacer
+                for _, player in ipairs(Players:GetPlayers()) do
 
-                    si jugador ~= LocalPlayer y jugador.Character y jugador.Character:FindFirstChild("BlueVest") entonces
+                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("BlueVest") then
 
-                        targetPlayer = jugador
+                        targetPlayer = player
 
-                        romper
+                        break
 
-                    fin
+                    end
 
-                fin
+                end
 
-                Si targetPlayer y targetPlayer.Character entonces
+                if targetPlayer and targetPlayer.Character then
 
-                    objetivo localTorso = jugador_objetivo.Personaje:BuscarPrimerHijo("ParteRaízHumanoide")
+                    local targetTorso = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
 
-                        o targetPlayer.Character:FindFirstChild("Torso superior")
+                        or targetPlayer.Character:FindFirstChild("UpperTorso")
 
-                    Si targetTorso entonces
+                    if targetTorso then
 
-                        FollowConnection = RunService.RenderStepped:Connect(función()
+                        FollowConnection = RunService.RenderStepped:Connect(function()
 
-                            Si AutoKillEnabled y targetPlayer.Character y targetTorso y HRP y HRP.Parent entonces
+                            if AutoKillEnabled and targetPlayer.Character and targetTorso and HRP and HRP.Parent then
 
-                                frontPos local = targetTorso.CFrame * CFrame.new(0,0,-5)
+                                local frontPos = targetTorso.CFrame * CFrame.new(0,0,-5)
 
-                                HRP.CFrame = posición frontal
+                                HRP.CFrame = frontPos
 
-                            fin
+                            end
 
-                        fin)
+                        end)
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin
+            end
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
--- Escondite: Puerta de salida de TP
+-- Hide 'N' Seek: TP Exit Door
 
-GroupBoxes["Ocultar y buscar"]:AddButton({
+GroupBoxes["Hide 'N' Seek"]:AddButton({
 
-Texto = "TP PUERTA DE SALIDA",
+Text = "TP EXIT DOOR",
 
-Información sobre herramientas = "Se teletransporta a la puerta de salida más cercana."
+Tooltip = "Teleports to the nearest exit door.",
 
-Func = función()
+Func = function()
 
-jugador local = LocalPlayer
+local player = LocalPlayer
 
-si no es player.Character o no player.Character:FindFirstChild("HumanoidRootPart") entonces devuelve end
+if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
 
-hrp local = jugador.Personaje.ParteRaízHumanoid
+local hrp = player.Character.HumanoidRootPart
 
-mapa local = Espacio de trabajo:WaitForChild("HideAndSeekMap")
+local map = Workspace:WaitForChild("HideAndSeekMap")
 
-Puertas nuevas locales = mapa:WaitForChild("PUERTAS NUEVAS FIJAS")
+local newDoors = map:WaitForChild("NEWFIXEDDOORS")
 
-puerta más cercana local = nula
+local closestDoor = nil
 
-distancia más corta local = math.huge
+local shortestDistance = math.huge
 
-para _, piso en ipairs(newDoors:GetChildren()) hacer
+for _, floor in ipairs(newDoors:GetChildren()) do
 
-carpetaSalida local = piso:BuscarPrimerHijo("PUERTASSALIDA")
+local exitFolder = floor:FindFirstChild("EXITDOORS")
 
-si exitFolder entonces
+if exitFolder then
 
-para _, puerta en ipairs(exitFolder:GetChildren()) hacer
+for _, door in ipairs(exitFolder:GetChildren()) do
 
-si puerta:GetAttribute("ActuallyWorks") entonces
+if door:GetAttribute("ActuallyWorks") then
 
-primario local = puerta.PrimaryPart o puerta:FindFirstChild("DoorRoot")
+local primary = door.PrimaryPart or door:FindFirstChild("DoorRoot")
 
-Si es primaria entonces
+if primary then
 
-distancia local = (hrp.Posición - primaria.Posición).Magnitud
+local distance = (hrp.Position - primary.Position).Magnitude
 
-si distancia < distanciamáscorta entonces
+if distance < shortestDistance then
 
-distanciamáscorta = distancia
+shortestDistance = distance
 
-closerDoor = principal
+closestDoor = primary
 
-fin
+end
 
-fin
+end
 
-fin
+end
 
-fin
+end
 
-fin
+end
 
-fin
+end
 
-Si es la puerta más cercana entonces
+if closestDoor then
 
-objetivo localCFrame = puertamáscercana.CFrame + puertamáscercana.CFrame.LookVector * 3
+local targetCFrame = closestDoor.CFrame + closestDoor.CFrame.LookVector * 3
 
-hrp.CFrame = CFrame.new(targetCFrame.Posición, puertamáscercana.Posición)
+hrp.CFrame = CFrame.new(targetCFrame.Position, closestDoor.Position)
 
-demás
+else
 
-warn("¡Nenhuma porta funcional encontrada!")
+warn("Nenhuma porta funcional encontrada!")
 
-fin
+end
 
-fin
+end
 
 })
 
--- Teleporte PERBET (Desplegable)
+-- Teleporte PERBET (Dropdown)
 
-GroupBoxes["Funciones aleatorias"]:AddDropdown("TeleportPerbetDropdown", {
+GroupBoxes["Random Features"]:AddDropdown("TeleportPerbetDropdown", {
 
   
 
-    Texto = "TP PERBET",
+    Text = "TP PERBET",
 
-    Valores = { "ninguno", "PERBET 1", "PERBET 2", "PERBET 3", "PERBET 4", "PERBET 5", "PERBET 6" },
+    Values = { "none", "PERBET 1", "PERBET 2", "PERBET 3", "PERBET 4", "PERBET 5", "PERBET 6" },
 
-    Valor = "ninguno",
+    Value = "none",
 
-    Devolución de llamada = función(opción)
+    Callback = function(option)
 
-        Posiciones locales = {
+        local Positions = {
 
-            ["ninguno"] = nulo,
+            ["none"] = nil,
 
             ["PERBET 1"] = "FREEPEABERT1",
 
@@ -308,2308 +308,2275 @@ GroupBoxes["Funciones aleatorias"]:AddDropdown("TeleportPerbetDropdown", {
 
         }
 
-        objetivo localNombre = Posiciones[opción]
+        local targetName = Positions[option]
 
-        si targetName entonces
+        if targetName then
 
-            objeto local = espacio de trabajo:FindFirstChild(nombreDeObjetivo)
+            local obj = workspace:FindFirstChild(targetName)
 
-            cframe local = (obj y ((obj.PrimaryPart y obj.PrimaryPart.CFrame) o (obj:IsA("BasePart") y obj.CFrame))) o nulo
+            local cframe = (obj and ((obj.PrimaryPart and obj.PrimaryPart.CFrame) or (obj:IsA("BasePart") and obj.CFrame))) or nil
 
-            Si cframe entonces
+            if cframe then
 
-                Jugador local.Personaje.ParteRaízHumanoid.CFrame = cframe
+                LocalPlayer.Character.HumanoidRootPart.CFrame = cframe
 
-                print("Teletransportado a: " .. opción)
+                print("Teleported to: " .. option)
 
-            demás
+            else
 
-                warn("❌ No encontré ningún objeto sin espacio de trabajo: " .. targetName)
+                warn("❌ Não encontrei o objeto no workspace: " .. targetName)
 
-            fin
+            end
 
-        demás
+        else
 
             print("Nenhuma posição selecionada.")
 
-        fin
+        end
 
-    fin
-
-})
-
--- SALTO AUTOMÁTICO
-
-autoSkipEnabled local = falso
-
-GroupBoxes["Funciones aleatorias"]:AddToggle("AutoSkipToggle", {
-
-    Texto = "SALTO AUTOMÁTICO",
-
-    Devolución de llamada = función(estado)
-
-        autoSkipEnabled = estado
-
-        Si el estado entonces
-
-            spawn(función()
-
-                mientras que autoSkipEnabled lo hace
-
-                    argumentos locales = {"Omitido"}
-
-                    pcall(función()
-
-                        juego:GetService("Almacenamiento replicado"):WaitForChild("Controles remotos"):WaitForChild("Control remoto de diálogo"):FireServer(descomprimir(args))
-
-                    fin)
-
-                    esperar(0.5)
-
-                fin
-
-            fin)
-
-        fin
-
-    fin
+    end
 
 })
 
--- TIRO AUTOMÁTICO
+-- AUTO SKIP
 
-AutoPullEnabled local = falso
+local autoSkipEnabled = false
 
-función local AutoPull()
+GroupBoxes["Random Features"]:AddToggle("AutoSkipToggle", {
 
-    Remoto local = juego:GetService("Almacenamiento replicado"):WaitForChild("Remotos"):WaitForChild("Enlazable temporal alcanzado")
+    Text = "AUTO SKIP",
 
-    Remoto:FireServer({{ IHateYou = true }})
+    Callback = function(state)
 
-fin
+        autoSkipEnabled = state
 
-juego:GetService("RunService").Heartbeat:Connect(función()
+        if state then
 
-    si AutoPullEnabled entonces AutoPull() finaliza
+            spawn(function()
 
-fin)
+                while autoSkipEnabled do
 
-GroupBoxes["Tira y afloja"]:AddToggle("AutoPullToggle", {
+                    local args = {"Skipped"}
 
-    Texto = "EXTRACCIÓN AUTOMÁTICA",
+                    pcall(function()
 
-    Devolución de llamada = función(estado) AutoPullEnabled = estado fin
+                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("DialogueRemote"):FireServer(unpack(args))
+
+                    end)
+
+                    wait(0.5)
+
+                end
+
+            end)
+
+        end
+
+    end
 
 })
 
--- Paso fantasma
+-- AUTO PULL
 
-Potencia original local = Jugador local: Obtener atributo("_Potencia equipada")
+local AutoPullEnabled = false
 
-GroupBoxes["FUNCIONES F2P"]:AddToggle("PhantomStepToggle", {
+local function AutoPull()
 
-    Texto = "Paso fantasma",
+    local Remote = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("TemporaryReachedBindable")
 
-    Devolución de llamada = función(estado)
+    Remote:FireServer({{ IHateYou = true }})
 
-        Si el estado entonces
+end
 
-            Jugador local: Establecer atributo("_Potencia equipada", "PASO FANTASMA")
+game:GetService("RunService").Heartbeat:Connect(function()
+
+    if AutoPullEnabled then AutoPull() end
+
+end)
+
+GroupBoxes["Tug Of War"]:AddToggle("AutoPullToggle", {
+
+    Text = "AUTO PULL",
+
+    Callback = function(state) AutoPullEnabled = state end
+
+})
+
+-- Phantom Step
+
+local originalPower = LocalPlayer:GetAttribute("_EquippedPower")
+
+GroupBoxes["F2P FEATURES"]:AddToggle("PhantomStepToggle", {
+
+    Text = "Phantom Step",
+
+    Callback = function(state)
+
+        if state then
+
+            LocalPlayer:SetAttribute("_EquippedPower", "PHANTOM STEP")
 
             print("Phantom Step On")
 
-        demás
+        else
 
-            Jugador local: Establecer atributo("_EquippedPower", potencia original)
+            LocalPlayer:SetAttribute("_EquippedPower", originalPower)
 
-            print("Paso fantasma fuera")
+            print("Phantom Step Off")
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
--- Estrellarse
+-- Dash
 
-función local toggleFasterSprint(estado)
+local function toggleFasterSprint(state)
 
     local boostsFolder = LocalPlayer:FindFirstChild("Boosts")
 
-    Si no es boostsFolder, devuelve warn("Boosts no encontrados") fin
+    if not boostsFolder then return warn("Boosts not found") end
 
-    local sprintBoost = boostsFolder:FindFirstChild("Sprint más rápido")
+    local sprintBoost = boostsFolder:FindFirstChild("Faster Sprint")
 
-    si no es sprintBoost o no es sprintBoost:IsA("NumberValue") entonces devuelve warn("Sprint más rápido no encontrado") fin
+    if not sprintBoost or not sprintBoost:IsA("NumberValue") then return warn("Faster Sprint not found") end
 
-    sprintBoost.Value = estado y 5 o 0
+    sprintBoost.Value = state and 5 or 0
 
-    print("Sprint más rápido " .. (estado y "Activado" o "Desactivado"))
+    print("Faster Sprint " .. (state and "On" or "Off"))
 
-fin
+end
 
-GroupBoxes["CARACTERÍSTICAS F2P"]:AddToggle("DashToggle", {
+GroupBoxes["F2P FEATURES"]:AddToggle("DashToggle", {
 
-    Texto = "Guión",
+    Text = "Dash",
 
-    Devolución de llamada = función(estado) alternarFasterSprint(estado) fin
-
-})
-
--- Artista de parkour
-
-GroupBoxes["CARACTERÍSTICAS F2P"]:AddToggle("ParkourArtistToggle", {
-
-    Texto = "Artista de Parkour",
-
-    Devolución de llamada = función(estado)
-
-        Si el estado entonces
-
-            LocalPlayer:SetAttribute("_EquippedPower", "ARTISTA DE PARKOUR")
-
-            imprimir("Artista de parkour en marcha")
-
-        demás
-
-            Jugador local: Establecer atributo("_EquippedPower", potencia original)
-
-            print("Artista de parkour fuera")
-
-        fin
-
-    fin
+    Callback = function(state) toggleFasterSprint(state) end
 
 })
 
--- Plataformas de vidrio
+-- Parkour Artist
 
-showGlassPlatforms local = falso
+GroupBoxes["F2P FEATURES"]:AddToggle("ParkourArtistToggle", {
 
-Plataformas de vidrio locales = {}
+    Text = "Parkour Artist",
 
-función local isFakeGlass(parte) devuelve parte:GetAttribute("GlassPart") y parte:GetAttribute("ActuallyKilling") ~= nil fin
+    Callback = function(state)
 
-función local createPlatforms()
+        if state then
 
-    para _, plataforma en ipairs(glassPlatforms) hacer si plataforma y plataforma.Padre entonces plataforma:Destroy() fin fin
+            LocalPlayer:SetAttribute("_EquippedPower", "PARKOUR ARTIST")
 
-    Plataformas de vidrio = {}
+            print("Parkour Artist On")
 
-    para _, parte en ipairs(workspace:GetDescendants()) hacer
+        else
 
-        si parte:IsA("BasePart") y isFakeGlass(parte) entonces
+            LocalPlayer:SetAttribute("_EquippedPower", originalPower)
 
-            plataforma local = Instancia.new("Parte")
+            print("Parkour Artist Off")
 
-            plataforma.Tamaño = Vector3.nuevo(10,0.5,10)
+        end
 
-            plataforma.CFrame = parte.CFrame * CFrame.new(0,2,0)
+    end
 
-            plataforma.Anclado = verdadero
+})
 
-            plataforma.CanCollide = verdadero
+-- Glass Platforms
 
-            plataforma.Transparencia = 0.3
+local showGlassPlatforms = false
 
-            plataforma.Material = Enum.Material.Neon
+local glassPlatforms = {}
 
-            plataforma.Color = Color3.fromRGB(255,0,0)
+local function isFakeGlass(part) return part:GetAttribute("GlassPart") and part:GetAttribute("ActuallyKilling") ~= nil end
 
-            plataforma.Padre = espacio de trabajo
+local function createPlatforms()
 
-            tabla.insertar(vidrioPlataformas, plataforma)
+    for _, platform in ipairs(glassPlatforms) do if platform and platform.Parent then platform:Destroy() end end
 
-        fin
+    glassPlatforms = {}
 
-    fin
+    for _, part in ipairs(workspace:GetDescendants()) do
 
-fin
+        if part:IsA("BasePart") and isFakeGlass(part) then
 
-función local removePlatforms()
+            local platform = Instance.new("Part")
 
-    para _, plataforma en ipairs(glassPlatforms) hacer si plataforma y plataforma.Padre entonces plataforma:Destroy() fin fin
+            platform.Size = Vector3.new(10,0.5,10)
 
-    Plataformas de vidrio = {}
+            platform.CFrame = part.CFrame * CFrame.new(0,2,0)
 
-fin
+            platform.Anchored = true
 
-GroupBoxes["Puente de cristal"]:AddToggle("GlassPlatformsToggle", {
+            platform.CanCollide = true
 
-    Texto = "Plataformas de cristal",
+            platform.Transparency = 0.3
 
-    Devolución de llamada = función(estado)
+            platform.Material = Enum.Material.Neon
 
-        showGlassPlatforms = estado
+            platform.Color = Color3.fromRGB(255,0,0)
 
-        Si el estado entonces
+            platform.Parent = workspace
 
-            tarea.spawn(función()
+            table.insert(glassPlatforms, platform)
 
-                mientras showGlassPlatforms lo hace
+        end
 
-                    crearPlataformas()
+    end
 
-                    tarea.esperar(1)
+end
 
-                fin
+local function removePlatforms()
 
-            fin)
+    for _, platform in ipairs(glassPlatforms) do if platform and platform.Parent then platform:Destroy() end end
 
-        demás
+    glassPlatforms = {}
 
-            eliminarPlataformas()
+end
 
-        fin
+GroupBoxes["Glass bridge"]:AddToggle("GlassPlatformsToggle", {
 
-    fin
+    Text = "Glass Platforms",
+
+    Callback = function(state)
+
+        showGlassPlatforms = state
+
+        if state then
+
+            task.spawn(function()
+
+                while showGlassPlatforms do
+
+                    createPlatforms()
+
+                    task.wait(1)
+
+                end
+
+            end)
+
+        else
+
+            removePlatforms()
+
+        end
+
+    end
 
 })
 
 -- Serviços necessários
 
-Jugadores locales = juego:GetService("Jugadores")
+local Players = game:GetService("Players")
 
-local LocalPlayer = Jugadores.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 
-RunService local = juego:GetService("RunService")
+local RunService = game:GetService("RunService")
 
-Espacio de trabajo local = juego:GetService("Espacio de trabajo")
+local Workspace = game:GetService("Workspace")
 
--- Variáveis ​​globais
+-- Variáveis globais
 
-showGlassESP local = falso
+local showGlassESP = false
 
-Partes de caja locales = {}
+local BoxParts = {}
 
-BoxEnabled local = falso
+local BoxEnabled = false
 
 -- Função para teleporte
 
-función local teleportTo(cframe)
+local function teleportTo(cframe)
 
-    personaje local = LocalPlayer.Character o LocalPlayer.CharacterAdded:Wait()
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-    hrp local = personaje:WaitForChild("HumanoidRootPart")
+    local hrp = character:WaitForChild("HumanoidRootPart")
 
     hrp.CFrame = cframe + Vector3.new(0, 10, 0)
 
-fin
+end
 
 -- ===============================
 
--- 🟩 PUENTE DE CRISTAL
+-- 🟩 GLASS BRIDGE
 
 -- ===============================
 
-GroupBoxes["Puente de cristal"]:AddToggle("GlassVision", {
+GroupBoxes["Glass bridge"]:AddToggle("GlassVision", {
 
-    Texto = "Visión de cristal",
+    Text = "Glass Vision",
 
-    Predeterminado = falso,
+    Default = false,
 
-    Información sobre herramientas = "Mostrar vidrio falso y vidrio real."
+    Tooltip = "Show Fake Glass n Real Glass.",
 
-    Devolución de llamada = función(Valor)
+    Callback = function(Value)
 
-        showGlassESP = Valor
+        showGlassESP = Value
 
-        función local isRealGlass(parte)
+        local function isRealGlass(part)
 
-            si parte:GetAttribute("GlassPart") entonces
+            if part:GetAttribute("GlassPart") then
 
-                si parte:GetAttribute("ActuallyKilling") ~= nil entonces
+                if part:GetAttribute("ActuallyKilling") ~= nil then
 
-                    devuelve falso -- falso
+                    return false -- falso
 
-                fin
+                end
 
-                devuelve verdadero -- real
+                return true -- real
 
-            fin
+            end
 
-            devolver falso
+            return false
 
-        fin
+        end
 
-        función local updateGlassColors()
+        local function updateGlassColors()
 
-            para _, parte en ipairs(workspace:GetDescendants()) hacer
+            for _, part in ipairs(workspace:GetDescendants()) do
 
-                si parte:IsA("BasePart") y parte:GetAttribute("GlassPart") entonces
+                if part:IsA("BasePart") and part:GetAttribute("GlassPart") then
 
-                    si showGlassESP entonces
+                    if showGlassESP then
 
-                        si isRealGlass(parte) entonces
+                        if isRealGlass(part) then
 
-                            parte.Color = Color3.fromRGB(0, 255, 0) -- verde real
+                            part.Color = Color3.fromRGB(0, 255, 0) -- verde real
 
-                        demás
+                        else
 
                             part.Color = Color3.fromRGB(255, 0, 0) -- vermelho falso
 
-                        fin
+                        end
 
-                        parte.Material = Enumeración.Material.Neón
+                        part.Material = Enum.Material.Neon
 
-                        parte:SetAttribute("Explotar es malo", verdadero)
+                        part:SetAttribute("ExploitingIsEvil", true)
 
-                    demás
+                    else
 
-                        parte.Color = Color3.fromRGB(163, 162, 165)
+                        part.Color = Color3.fromRGB(163, 162, 165)
 
-                        parte.Material = Enumeración.Material.Vidrio
+                        part.Material = Enum.Material.Glass
 
-                        parte:SetAttribute("Explotar es malo", nulo)
+                        part:SetAttribute("ExploitingIsEvil", nil)
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin
+            end
 
-        fin
+        end
 
-        Si Valor entonces
+        if Value then
 
-            tarea.spawn(función()
+            task.spawn(function()
 
-                mientras showGlassESP lo hace
+                while showGlassESP do
 
-                    actualizarColoresDeVidrio()
+                    updateGlassColors()
 
-                    tarea.esperar(0.5)
+                    task.wait(0.5)
 
-                fin
+                end
 
-            fin)
+            end)
 
-        demás
+        else
 
-            actualizarColoresDeVidrio()
+            updateGlassColors()
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
 -- ===============================
 
--- 🟦 CARACTERÍSTICAS ALEATORIAS
+-- 🟦 RANDOM FEATURES
 
 -- ===============================
 
--- Vendaje TP
+-- TP Bandage
 
-GroupBoxes["Funciones aleatorias"]:AddButton({
+GroupBoxes["Random Features"]:AddButton({
 
-    Texto = "Vendaje TP",
+    Text = "TP Bandage",
 
-    Descripción emergente = "TP VENDA y elige él.",
+    Tooltip = "TP BANDAGE and pick he.",
 
-    Func = función()
+    Func = function()
 
-        función local getClosestBandage()
+        local function getClosestBandage()
 
-            personaje local = LocalPlayer.Character
+            local character = LocalPlayer.Character
 
-            si no es un carácter o no es un carácter:FindFirstChild("HumanoidRootPart") entonces devuelve nil fin
+            if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end
 
-            hrp local = personaje.HumanoidRootPart
+            local hrp = character.HumanoidRootPart
 
-            local más cercano, minDistance = nulo, math.huge
+            local closest, minDistance = nil, math.huge
 
-            para _, vendaje en ipairs(Workspace.Effects:GetChildren()) hacer
+            for _, bandage in ipairs(Workspace.Effects:GetChildren()) do
 
-                si vendaje.Nombre == "DroppedBandage" y vendaje:IsA("Modelo") entonces
+                if bandage.Name == "DroppedBandage" and bandage:IsA("Model") then
 
-                    primaria local = vendaje.PartePrimaria o vendaje:BuscarPrimerHijoQueEsA("ParteBase")
+                    local primary = bandage.PrimaryPart or bandage:FindFirstChildWhichIsA("BasePart")
 
-                    Si es primaria entonces
+                    if primary then
 
-                        distancia local = (hrp.Posición - primaria.Posición).Magnitud
+                        local distance = (hrp.Position - primary.Position).Magnitude
 
-                        si distancia < minDistancia entonces
+                        if distance < minDistance then
 
-                            minDistancia = distancia
+                            minDistance = distance
 
-                            más cercano = vendaje
+                            closest = bandage
 
-                        fin
+                        end
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin
+            end
 
-            volver más cercano
+            return closest
 
-        fin
+        end
 
-        personaje local = LocalPlayer.Character
+        local character = LocalPlayer.Character
 
-        si no es un carácter o no es un carácter:FindFirstChild("HumanoidRootPart") entonces devuelve fin
+        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
 
-        hrp local = personaje.HumanoidRootPart
+        local hrp = character.HumanoidRootPart
 
-        Posición original local = hrp.CFrame
+        local originalPosition = hrp.CFrame
 
-        vendaje local = obtenerVendajeMásCercano()
+        local bandage = getClosestBandage()
 
-        Si vendaje entonces
+        if bandage then
 
-            primaria local = vendaje.PartePrimaria o vendaje:BuscarPrimerHijoQueEsA("ParteBase")
+            local primary = bandage.PrimaryPart or bandage:FindFirstChildWhichIsA("BasePart")
 
-            Si es primaria entonces
+            if primary then
 
-                hrp.CFrame = primario.CFrame + Vector3.new(0, 3, 0)
+                hrp.CFrame = primary.CFrame + Vector3.new(0, 3, 0)
 
-                tarea.esperar(0.5)
+                task.wait(0.5)
 
-                hrp.CFrame = posiciónoriginal
+                hrp.CFrame = originalPosition
 
-            fin
+            end
 
-        demás
+        else
 
-            warn("¡No se encontró DroppedBandage!")
+            warn("No DroppedBandage found!")
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
--- Velocidad de giro de entrada
+-- Input Swing Speed
 
-GroupBoxes["Funciones aleatorias"]:AddInput("SwingSpeedInput", {
+GroupBoxes["Random Features"]:AddSlider("SwingSpeedSlider", {
+    Text = "Speed",
+    Min = 0,          -- mínimo valor
+    Max = 100,         -- máximo valor
+    Default = 10,     -- valor inicial
+    Step = 1,         -- incremento/decremento
+    Tooltip = "Bypassed speed unpatched.",
+    Callback = function(value)
+        local liveFolder = workspace:WaitForChild("Live")
+        local playerModel = liveFolder:WaitForChild(LocalPlayer.Name)
+        local swingSpeed = playerModel:FindFirstChild("SwingSpeed")
 
-    Texto = "Velocidad",
-
-    Valor predeterminado = "10",
-
-    Información sobre herramientas = "Velocidad omitida sin parchear. ",
-
-    Marcador de posición = "Ingrese la velocidad (0-50)...",
-
-    Devolución de llamada = función(entrada)
-
-        valor local = tonumber(entrada)
-
-        Si no es valor entonces
-
-            warn("Entrada inválida, ingrese un número!")
-
-            devolver
-
-        fin
-
-        si valor < 0 entonces
-
-            valor = 0
-
-        de lo contrario, si el valor es > 50 entonces
-
-            valor = 50
-
-        fin
-
-        carpetaLiveFolder local = espacio de trabajo:WaitForChild("Live")
-
-        modeloDeJugadorLocal = CarpetaEnVivo:EsperaRico(JugadorLocal.Nombre)
-
-        Velocidad de swing local = ModeloJugador:BuscarPrimerHijo("Velocidad de Swing")
-
-        si swingSpeed ​​y swingSpeed:IsA("NumberValue") entonces
-
-            swingSpeed.Value = valor
-
-            print("Velocidad de giro establecida en:", valor)
-
-        demás
-
-            warn("¡SwingSpeed ​​no encontrado o no válido para este jugador!")
-
-        fin
-
-    fin
-
+        if swingSpeed and swingSpeed:IsA("NumberValue") then
+            swingSpeed.Value = value
+            print("Swing Speed set to:", value)
+        else
+            warn("SwingSpeed not found or invalid for this player!")
+        end
+    end
 })
 
 -- ===============================
 
--- 🟥 LUZ ROJA, LUZ VERDE
+-- 🟥 RED LIGHT, GREEN LIGHT
 
 -- ===============================
 
-GroupBoxes["Luz roja, luz verde"]:AddButton({
+GroupBoxes["Red Light, Green Light"]:AddButton({
 
-    Texto = "TP INICIO",
+    Text = "TP START",
 
-    Información sobre herramientas = "TP INICIO de rlgl.",
+    Tooltip = "TP START of rlgl.",
 
-    Func = función()
+    Func = function()
 
-        teletransportarseA(CFrame.new(-49.8884354, 1020.104, -512.157776))
+        teleportTo(CFrame.new(-49.8884354, 1020.104, -512.157776))
 
-    fin
+    end
 
 })
 
-GroupBoxes["Luz roja, luz verde"]:AddButton({
+GroupBoxes["Red Light, Green Light"]:AddButton({
 
-    Texto = "TP LUGAR SEGURO",
+    Text = "TP SAFE PLACE",
 
-    Información sobre herramientas = "TP LUGAR SEGURO en rlgl.",
+    Tooltip = "TP SAFE PLACE in rlgl.",
 
-    Func = función()
+    Func = function()
 
-        teletransportarseA(CFrame.new(197.452408, 51.3870239, -95.6055298))
+        teleportTo(CFrame.new(197.452408, 51.3870239, -95.6055298))
 
-    fin
+    end
 
 })
 
 -- ===============================
 
--- 💡 LUCES APAGADAS / JUEGO ESPECIAL
+-- 💡 LIGHTS OUT / SPECIAL GAME
 
 -- ===============================
 
-GroupBoxes["Luces apagadas / Juego especial"]:AddButton({
+GroupBoxes["Lights Out / Special Game"]:AddButton({
 
-    Texto = "TP LUGAR SEGURO",
+    Text = "TP SAFE PLACE",
 
-    Información sobre herramientas = "TP A un lugar seguro.",
+    Tooltip = "TP To a safe place.",
 
-    Func = función()
+    Func = function()
 
-        teletransportarseA(CFrame.new(195.255814, 112.202904, -85.3726807))
+        teleportTo(CFrame.new(195.255814, 112.202904, -85.3726807))
 
-    fin
+    end
 
 })
 
 -- ===============================
 
--- 🟧 MEZCLARSE
+-- 🟧 MINGLE
 
 -- ===============================
 
-Cuadros de grupo["Mezclar"]:AgregarBotón({
+GroupBoxes["Mingle"]:AddButton({
 
-    Texto = "Sacar a la persona",
+    Text = "Bring Person Out",
 
-    Información sobre herramientas = "Sacar a una persona."
+    Tooltip = "Bring out a person.",
 
-    Func = función()
+    Func = function()
 
-        teletransportarseA(CFrame.new(1210.03967, 414.071106, -574.103088))
+        teleportTo(CFrame.new(1210.03967, 414.071106, -574.103088))
 
-    fin
+    end
 
 })
 
 -- ===============================
 
--- 🦑 EL JUEGO DEL CALAMAR
+-- 🦑 SQUID GAME
 
 -- ===============================
 
-GroupBoxes["El juego del calamar"]:AddToggle("DontExitSquid", {
+GroupBoxes["Squid Game"]:AddToggle("DontExitSquid", {
 
-    Texto = "NO SALGAS DEL CALAMAR",
+    Text = "DONT EXIT OF SQUID",
 
-    Predeterminado = falso,
+    Default = false,
 
-    Devolución de llamada = función(Valor)
+    Callback = function(Value)
 
-        BoxEnabled = Valor
+        BoxEnabled = Value
 
-        para _, parte en ipairs(BoxParts) hacer
+        for _, part in ipairs(BoxParts) do
 
-            parte:Destruir()
+            part:Destroy()
 
-        fin
+        end
 
-        Partes de la caja = {}
+        BoxParts = {}
 
-        Si Valor entonces
+        if Value then
 
-            char local = LocalPlayer.Character o LocalPlayer.CharacterAdded:Wait()
+            local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-            hrp local = char:WaitForChild("ParteRaízHumanoid")
+            local hrp = char:WaitForChild("HumanoidRootPart")
 
-            tamaño local = Vector3.new(50, 50, 50)
+            local size = Vector3.new(50, 50, 50)
 
-            espesor local = 3
+            local thickness = 3
 
-            función local createWall(pos, tamaño)
+            local function createWall(pos, size)
 
-                parte local = Instancia.new("Parte")
+                local part = Instance.new("Part")
 
-                parte.Tamaño = tamaño
+                part.Size = size
 
-                parte.Anclado = verdadero
+                part.Anchored = true
 
-                parte.CanCollide = verdadero
+                part.CanCollide = true
 
-                parte.Transparencia = 0.5
+                part.Transparency = 0.5
 
-                parte.Material = Enumeración.Material.CampoDeFuerza
+                part.Material = Enum.Material.ForceField
 
-                parte.Color = Color3.fromRGB(255, 0, 0)
+                part.Color = Color3.fromRGB(255, 0, 0)
 
-                parte.CFrame = hrp.CFrame:ToWorldSpace(CFrame.new(pos))
+                part.CFrame = hrp.CFrame:ToWorldSpace(CFrame.new(pos))
 
-                part.Parent = Espacio de trabajo
+                part.Parent = Workspace
 
-                tabla.insertar(BoxParts, parte)
+                table.insert(BoxParts, part)
 
-            fin
+            end
 
-            createWall(Vector3.new(25, 0, 0), Vector3.new(grosor, tamaño.Y, tamaño.Z))
+            createWall(Vector3.new(25, 0, 0), Vector3.new(thickness, size.Y, size.Z))
 
-            createWall(Vector3.new(-25, 0, 0), Vector3.new(grosor, tamaño.Y, tamaño.Z))
+            createWall(Vector3.new(-25, 0, 0), Vector3.new(thickness, size.Y, size.Z))
 
-            createWall(Vector3.new(0, 0, 25), Vector3.new(tamaño.X, tamaño.Y, grosor))
+            createWall(Vector3.new(0, 0, 25), Vector3.new(size.X, size.Y, thickness))
 
-            createWall(Vector3.new(0, 0, -25), Vector3.new(tamaño.X, tamaño.Y, grosor))
+            createWall(Vector3.new(0, 0, -25), Vector3.new(size.X, size.Y, thickness))
 
-            createWall(Vector3.new(0, 25, 0), Vector3.new(tamaño.X, grosor, tamaño.Z))
+            createWall(Vector3.new(0, 25, 0), Vector3.new(size.X, thickness, size.Z))
 
-            createWall(Vector3.new(0, -25, 0), Vector3.new(tamaño.X, grosor, tamaño.Z))
+            createWall(Vector3.new(0, -25, 0), Vector3.new(size.X, thickness, size.Z))
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
--- Servicios
+-- Serviços
 
-Jugadores locales = juego:GetService("Jugadores")
+local Players = game:GetService("Players")
 
-local LocalPlayer = Jugadores.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 
-RunService local = juego:GetService("RunService")
+local RunService = game:GetService("RunService")
 
-Espacio de trabajo local = juego:GetService("Espacio de trabajo")
+local Workspace = game:GetService("Workspace")
 
--- Variáveis ​​de controle
+-- Variáveis de controle
 
-AutoKillAllEnabled local = falso
+local AutoKillAllEnabled = false
 
-Conexión local FollowAll
+local FollowAllConnection
 
-Luces activas locales = {}
-
--- ===============================
-
--- 🟨 PESTAÑA LIGERA: MATAR JUGADORES AUTOMÁTICAMENTE
+local ActiveHighlights = {}
 
 -- ===============================
 
-GroupBoxes["Luces apagadas / Juego especial"]:AddToggle("AutoKillAll", {
+-- 🟨 LIGHT TAB: AUTO KILL PLAYERS
 
-    Texto = "MATAR JUGADORES AUTOMÁTICAMENTE",
+-- ===============================
 
-    Descripción emergente = "Eliminar automáticamente a jugadores aleatorios."
+GroupBoxes["Lights Out / Special Game"]:AddToggle("AutoKillAll", {
 
-    Predeterminado = falso,
+    Text = "AUTO KILL PLAYERS",
 
-    Devolución de llamada = función(Valor)
+    Tooltip = "Auto kill randoms players.",
 
-        AutoKillAllEnabled = Valor
+    Default = false,
 
-        Si FollowAllConnection entonces
+    Callback = function(Value)
 
-            SeguirTodasConexión:Desconectar()
+        AutoKillAllEnabled = Value
 
-            FollowAllConnection = nulo
+        if FollowAllConnection then
 
-        fin
+            FollowAllConnection:Disconnect()
 
-        Si AutoKillAllEnabled entonces
+            FollowAllConnection = nil
 
-            personaje local = LocalPlayer.Character
+        end
 
-            si carácter y carácter:FindFirstChild("HumanoidRootPart") entonces
+        if AutoKillAllEnabled then
 
-                HRP local = personaje.HumanoidRootPart
+            local character = LocalPlayer.Character
 
-                FollowAllConnection = RunService.RenderStepped:Connect(función()
+            if character and character:FindFirstChild("HumanoidRootPart") then
 
-                    Si no es AutoKillAllEnabled o no es HRP o no es HRP.Parent, entonces devuelve el final
+                local HRP = character.HumanoidRootPart
 
-                    Jugador local más cercano, distancia más corta = nula, matemática.enorme
+                FollowAllConnection = RunService.RenderStepped:Connect(function()
 
-                    para _, jugador en ipairs(Players:GetPlayers()) hacer
+                    if not AutoKillAllEnabled or not HRP or not HRP.Parent then return end
 
-                        si jugador ~= LocalPlayer y jugador.Character y jugador.Character:FindFirstChild("Humanoid") y jugador.Character.Humanoid.Health > 0 entonces
+                    local closestPlayer, shortestDistance = nil, math.huge
 
-                            torso local = jugador.Personaje:BuscarPrimerHijo("ParteRaízHumanoid")
+                    for _, player in ipairs(Players:GetPlayers()) do
 
-                            Si torso entonces
+                        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
 
-                                distancia local = (HRP.Posición - torso.Posición).Magnitud
+                            local torso = player.Character:FindFirstChild("HumanoidRootPart")
 
-                                si distancia < distanciamáscorta entonces
+                            if torso then
 
-                                    distanciamáscorta = distancia
+                                local distance = (HRP.Position - torso.Position).Magnitude
 
-                                    jugadormás cercano = jugador
+                                if distance < shortestDistance then
 
-                                fin
+                                    shortestDistance = distance
 
-                            fin
+                                    closestPlayer = player
 
-                        fin
+                                end
 
-                    fin
+                            end
 
-                    Si closerPlayer y closerPlayer.Character entonces
+                        end
 
-                        objetivo localTorso = jugadormáscercano.Carácter:BuscarPrimerHijo("ParteRaízHumanoide")
+                    end
 
-                            o closerPlayer.Character:FindFirstChild("UpperTorso")
+                    if closestPlayer and closestPlayer.Character then
 
-                            o closerPlayer.Character:FindFirstChild("Torso")
+                        local targetTorso = closestPlayer.Character:FindFirstChild("HumanoidRootPart")
 
-                        Si targetTorso entonces
+                            or closestPlayer.Character:FindFirstChild("UpperTorso")
+
+                            or closestPlayer.Character:FindFirstChild("Torso")
+
+                        if targetTorso then
 
                             HRP.CFrame = targetTorso.CFrame * CFrame.new(0, 0, -5)
 
-                        fin
+                        end
 
-                    fin
+                    end
 
-                fin)
+                end)
 
-            fin
+            end
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
 -- ===============================
 
--- 🟦 PESTAÑA DE ESCONDIDAS: ESP EXITDOOR
+-- 🟦 HIDE AND SEEK TAB: ESP EXITDOOR
 
 -- ===============================
 
-función local createHighlight(puerta)
+local function createHighlight(door)
 
-    si ActiveHighlights[puerta] entonces devuelve fin
+    if ActiveHighlights[door] then return end
 
-    resaltado local = Instancia.new("Resaltar")
+    local highlight = Instance.new("Highlight")
 
-    resaltar.Adornee = puerta
+    highlight.Adornee = door
 
-    resaltar.FillColor = Color3.fromRGB(255, 255, 0)
+    highlight.FillColor = Color3.fromRGB(255, 255, 0)
 
-    resaltar.OutlineColor = Color3.fromRGB(255, 255, 0)
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 0)
 
-    resaltar.FillTransparency = 0.3
+    highlight.FillTransparency = 0.3
 
-    resaltar.Padre = puerta
+    highlight.Parent = door
 
-    ActiveHighlights[puerta] = resaltar
+    ActiveHighlights[door] = highlight
 
-fin
+end
 
-función local enableESP()
+local function enableESP()
 
-    Mapa local = Espacio de trabajo:FindFirstChild("HideAndSeekMap")
+    local Map = Workspace:FindFirstChild("HideAndSeekMap")
 
-    si no es Mapa, regrese warn("⚠️ HideAndSeekMap não encontrado!") end
+    if not Map then return warn("⚠️ HideAndSeekMap não encontrado!") end
 
-    CarpetaPuertaslocal = Mapa:BuscarPrimerHijo("NUEVASPUERTASFIJAS")
+    local DoorsFolder = Map:FindFirstChild("NEWFIXEDDOORS")
 
-    si no es DoorsFolder, devuelve warn("⚠️ NEWFIXEDDOORS não encontrado!") fin
+    if not DoorsFolder then return warn("⚠️ NEWFIXEDDOORS não encontrado!") end
 
-    para _, piso en ipairs(DoorsFolder:GetChildren()) hacer
+    for _, floor in ipairs(DoorsFolder:GetChildren()) do
 
-        puertas de salida locales = piso:BuscarPrimerHijo("PUERTAS DE SALIDA")
+        local exitDoors = floor:FindFirstChild("EXITDOORS")
 
-        Si hay puertas de salida entonces
+        if exitDoors then
 
-            para _, puerta en ipairs(exitDoors:GetChildren()) hacer
+            for _, door in ipairs(exitDoors:GetChildren()) do
 
-                si puerta:IsA("Modelo") y puerta:GetAttribute("ActuallyWorks") entonces
+                if door:IsA("Model") and door:GetAttribute("ActuallyWorks") then
 
-                    createHighlight(puerta)
+                    createHighlight(door)
 
-                fin
+                end
 
-            fin
+            end
 
-        fin
+        end
 
-    fin
+    end
 
-fin
+end
 
-función local deshabilitarESP()
+local function disableESP()
 
-    Para la puerta, resaltar en pares (ActiveHighlights)
+    for door, highlight in pairs(ActiveHighlights) do
 
-        Si resalta y resalta.Padre entonces
+        if highlight and highlight.Parent then
 
-            resaltar:Destruir()
+            highlight:Destroy()
 
-        fin
+        end
 
-        ActiveHighlights[puerta] = nulo
+        ActiveHighlights[door] = nil
 
-    fin
+    end
 
-fin
+end
 
-GroupBoxes["Esconderse y buscar"]:AddToggle("ESPExitDoor", {
+GroupBoxes["Hide 'N' Seek"]:AddToggle("ESPExitDoor", {
 
-    Texto = "ESP SALIDA",
+    Text = "ESP EXITDOOR",
 
-    Predeterminado = falso,
+    Default = false,
 
-    Devolución de llamada = función(Valor)
+    Callback = function(Value)
 
-        Si Valor entonces
+        if Value then
 
-            habilitarESP()
+            enableESP()
 
-        demás
+        else
 
-            deshabilitarESP()
+            disableESP()
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
--- Script de interfaz de usuario de OBSIDIAN
+-- OBSIDIAN UI Script
 
--- Grupo de cuadros de puente de vidrio
+-- Glass Bridge GroupBox
 
-GroupBoxes["Esconder y buscar"]:AddToggle("TECLA TP", {
+GroupBoxes["Hide 'N' Seek"]:AddToggle("TP KEY", {
 
-    Texto = "TECLA TP",
+    Text = "TP KEY",
 
-    Devolución de llamada = función(Valor)
+    Callback = function(Value)
 
-        Jugadores locales = juego:GetService("Jugadores")
+        local Players = game:GetService("Players")
 
-        Espacio de trabajo local = juego:GetService("Espacio de trabajo")
+        local Workspace = game:GetService("Workspace")
 
-        local LocalPlayer = Jugadores.LocalPlayer
+        local LocalPlayer = Players.LocalPlayer
 
-        Efectos locales = Espacio de trabajo:WaitForChild("Efectos")
+        local Effects = Workspace:WaitForChild("Effects")
 
-        Teletransportación local = Valor
+        local Teleporting = Value
 
-        función local getModelCFrame(modelo)
+        local function getModelCFrame(model)
 
-            si modelo.PrimaryPart entonces
+            if model.PrimaryPart then
 
-                devolver modelo.PrimaryPart.CFrame
+                return model.PrimaryPart.CFrame
 
-            fin
+            end
 
-            para _, parte en ipairs(modelo:GetDescendants()) hacer
+            for _, part in ipairs(model:GetDescendants()) do
 
-                si parte:IsA("BasePart") entonces
+                if part:IsA("BasePart") then
 
-                    devolver parte.CFrame
+                    return part.CFrame
 
-                fin
+                end
 
-            fin
+            end
 
-            devolver cero
+            return nil
 
-        fin
+        end
 
-        función local teleportKeys()
+        local function teleportKeys()
 
-            mientras te teletransportas
+            while Teleporting do
 
-                tarea.esperar(0.5)
+                task.wait(0.5)
 
-                char local = LocalPlayer.Character
+                local char = LocalPlayer.Character
 
-                si no es char o no es char:FindFirstChild("HumanoidRootPart") entonces continúa fin
+                if not char or not char:FindFirstChild("HumanoidRootPart") then continue end
 
-                hrp local = char.HumanoidRootPart
+                local hrp = char.HumanoidRootPart
 
-                CFrame original local = hrp.CFrame
+                local originalCFrame = hrp.CFrame
 
-                para _, obj en ipairs(Efectos:GetChildren()) hacer
+                for _, obj in ipairs(Effects:GetChildren()) do
 
-                    si obj:IsA("Modelo") y (obj.Nombre == "DroppedKeyCircle" o obj.Nombre == "DroppedKeySquare" o obj.Nombre == "DroppedKeyTriangle") entonces
+                    if obj:IsA("Model") and (obj.Name == "DroppedKeyCircle" or obj.Name == "DroppedKeySquare" or obj.Name == "DroppedKeyTriangle") then
 
-                        keyCFrame local = obtenerModelCFrame(obj)
+                        local keyCFrame = getModelCFrame(obj)
 
-                        Si keyCFrame entonces
+                        if keyCFrame then
 
                             hrp.CFrame = keyCFrame + Vector3.new(0,3,0)
 
-                            tarea.esperar(0.25)
+                            task.wait(0.25)
 
-                            hrp.CFrame = CFrame original
+                            hrp.CFrame = originalCFrame
 
-                            tarea.esperar(0.15)
+                            task.wait(0.15)
 
-                        fin
+                        end
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin
+            end
 
-        fin
+        end
 
-        Si se teletransporta entonces
+        if Teleporting then
 
-            tarea.spawn(llavesdeteletransporte)
+            task.spawn(teleportKeys)
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
--- Cuadro de grupo de luz roja
+-- Red Light GroupBox
 
-GroupBoxes["Funciones aleatorias"]:AddToggle("AutoDodge", {
+GroupBoxes["Random Features"]:AddToggle("AutoDodge", {
 
-    Texto = "AUTO DODGE",
+    Text = "AUTO DODGE",
 
-    Devolución de llamada = función(Valor)
+    Callback = function(Value)
 
-        Jugadores locales = juego:GetService("Jugadores")
+        local Players = game:GetService("Players")
 
-        local LocalPlayer = Jugadores.LocalPlayer
+        local LocalPlayer = Players.LocalPlayer
 
-        Espacio de trabajo local = juego:GetService("Espacio de trabajo")
+        local Workspace = game:GetService("Workspace")
 
-        AutoDodge local = Valor
+        local AutoDodge = Value
 
-        Parte raíz humanoide local
+        local humanoidRootPart
 
-        humanoide local
+        local humanoid
 
-        DODGE_RANGE local = 4
+        local DODGE_RANGE = 4
 
-        ALTURA DE TELEPORTE local = 75
+        local TELEPORT_HEIGHT = 75
 
-        AMENAZAS locales = { "BOTELLA", "CUCHILLO", "TENEDOR" }
+        local THREATS = { "BOTTLE", "KNIFE", "FORK" }
 
-        función local hasDodgeItem()
+        local function hasDodgeItem()
 
-            mochila local = LocalPlayer:FindFirstChild("Mochila")
+            local backpack = LocalPlayer:FindFirstChild("Backpack")
 
-            si mochila y mochila:FindFirstChild("¡ESQUIVA!") entonces
+            if backpack and backpack:FindFirstChild("DODGE!") then
 
-                devolver mochila:FindFirstChild("¡ESQUIVA!")
+                return backpack:FindFirstChild("DODGE!")
 
-            fin
+            end
 
-            personaje local = LocalPlayer.Character
+            local character = LocalPlayer.Character
 
-            si carácter y carácter:FindFirstChild("¡ESQUIVA!") entonces
+            if character and character:FindFirstChild("DODGE!") then
 
-                carácter de retorno:FindFirstChild("¡ESQUIVA!")
+                return character:FindFirstChild("DODGE!")
 
-            fin
+            end
 
-            devolver cero
+            return nil
 
-        fin
+        end
 
-        función local useDodgeItem()
+        local function useDodgeItem()
 
-            Herramienta de esquivar local = hasDodgeItem()
+            local dodgeTool = hasDodgeItem()
 
-            si dodgeTool y dodgeTool:FindFirstChild("RemoteEvent") entonces
+            if dodgeTool and dodgeTool:FindFirstChild("RemoteEvent") then
 
-                pcall(función()
+                pcall(function()
 
                     dodgeTool.RemoteEvent:FireServer()
 
-                fin)
+                end)
 
-                devuelve verdadero
+                return true
 
-            fin
+            end
 
-            devolver falso
+            return false
 
-        fin
+        end
 
-        función local teleportUp()
+        local function teleportUp()
 
-            Si humanoidRootPart entonces
+            if humanoidRootPart then
 
-                ParteRaízhumanoide.CFrame = ParteRaízhumanoide.CFrame + Vector3.new(0, ALTURA_TELEPORTE, 0)
+                humanoidRootPart.CFrame = humanoidRootPart.CFrame + Vector3.new(0, TELEPORT_HEIGHT, 0)
 
-            fin
+            end
 
-        fin
+        end
 
-        función local detectThreats()
+        local function detectThreats()
 
-            para _, jugador en ipairs(Players:GetPlayers()) hacer
+            for _, player in ipairs(Players:GetPlayers()) do
 
-                si jugador ~= LocalPlayer y jugador.Character entonces
+                if player ~= LocalPlayer and player.Character then
 
-                    char local = jugador.Personaje
+                    local char = player.Character
 
-                    hrp local = char:FindFirstChild("ParteRaízHumanoid")
+                    local hrp = char:FindFirstChild("HumanoidRootPart")
 
-                    si hrp y (hrp.Position - humanoidRootPart.Position).Magnitude <= DODGE_RANGE entonces
+                    if hrp and (hrp.Position - humanoidRootPart.Position).Magnitude <= DODGE_RANGE then
 
-                        para _, herramienta en ipairs(char:GetChildren()) hacer
+                        for _, tool in ipairs(char:GetChildren()) do
 
-                            si herramienta:IsA("Herramienta") y tabla.find(AMENAZAS, herramienta.Nombre:upper()) entonces
+                            if tool:IsA("Tool") and table.find(THREATS, tool.Name:upper()) then
 
-                                devuelve verdadero
+                                return true
 
-                            fin
+                            end
 
-                        fin
+                        end
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin
+            end
 
-            devolver falso
+            return false
 
-        fin
+        end
 
-        función local startAutoDodge()
+        local function startAutoDodge()
 
-            tarea.spawn(función()
+            task.spawn(function()
 
-                mientras que AutoDodge lo hace
+                while AutoDodge do
 
-                    tarea.esperar(0.15)
+                    task.wait(0.15)
 
-                    char local = LocalPlayer.Character
+                    local char = LocalPlayer.Character
 
-                    HumanoidRootPart = char y char:FindFirstChild("HumanoidRootPart")
+                    humanoidRootPart = char and char:FindFirstChild("HumanoidRootPart")
 
-                    humanoide = char y char:FindFirstChildOfClass("Humanoide")
+                    humanoid = char and char:FindFirstChildOfClass("Humanoid")
 
-                    si no es humanoidRootPart o no es humanoid o humanoid.Health <= 0 entonces continúa fin
+                    if not humanoidRootPart or not humanoid or humanoid.Health <= 0 then continue end
 
-                    si detectaAmenazas() entonces
+                    if detectThreats() then
 
-                        Si no se usaDodgeItem() entonces
+                        if not useDodgeItem() then
 
-                            teletransportarse()
+                            teleportUp()
 
-                        fin
+                        end
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin)
+            end)
 
-        fin
+        end
 
-        Si AutoDodge entonces
+        if AutoDodge then
 
-            iniciarAutoDodge()
+            startAutoDodge()
 
-        fin
+        end
 
-    fin
-
-})
-
-
-
--- Grupo de luz roja: Teletransporte final
-
-GroupBoxes["Luz roja, luz verde"]:AddButton({
-
-    Texto = "TP FIN",
-
-    Func = función()
-
-        Jugadores locales = juego:GetService("Jugadores")
-
-        local LocalPlayer = Jugadores.LocalPlayer
-
-        Personaje local = LocalPlayer.Character
-
-        si Personaje y Personaje:FindFirstChild("HumanoidRootPart") entonces
-
-            objetivo localCFrame = CFrame.new(-41.7126923, 1021.32306, 134.34935, 0.811150551, 0.237830803, 0.534295142, -8.95559788e-06, 0.913583994, -0.406650066, -0.584837377, 0.32984966, 0.741056323) + Vector3.new(0, 10, 0)
-
-            Personaje.HumanoidRootPart.CFrame = targetCFrame
-
-        fin
-
-    fin
+    end
 
 })
 
--- Grupo de escondite: ESP EXITDOOR
 
-GroupBoxes["Esconderse y buscar"]:AddToggle("ESPExitDoor", {
 
-    Texto = "ESP SALIDA",
+-- Red Light GroupBox: Teleport Final
 
-    Devolución de llamada = función(Valor)
+GroupBoxes["Red Light, Green Light"]:AddButton({
 
-        Espacio de trabajo local = juego:GetService("Espacio de trabajo")
+    Text = "TP END",
 
-        Luces activas locales = {}
+    Func = function()
 
-        función local createHighlight(puerta)
+        local Players = game:GetService("Players")
 
-            si ActiveHighlights[puerta] entonces devuelve fin
+        local LocalPlayer = Players.LocalPlayer
 
-            resaltado local = Instancia.new("Resaltar")
+        local Character = LocalPlayer.Character
 
-            resaltar.Adornee = puerta
+        if Character and Character:FindFirstChild("HumanoidRootPart") then
 
-            resaltar.FillColor = Color3.fromRGB(255,255,0)
+            local targetCFrame = CFrame.new(-41.7126923, 1021.32306, 134.34935, 0.811150551, 0.237830803, 0.534295142, -8.95559788e-06, 0.913583994, -0.406650066, -0.584837377, 0.32984966, 0.741056323) + Vector3.new(0, 10, 0)
 
-            resaltar.OutlineColor = Color3.fromRGB(255,255,0)
+            Character.HumanoidRootPart.CFrame = targetCFrame
 
-            resaltar.FillTransparency = 0.3
+        end
 
-            resaltar.Padre = puerta
+    end
 
-            ActiveHighlights[puerta] = resaltar
+})
 
-        fin
+-- Hide 'N' Seek GroupBox: ESP EXITDOOR
 
-        función local enableESP()
+GroupBoxes["Hide 'N' Seek"]:AddToggle("ESPExitDoor", {
 
-            Mapa local = Espacio de trabajo:FindFirstChild("HideAndSeekMap")
+    Text = "ESP EXITDOOR",
 
-            si no es Mapa, regrese warn("⚠️ HideAndSeekMap não encontrado!") end
+    Callback = function(Value)
 
-            CarpetaPuertaslocal = Mapa:BuscarPrimerHijo("NUEVASPUERTASFIJAS")
+        local Workspace = game:GetService("Workspace")
 
-            si no es DoorsFolder, devuelve warn("⚠️ NEWFIXEDDOORS não encontrado!") fin
+        local ActiveHighlights = {}
 
-            para _, piso en ipairs(DoorsFolder:GetChildren()) hacer
+        local function createHighlight(door)
 
-                puertas de salida locales = piso:BuscarPrimerHijo("PUERTAS DE SALIDA")
+            if ActiveHighlights[door] then return end
 
-                Si hay puertas de salida entonces
+            local highlight = Instance.new("Highlight")
 
-                    para _, puerta en ipairs(exitDoors:GetChildren()) hacer
+            highlight.Adornee = door
 
-                        si puerta:IsA("Modelo") y puerta:GetAttribute("ActuallyWorks") entonces
+            highlight.FillColor = Color3.fromRGB(255,255,0)
 
-                            createHighlight(puerta)
+            highlight.OutlineColor = Color3.fromRGB(255,255,0)
 
-                        fin
+            highlight.FillTransparency = 0.3
 
-                    fin
+            highlight.Parent = door
 
-                fin
+            ActiveHighlights[door] = highlight
 
-            fin
+        end
 
-        fin
+        local function enableESP()
 
-        función local deshabilitarESP()
+            local Map = Workspace:FindFirstChild("HideAndSeekMap")
 
-            Para la puerta, resaltar en pares (ActiveHighlights)
+            if not Map then return warn("⚠️ HideAndSeekMap não encontrado!") end
 
-                si resalta y resalta.Padre entonces resalta:Destruir() fin
+            local DoorsFolder = Map:FindFirstChild("NEWFIXEDDOORS")
 
-                ActiveHighlights[puerta] = nulo
+            if not DoorsFolder then return warn("⚠️ NEWFIXEDDOORS não encontrado!") end
 
-            fin
+            for _, floor in ipairs(DoorsFolder:GetChildren()) do
 
-        fin
+                local exitDoors = floor:FindFirstChild("EXITDOORS")
 
-        Si Valor entonces
+                if exitDoors then
 
-            habilitarESP()
+                    for _, door in ipairs(exitDoors:GetChildren()) do
 
-        demás
+                        if door:IsA("Model") and door:GetAttribute("ActuallyWorks") then
 
-            deshabilitarESP()
+                            createHighlight(door)
 
-        fin
+                        end
 
-    fin
+                    end
+
+                end
+
+            end
+
+        end
+
+        local function disableESP()
+
+            for door, highlight in pairs(ActiveHighlights) do
+
+                if highlight and highlight.Parent then highlight:Destroy() end
+
+                ActiveHighlights[door] = nil
+
+            end
+
+        end
+
+        if Value then
+
+            enableESP()
+
+        else
+
+            disableESP()
+
+        end
+
+    end
 
 })
 
 --========================
 
--- UI DE OBSIDIANA - VERSIÓN GROUPBOX
+-- OBSIDIAN UI - GROUPBOX VERSION
 
 --========================
 
--- CARACTERÍSTICAS ALEATORIAS
+-- RANDOM FEATURES
 
-GroupBoxes["Funciones aleatorias"]:AddToggle("InfJump", {
+GroupBoxes["Random Features"]:AddToggle("InfJump", {
 
-    Texto = "Inf Jump",
+    Text = "Inf Jump",
 
-    Devolución de llamada = función(estado)
+    Callback = function(state)
 
-        ServicioDeEntradaDeUsuario local = juego:ObtenerServicio("ServicioDeEntradaDeUsuario")
+        local UserInputService = game:GetService("UserInputService")
 
-        jugador local = juego.Jugadores.JugadorLocal
+        local player = game.Players.LocalPlayer
 
-        InfiniteJumpEnabled local = estado
+        local InfiniteJumpEnabled = state
 
-        UserInputService.JumpRequest:Conectar(función()
+        UserInputService.JumpRequest:Connect(function()
 
-            Si InfiniteJumpEnabled entonces
+            if InfiniteJumpEnabled then
 
-                humanoide local = jugador.Personaje y jugador.Personaje:FindFirstChildOfClass("Humanoide")
+                local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 
-                Si humanoide y humanoide.Padre entonces
+                if humanoid and humanoid.Parent then
 
-                    humanoide:ChangeState(Enum.HumanoidStateType.Jumping)
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 
-                fin
+                end
 
-            fin
+            end
 
-        fin)
+        end)
 
-    fin
+    end
 
 })
 
-GroupBoxes["Funciones aleatorias"]:AddToggle("InstaInteract", {
+GroupBoxes["Random Features"]:AddToggle("InstaInteract", {
 
-    Texto = "Interacción instantánea",
+    Text = "Insta Interact",
 
-    Devolución de llamada = función(estado)
+    Callback = function(state)
 
-        local InstaInteractEnabled = estado
+        local InstaInteractEnabled = state
 
-        Jugadores locales = juego:GetService("Jugadores")
+        local Players = game:GetService("Players")
 
-        local LocalPlayer = Jugadores.LocalPlayer
+        local LocalPlayer = Players.LocalPlayer
 
-        Personaje local = LocalPlayer.Character o LocalPlayer.CharacterAdded:Wait()
+        local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-        ParteRaízHumanoide local = Personaje:EsperarNiño("ParteRaízHumanoide")
+        local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
-        LocalPlayer.CharacterAdded:Connect(función(carácter)
+        LocalPlayer.CharacterAdded:Connect(function(char)
 
-            Carácter = char
+            Character = char
 
-            PiezaRaízHumanoide = char:WaitForChild("PiezaRaízHumanoide")
+            HumanoidRootPart = char:WaitForChild("HumanoidRootPart")
 
-        fin)
+        end)
 
-        función local tornarPromptInstantaneo(prompt)
+        local function tornarPromptInstantaneo(prompt)
 
-            si prompt:IsA("ProximityPrompt") entonces
+            if prompt:IsA("ProximityPrompt") then
 
-                mensaje: GetPropertyChangedSignal("HoldDuration"):Connect(función()
+                prompt:GetPropertyChangedSignal("HoldDuration"):Connect(function()
 
-                    Si InstaInteractEnabled entonces
+                    if InstaInteractEnabled then
 
                         prompt.HoldDuration = 0
 
-                    fin
+                    end
 
-                fin)
+                end)
 
-                Si InstaInteractEnabled entonces
+                if InstaInteractEnabled then
 
                     prompt.HoldDuration = 0
 
-                fin
+                end
 
-            fin
+            end
 
-        fin
+        end
 
-        para _, obj en pares(workspace:GetDescendants()) hacer
+        for _, obj in pairs(workspace:GetDescendants()) do
 
-            si obj:IsA("ProximityPrompt") entonces
+            if obj:IsA("ProximityPrompt") then
 
-                tornarPromptInstantáneo(obj)
+                tornarPromptInstantaneo(obj)
 
-            fin
+            end
 
-        fin
+        end
 
-        espacio de trabajo.DescendantAdded:Connect(función(obj)
+        workspace.DescendantAdded:Connect(function(obj)
 
-            si obj:IsA("ProximityPrompt") entonces
+            if obj:IsA("ProximityPrompt") then
 
-                tornarPromptInstantáneo(obj)
+                tornarPromptInstantaneo(obj)
 
-            fin
+            end
 
-        fin)
+        end)
 
-        tarea.spawn(función()
+        task.spawn(function()
 
-            mientras tarea.wait(0.1) hacer
+            while task.wait(0.1) do
 
-                Si InstaInteractEnabled entonces
+                if InstaInteractEnabled then
 
-                    para _, solicitar en pares(workspace:GetDescendants()) hacer
+                    for _, prompt in pairs(workspace:GetDescendants()) do
 
-                        si prompt:IsA("ProximityPrompt") y prompt.HoldDuration ~= 0 entonces
+                        if prompt:IsA("ProximityPrompt") and prompt.HoldDuration ~= 0 then
 
                             prompt.HoldDuration = 0
 
-                        fin
+                        end
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin
+            end
 
-        fin)
+        end)
 
-    fin
+    end
 
 })
 
-GroupBoxes["Funciones aleatorias"]:AddToggle("Noclip", {
+GroupBoxes["Random Features"]:AddToggle("Noclip", {
 
-    Texto = "Sin clip",
+    Text = "Noclip",
 
-    Devolución de llamada = función(estado)
+    Callback = function(state)
 
-        Jugadores locales = juego:GetService("Jugadores")
+        local Players = game:GetService("Players")
 
-        RunService local = juego:GetService("RunService")
+        local RunService = game:GetService("RunService")
 
-        local LocalPlayer = Jugadores.LocalPlayer
+        local LocalPlayer = Players.LocalPlayer
 
         -- Desconecta caso já exista
 
-        si getgenv().NoclipConnection entonces
+        if getgenv().NoclipConnection then
 
-            getgenv().NoclipConnection:Desconectar()
+            getgenv().NoclipConnection:Disconnect()
 
-            getgenv().NoclipConnection = nulo
+            getgenv().NoclipConnection = nil
 
-            getgenv().NoclipEnabled = falso
+            getgenv().NoclipEnabled = false
 
-        fin
+        end
 
-        Si el estado entonces
+        if state then
 
-            getgenv().NoclipEnabled = verdadero
+            getgenv().NoclipEnabled = true
 
-            getgenv().NoclipConnection = RunService.Heartbeat:Connect(función()
+            getgenv().NoclipConnection = RunService.Heartbeat:Connect(function()
 
-                si LocalPlayer.Character y LocalPlayer.Character:FindFirstChild("HumanoidRootPart") entonces
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-                    hrp local = JugadorLocal.Personaje.ParteRaízHumanoid
+                    local hrp = LocalPlayer.Character.HumanoidRootPart
 
-                    para _, parte en pares(LocalPlayer.Character:GetDescendants()) hacer
+                    for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
 
-                        si parte:IsA("BasePart") entonces
+                        if part:IsA("BasePart") then
 
-                            -- Calcula la distancia entre cada parte de HumanoidRootPart
+                            -- Calcula a distância entre cada parte e o HumanoidRootPart
 
-                            distancia local = (parte.Posición - hrp.Posición).Magnitud
+                            local distance = (part.Position - hrp.Position).Magnitude
 
-                            si la distancia <= 100 entonces
+                            if distance <= 100 then
 
-                                parte.CanCollide = falso
+                                part.CanCollide = false
 
-                            demás
+                            else
 
-                                parte.CanCollide = verdadero
+                                part.CanCollide = true
 
-                            fin
+                            end
 
-                        fin
+                        end
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin)
+            end)
 
-            -- Actualiza a cada 2 segundos
+            -- Atualiza a cada 2 segundos
 
-            spawn(función()
+            spawn(function()
 
-                mientras getgenv().NoclipEnabled hacer
+                while getgenv().NoclipEnabled do
 
-                    esperar(2)
+                    wait(2)
 
-                    si LocalPlayer.Character y LocalPlayer.Character:FindFirstChild("HumanoidRootPart") entonces
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-                        hrp local = JugadorLocal.Personaje.ParteRaízHumanoid
+                        local hrp = LocalPlayer.Character.HumanoidRootPart
 
-                        para _, parte en pares(LocalPlayer.Character:GetDescendants()) hacer
+                        for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
 
-                            si parte:IsA("BasePart") entonces
+                            if part:IsA("BasePart") then
 
-                                distancia local = (parte.Posición - hrp.Posición).Magnitud
+                                local distance = (part.Position - hrp.Position).Magnitude
 
-                                si la distancia <= 100 entonces
+                                if distance <= 100 then
 
-                                    parte.CanCollide = falso
+                                    part.CanCollide = false
 
-                                demás
+                                else
 
-                                    parte.CanCollide = verdadero
+                                    part.CanCollide = true
 
-                                fin
+                                end
 
-                            fin
+                            end
 
-                        fin
+                        end
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin)
+            end)
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
-GroupBoxes["Juego del Calamar Celestial"]:AddToggle("Plataforma Segura", {
+GroupBoxes["Sky Squid Game"]:AddToggle("Safe Platform", {
 
-    Texto = "Plataforma segura",
+    Text = "Safe Platform",
 
-    Devolución de llamada = función(estado)
+    Callback = function(state)
 
-        local LocalPlayer = juego:GetService("Jugadores").LocalPlayer
+        local LocalPlayer = game:GetService("Players").LocalPlayer
 
-        Si el estado entonces
+        if state then
 
-            si no es espacio de trabajo:FindFirstChild("SafePlatform") entonces
+            if not workspace:FindFirstChild("SafePlatform") then
 
-                Personaje local = LocalPlayer.Character o LocalPlayer.CharacterAdded:Wait()
+                local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-                HRP local = Personaje:WaitForChild("HumanoidRootPart")
+                local HRP = Character:WaitForChild("HumanoidRootPart")
 
-                Plataforma segura local = Instancia.new("Parte")
+                local SafePlatform = Instance.new("Part")
 
                 SafePlatform.Name = "SafePlatform"
 
                 SafePlatform.Size = Vector3.new(1000, 1, 1000)
 
-                SafePlatform.Anchored = verdadero
+                SafePlatform.Anchored = true
 
-                SafePlatform.CanCollide = verdadero
+                SafePlatform.CanCollide = true
 
-                SafePlatform.Transparencia = 0.5
+                SafePlatform.Transparency = 0.5
 
-                SafePlatform.Material = Enumeración.Material.Neon
+                SafePlatform.Material = Enum.Material.Neon
 
                 SafePlatform.Color = Color3.fromRGB(0, 255, 0)
 
                 SafePlatform.Position = HRP.Position - Vector3.new(0, 6, 0)
 
-                SafePlatform.Parent = espacio de trabajo
+                SafePlatform.Parent = workspace
 
-            fin
+            end
 
-        demás
+        else
 
-            local existente = espacio de trabajo:FindFirstChild("SafePlatform")
+            local existing = workspace:FindFirstChild("SafePlatform")
 
-            Si existe entonces
+            if existing then
 
-                existente:Destruir()
+                existing:Destroy()
 
-            fin
+            end
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
-GroupBoxes["Escondite"]:AddToggle("Asesinato de Spike", {
+GroupBoxes["Hide 'N' Seek"]:AddToggle("Spike Kill", {
 
-    Texto = "Spike Kill",
+    Text = "Spike Kill",
 
-    Devolución de llamada = función(estado)
+    Callback = function(state)
 
-        _G.AutoKnifeTeleport = estado
+        _G.AutoKnifeTeleport = state
 
-        tarea.spawn(función()
+        task.spawn(function()
 
-            mientras _G.AutoKnifeTeleport y task.wait(0.1) hacen
+            while _G.AutoKnifeTeleport and task.wait(0.1) do
 
-                Personaje local = juego.Jugadores.JugadorLocal.Personaje
+                local Character = game.Players.LocalPlayer.Character
 
-                Si no es Personaje entonces continua final
+                if not Character then continue end
 
-                Humanoide local = Personaje:FindFirstChild("Humanoide")
+                local Humanoid = Character:FindFirstChild("Humanoid")
 
-                raíz local = Personaje:BuscarPrimerHijo("ParteRaízHumanoid")
+                local root = Character:FindFirstChild("HumanoidRootPart")
 
-                Si no es humanoide o no es root, entonces continúa y finaliza.
+                if not Humanoid or not root then continue end
 
-                para _, pista en ipairs(Humanoid:GetPlayingAnimationTracks()) hacer
+                for _, track in ipairs(Humanoid:GetPlayingAnimationTracks()) do
 
-                    si pista.Name == "KnifeSwingBackStabChar" entonces
+                    if track.Name == "KnifeSwingBackStabChar" then
 
-                        CFrame original local = raíz.CFrame
+                        local originalCFrame = root.CFrame
 
-                        raíz.CFrame = CFrame.new(101.50161, 972.146851, -6.17441177)
+                        root.CFrame = CFrame.new(101.50161, 972.146851, -6.17441177)
 
-                        tarea.esperar(2)
+                        task.wait(2)
 
-                        si no es _G.AutoKnifeTeleport entonces rompe el final
+                        if not _G.AutoKnifeTeleport then break end
 
-                        raíz.CFrame = originalCFrame
+                        root.CFrame = originalCFrame
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin
+            end
 
-        fin)
+        end)
 
-    fin
+    end
 
 })
 
 --========================
 
--- CARACTERÍSTICAS DE LA CUERDA PARA SALTAR (VERSIÓN EN INGLÉS)
+-- JUMP ROPE FEATURES (ENGLISH VERSION)
 
 --========================
 
--- [1] QUITAR CUERDA - botón simple
+-- [1] REMOVE ROPE - simple button
 
-GroupBoxes["JumpRope"]:AddButton("QuitarRope", {
+GroupBoxes["JumpRope"]:AddButton("RemoveRope", {
 
-    Texto = "QUITAR CUERDA",
+    Text = "REMOVE ROPE",
 
-    Información sobre herramientas = "Elimina la cuerda del espacio de trabajo (solo local)."
+    Tooltip = "Removes the rope from workspace (local only).",
 
-    func = función()
+    func = function()
 
-        cuerda local = espacio de trabajo:FindFirstChild("Efectos") y espacio de trabajo.Efectos:FindFirstChild("cuerda")
+        local rope = workspace:FindFirstChild("Effects") and workspace.Effects:FindFirstChild("rope")
 
-        Si cuerda entonces
+        if rope then
 
-            cuerda:Destruir()
+            rope:Destroy()
 
-            print("[OBSIDIAN UI] Cuerda retirada exitosamente (local).")
+            print("[OBSIDIAN UI] Rope removed successfully (local).")
 
-        demás
+        else
 
-            print("[OBSIDIAN UI] Cuerda no encontrada.")
+            print("[OBSIDIAN UI] Rope not found.")
 
-        fin
+        end
 
-    fin
-
-})
-
--- [2] CUERDA CONGELADA - alternar
-
-GroupBoxes["Saltar la cuerda"]:AddToggle("Cuerda congelada", {
-
-    Texto = "CUERDA CONGELADA",
-
-    Información sobre herramientas = "Congela o descongela la cuerda físicamente."
-
-    Devolución de llamada = función(estado)
-
-        cuerda local = espacio de trabajo:FindFirstChild("Efectos") y espacio de trabajo.Efectos:FindFirstChild("cuerda")
-
-        Si no es cuerda entonces
-
-            print("[OBSIDIAN UI] Cuerda no encontrada.")
-
-            devolver
-
-        fin
-
-        Si el estado entonces
-
-            -- Congelar completamente la cuerda
-
-            para _, v en ipairs(rope:GetDescendants()) hacer
-
-                si v:IsA("BasePart") entonces
-
-                    v.Anclado = verdadero
-
-                    v.Velocidad = Vector3.cero
-
-                    v.RotVelocity = Vector3.cero
-
-                de lo contrario, si v:IsA("Restricción") o v:IsA("Restricción de cuerda") o v:IsA("Motor6D") entonces
-
-                    v.Habilitado = falso
-
-                fin
-
-            fin
-
-            print("[OBSIDIAN UI] Cuerda completamente congelada.")
-
-        demás
-
-            -- Descongelar cuerda
-
-            para _, v en ipairs(rope:GetDescendants()) hacer
-
-                si v:IsA("BasePart") entonces
-
-                    v.Anclado = falso
-
-                de lo contrario, si v:IsA("Restricción") o v:IsA("Restricción de cuerda") o v:IsA("Motor6D") entonces
-
-                    v.Habilitado = verdadero
-
-                fin
-
-            fin
-
-            print("[OBSIDIAN UI] Cuerda descongelada.")
-
-        fin
-
-    fin
+    end
 
 })
 
--- [3] MINIJUEGO SIN EQUILIBRIO - botón simple
+-- [2] FREEZE ROPE - toggle
 
-GroupBoxes["Saltar la cuerda"]:AddButton("NoBalanceMiniGame", {
+GroupBoxes["JumpRope"]:AddToggle("FreezeRope", {
 
-    Texto = "MINIJUEGO SIN EQUILIBRIO",
+    Text = "FREEZE ROPE",
 
-    Información sobre herramientas = "Elimina el atributo de equilibrio para omitir el minijuego."
+    Tooltip = "Freezes or unfreezes the rope physically.",
 
-    func = función()
+    Callback = function(state)
 
-        jugador local = juego:GetService("Jugadores").LocalPlayer
+        local rope = workspace:FindFirstChild("Effects") and workspace.Effects:FindFirstChild("rope")
 
-        si jugador:BuscarPrimerHijo("JugandoASaltarLaCuerda") entonces
+        if not rope then
 
-            jugador.JugandoASaltarLaComba:Destruir()
+            print("[OBSIDIAN UI] Rope not found.")
 
-            print("[OBSIDIAN UI] Se eliminó 'PlayingJumpRope' del reproductor.")
+            return
 
-        demás
+        end
 
-            print("[OBSIDIAN UI] No se encontró el atributo 'PlayingJumpRope'.")
+        if state then
 
-        fin
+            -- Fully freeze rope
 
-    fin
+            for _, v in ipairs(rope:GetDescendants()) do
 
-})
+                if v:IsA("BasePart") then
 
--- [4] SALTO AUTOMÁTICO CERCA DE LA CUERDA - alternar
+                    v.Anchored = true
 
-Cuadros de grupo["Saltar la cuerda"]:AddToggle("AutoSaltar la cuerda", {
+                    v.Velocity = Vector3.zero
 
-    Texto = "SALTO AUTOMÁTICO",
+                    v.RotVelocity = Vector3.zero
 
-    Tooltip = "Salta automáticamente cada segundo cuando está cerca de la cuerda."
+                elseif v:IsA("Constraint") or v:IsA("RopeConstraint") or v:IsA("Motor6D") then
 
-    Devolución de llamada = función(estado)
+                    v.Enabled = false
 
-        Si no se indica, entonces devuelve el final
+                end
 
-        playerService local = juego:FindService("Jugadores") o juego:GetService("Jugadores")
+            end
 
-        jugador local = playerService.LocalPlayer o playerService.PlayerAdded:Wait()
+            print("[OBSIDIAN UI] Rope fully frozen.")
 
-        función local getHumanoid()
+        else
 
-            char local = jugador.Carácter o jugador.CarácterAñadido:Espera()
+            -- Unfreeze rope
 
-            devolver char:WaitForChild("Humanoide")
+            for _, v in ipairs(rope:GetDescendants()) do
 
-        fin
+                if v:IsA("BasePart") then
 
-        tarea.spawn(función()
+                    v.Anchored = false
 
-            mientras el estado lo hace
+                elseif v:IsA("Constraint") or v:IsA("RopeConstraint") or v:IsA("Motor6D") then
 
-                cuerda local = espacio de trabajo:FindFirstChild("Efectos") y espacio de trabajo.Efectos:FindFirstChild("cuerda")
+                    v.Enabled = true
 
-                si cuerda y jugador.Carácter y jugador.Carácter:BuscarPrimerHijo("HumanoidRootPart") entonces
+                end
 
-                    HRP local = jugador.Personaje.ParteRaízHumanoid
+            end
 
-                    distancia local = (HRP.Posición - cuerda.Posición).Magnitud
+            print("[OBSIDIAN UI] Rope unfrozen.")
 
-                    si la distancia <= 15 entonces
+        end
 
-                        humanoide local = getHumanoid()
-
-                        Si humanoide y humanoide.Salud > 0 entonces
-
-                            humanoide:ChangeState(Enum.HumanoidStateType.Jumping)
-
-                        fin
-
-                    fin
-
-                fin
-
-                tarea.esperar(1)
-
-            fin
-
-        fin)
-
-    fin
+    end
 
 })
 
--- [6] PLATAFORMA SEGURA - alternar
+-- [3] NO BALANCE MINI GAME - simple button
+
+GroupBoxes["JumpRope"]:AddButton("NoBalanceMiniGame", {
+
+    Text = "NO BALANCE MINI GAME",
+
+    Tooltip = "Removes the balance attribute to skip the mini-game.",
+
+    func = function()
+
+        local player = game:GetService("Players").LocalPlayer
+
+        if player:FindFirstChild("PlayingJumpRope") then
+
+            player.PlayingJumpRope:Destroy()
+
+            print("[OBSIDIAN UI] Removed 'PlayingJumpRope' from player.")
+
+        else
+
+            print("[OBSIDIAN UI] Attribute 'PlayingJumpRope' not found.")
+
+        end
+
+    end
+
+})
+
+-- [4] AUTO JUMP NEAR ROPE - toggle
+
+GroupBoxes["JumpRope"]:AddToggle("AutoJumpRope", {
+
+    Text = "AUTO JUMP",
+
+    Tooltip = "Automatically jumps every second when near the rope.",
+
+    Callback = function(state)
+
+        if not state then return end
+
+        local playerService = game:FindService("Players") or game:GetService("Players")
+
+        local player = playerService.LocalPlayer or playerService.PlayerAdded:Wait()
+
+        local function getHumanoid()
+
+            local char = player.Character or player.CharacterAdded:Wait()
+
+            return char:WaitForChild("Humanoid")
+
+        end
+
+        task.spawn(function()
+
+            while state do
+
+                local rope = workspace:FindFirstChild("Effects") and workspace.Effects:FindFirstChild("rope")
+
+                if rope and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+
+                    local HRP = player.Character.HumanoidRootPart
+
+                    local distance = (HRP.Position - rope.Position).Magnitude
+
+                    if distance <= 15 then
+
+                        local humanoid = getHumanoid()
+
+                        if humanoid and humanoid.Health > 0 then
+
+                            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+
+                        end
+
+                    end
+
+                end
+
+                task.wait(1)
+
+            end
+
+        end)
+
+    end
+
+})
+
+-- [6] SAFE PLATFORM - toggle
 
 GroupBoxes["JumpRope"]:AddToggle("JumpRopeSafePlatform", {
 
-    Texto = "PLATAFORMA SEGURA",
+    Text = "SAFE PLATFORM",
 
-    Información sobre herramientas = "Crea una plataforma estática segura debajo del jugador."
+    Tooltip = "Creates a static safe platform below the player.",
 
-    Devolución de llamada = función(estado)
+    Callback = function(state)
 
-        Jugadores locales = juego:GetService("Jugadores")
+        local Players = game:GetService("Players")
 
-        local LocalPlayer = Jugadores.LocalPlayer
+        local LocalPlayer = Players.LocalPlayer
 
-        Si el estado entonces
+        if state then
 
-            Personaje local = LocalPlayer.Character o LocalPlayer.CharacterAdded:Wait()
+            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-            HRP local = Personaje:WaitForChild("HumanoidRootPart")
+            local HRP = Character:WaitForChild("HumanoidRootPart")
 
-            plataforma local = Instancia.new("Parte")
+            local platform = Instance.new("Part")
 
-            plataforma.Nombre = "JumpRopePlatform"
+            platform.Name = "JumpRopePlatform"
 
-            plataforma.Tamaño = Vector3.nuevo(500, 1, 500)
+            platform.Size = Vector3.new(500, 1, 500)
 
-            plataforma.Anclado = verdadero
+            platform.Anchored = true
 
-            plataforma.CanCollide = verdadero
+            platform.CanCollide = true
 
-            plataforma.Transparencia = 0.6
+            platform.Transparency = 0.6
 
-            plataforma.Material = Enum.Material.Neon
+            platform.Material = Enum.Material.Neon
 
-            plataforma.Color = Color3.fromRGB(0, 255, 0)
+            platform.Color = Color3.fromRGB(0, 255, 0)
 
-            plataforma.Posición = HRP.Posición - Vector3.new(0, 3, 0)
+            platform.Position = HRP.Position - Vector3.new(0, 3, 0)
 
-            plataforma.Padre = espacio de trabajo
+            platform.Parent = workspace
 
-            print("[OBSIDIAN UI] Plataforma segura creada (local).")
+            print("[OBSIDIAN UI] Safe platform created (local).")
 
-        demás
+        else
 
-            local existente = espacio de trabajo:FindFirstChild("JumpRopePlatform")
+            local existing = workspace:FindFirstChild("JumpRopePlatform")
 
-            Si existe entonces
+            if existing then
 
-                existente:Destruir()
+                existing:Destroy()
 
-                print("[OBSIDIAN UI] Plataforma segura eliminada.")
+                print("[OBSIDIAN UI] Safe platform removed.")
 
-            fin
+            end
 
-        fin
+        end
 
-    fin
+    end
 
 })
 
-GroupBoxes["Dalgona"]:AddButton("ENCENDEDOR GRATIS", {
+GroupBoxes["Dalgona"]:AddButton("FREE LIGHTER", {
 
-	Texto = "ENCENDEDOR GRATIS",
+	Text = "FREE LIGHTER",
 
   
 
-    Tooltip = "Te da un encendedor de forma permanente",
+    Tooltip = "Gives you a lighter permanently",
 
-	Func = función()
+	Func = function()
 
-		Jugadores locales = juego:GetService("Jugadores")
+		local Players = game:GetService("Players")
 
-		local LocalPlayer = Jugadores.LocalPlayer
+		local LocalPlayer = Players.LocalPlayer
 
-		función local setAttributeSafe(instancia, nombre, valor)
+		local function setAttributeSafe(instance, name, value)
 
-			si instancia:GetAttribute(nombre) == nil entonces
+			if instance:GetAttribute(name) == nil then
 
-				instancia:SetAttribute(nombre, valor)
+				instance:SetAttribute(name, value)
 
-			demás
+			else
 
-				instancia:SetAttribute(nombre, valor)
+				instance:SetAttribute(name, value)
 
-			fin
+			end
 
-		fin
+		end
 
-		setAttributeSafe(LocalPlayer, "Tiene más ligero", verdadero)
+		setAttributeSafe(LocalPlayer, "HasLighter", true)
 
-	fin
+	end
 
 })
 
-GroupBoxes["CARACTERÍSTICAS F2P"]:AddButton("FREEVIP", {
+GroupBoxes["F2P FEATURES"]:AddButton("FREEVIP", {
 
-	Texto = "DESBLOQUEA FUNCIONES VIP", Información sobre herramientas = "Te ofrece todos los atributos VIP gratis",
+	Text = "UNLOCK VIP FEATURES",	Tooltip = "Gives you all VIP attributes for free",
 
-	Func = función()
+	Func = function()
 
-		Jugadores locales = juego:GetService("Jugadores")
+		local Players = game:GetService("Players")
 
-		local LocalPlayer = Jugadores.LocalPlayer
+		local LocalPlayer = Players.LocalPlayer
 
-		función local setAttributeSafe(instancia, nombre, valor)
+		local function setAttributeSafe(instance, name, value)
 
-			si instancia:GetAttribute(nombre) == nil entonces
+			if instance:GetAttribute(name) == nil then
 
-				instancia:SetAttribute(nombre, valor)
+				instance:SetAttribute(name, value)
 
-			demás
+			else
 
-				instancia:SetAttribute(nombre, valor)
+				instance:SetAttribute(name, value)
 
-			fin
+			end
 
-		fin
+		end
 
 		-- Atributos VIP
 
-		setAttributeSafe(JugadorLocal, "__PropiedadDePasesDeJuegoVIPG", verdadero)
+		setAttributeSafe(LocalPlayer, "__OwnsVIPGamepass", true)
 
-		setAttributeSafe(LocalPlayer, "Etiqueta VIPChat", verdadero)
+		setAttributeSafe(LocalPlayer, "VIPChatTag", true)
 
-		setAttributeSafe(LocalPlayer, "VIPJoinAlert", verdadero)
+		setAttributeSafe(LocalPlayer, "VIPJoinAlert", true)
 
-		setAttributeSafe(JugadorLocal, "VIPHideWins", falso)
+		setAttributeSafe(LocalPlayer, "VIPHideWins", false)
 
-		vipSettingData local = '{"Ocultar victorias":false,"Selector de color de ropa personalizada":"Ninguno","Color de ropa personalizada":true}'
+		local vipSettingData = '{"Hide Wins":false,"Custom Clothing Colorpicker":"None","Custom Clothing Color":true}'
 
 		setAttributeSafe(LocalPlayer, "_VIPSettingData", vipSettingData)
 
-		setAttributeSafe(ReproductorLocal, "Color Flotante", Color3.fromRGB(255, 255, 255))
+		setAttributeSafe(LocalPlayer, "ChloatingColor", Color3.fromRGB(255, 255, 255))
 
-	fin
+	end
 
 })
 
-autoTeleportBelow local = falso
+local autoTeleportBelow = false
 
 GroupBoxes["JumpRope"]:AddToggle("AutoTeleportBelow", {
 
-	Texto = "ANTI CAÍDA", Información sobre herramientas = "Teletransporta al jugador a una posición inferior a una fija si se cae."
+	Text = "ANTI FALL",	Tooltip = "Teleports player back below a fixed position if they fall.",
 
-	Devolución de llamada = función(estado)
+	Callback = function(state)
 
-		autoTeleportBelow = estado --atualiza bandera
+		autoTeleportBelow = state -- atualiza flag
 
-		Jugadores locales = juego:GetService("Jugadores")
+		local Players = game:GetService("Players")
 
-		local LocalPlayer = Jugadores.LocalPlayer
+		local LocalPlayer = Players.LocalPlayer
 
-		teletransporte localPos = Vector3.new(615.284424, 192.274277, 920.952515)
+		local teleportPos = Vector3.new(615.284424, 192.274277, 920.952515)
 
-		-- Apenas cria o loop se activa
+		-- Apenas cria o loop se ativado
 
-		Si el estado entonces
+		if state then
 
-			tarea.spawn(función()
+			task.spawn(function()
 
-				mientras que autoTeleportDebajo de hacer - usa una bandera atual
+				while autoTeleportBelow do -- usa a flag atual
 
-					tarea.esperar(0.2)
+					task.wait(0.2)
 
-					si LocalPlayer.Character y LocalPlayer.Character:FindFirstChild("HumanoidRootPart") entonces
+					if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 
-						HRP local = JugadorLocal.Personaje.ParteRaízHumanoid
+						local HRP = LocalPlayer.Character.HumanoidRootPart
 
-						si HRP.Position.Y <= (teleportPos.Y - 3) entonces
+						if HRP.Position.Y <= (teleportPos.Y - 3) then
 
-							HRP.CFrame = CFrame.new(teletransportePos)
+							HRP.CFrame = CFrame.new(teleportPos)
 
-						fin
+						end
 
-					fin
+					end
 
-				fin
+				end
 
-			fin)
+			end)
 
-		fin
+		end
 
-	fin
+	end
 
 })
 
--- Servicios
+-- Serviços
 
-Jugadores locales = juego:GetService("Jugadores")
+local Players = game:GetService("Players")
 
-local LocalPlayer = Jugadores.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 
--- Variáveis ​​de controle
+-- Variáveis de controle
 
-autoModeEnabled local = falso
+local autoModeEnabled = false
 
-local currentMode = "Modo Guardar" -- Padrão
+local currentMode = "Save Mode" -- Padrão
 
--- Posiciones
+-- Posições
 
-marco seguro local = CFrame.new(-41.7126923, 1021.32306, 134.34935, 0.811150551, 0.237830803, 0.534295142, -8.95559788e-06, 0.913583994, -0.406650066, -0.584837377, 0.32984966, 0.741056323) + Vector3.new(0, 10, 0)
+local safeCFrame = CFrame.new(-41.7126923, 1021.32306, 134.34935, 0.811150551, 0.237830803, 0.534295142, -8.95559788e-06, 0.913583994, -0.406650066, -0.584837377, 0.32984966, 0.741056323) + Vector3.new(0, 10, 0)
 
-troll localCFrame = CFrame.new(-49.8884354, 1020.104, -512.157776, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+local trollCFrame = CFrame.new(-49.8884354, 1020.104, -512.157776, 1, 0, 0, 0, 1, 0, 0, 0, 1)
 
 -- Funções auxiliares
 
-función local getNearestValidPlayer()
+local function getNearestValidPlayer()
 
-    Jugador local más cercano, distancia más corta = nula, matemática.enorme
+    local closestPlayer, shortestDistance = nil, math.huge
 
-    para _, jugador en ipairs(Players:GetPlayers()) hacer
+    for _, player in ipairs(Players:GetPlayers()) do
 
-        si jugador ~= LocalPlayer y jugador.Character y jugador.Character:FindFirstChild("HumanoidRootPart") entonces
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
 
-            si no es jugador.Carácter:BuscarPrimerHijo("LuzRojaSeguraLuzVerde") entonces
+            if not player.Character:FindFirstChild("SafeRedLightGreenLight") then
 
-                aviso local = jugador.Personaje:BuscarPrimerHijo("AvisoDeTransmisión", verdadero)
+                local prompt = player.Character:FindFirstChild("CarryPrompt", true)
 
-                Si se le solicita, entonces
+                if prompt then
 
-                    distancia local = (LocalPlayer.Character.HumanoidRootPart.Position - jugador.Character.HumanoidRootPart.Position).Magnitud
+                    local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
 
-                    si distancia < distanciamáscorta entonces
+                    if distance < shortestDistance then
 
-                        distanciamáscorta = distancia
+                        shortestDistance = distance
 
-                        jugadormás cercano = jugador
+                        closestPlayer = player
 
-                    fin
+                    end
 
-                fin
+                end
 
-            fin
+            end
 
-        fin
+        end
 
-    fin
+    end
 
-    devolver el jugador más cercano
+    return closestPlayer
 
-fin
+end
 
-función local saveRandomPlayer()
+local function saveRandomPlayer()
 
-    objetivo local = obtenerJugadorValidoMásNearest()
+    local target = getNearestValidPlayer()
 
-    si no es objetivo o no es objetivo.Carácter o no es objetivo.Carácter:FindFirstChild("HumanoidRootPart") entonces devuelve fin
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
 
-    mensaje local = objetivo.Carácter:FindFirstChild("CarryPrompt", verdadero)
+    local prompt = target.Character:FindFirstChild("CarryPrompt", true)
 
-    Si se le solicita, entonces
+    if prompt then
 
-        HRP local = LocalPlayer.Character:FindFirstChild("ParteRaízHumanoid")
+        local HRP = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 
-        Si HRP entonces
+        if HRP then
 
-            HRP.CFrame = objetivo.Personaje.ParteRaízHumanoid.CFrame + Vector3.new(0,3,0)
+            HRP.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0,3,0)
 
-            tarea.esperar(0.15)
+            task.wait(0.15)
 
-            aviso de proximidad al fuego (aviso)
+            fireproximityprompt(prompt)
 
-            tarea.esperar(0.25)
+            task.wait(0.25)
 
             HRP.CFrame = safeCFrame
 
-        fin
+        end
 
-    fin
+    end
 
-fin
+end
 
-función local trollRandomPlayer()
+local function trollRandomPlayer()
 
-    objetivo local = obtenerJugadorValidoMásNearest()
+    local target = getNearestValidPlayer()
 
-    si no es objetivo o no es objetivo.Carácter o no es objetivo.Carácter:FindFirstChild("HumanoidRootPart") entonces devuelve fin
+    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
 
-    mensaje local = objetivo.Carácter:FindFirstChild("CarryPrompt", verdadero)
+    local prompt = target.Character:FindFirstChild("CarryPrompt", true)
 
-    Si se le solicita, entonces
+    if prompt then
 
-        HRP local = LocalPlayer.Character:FindFirstChild("ParteRaízHumanoid")
+        local HRP = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 
-        Si HRP entonces
+        if HRP then
 
-            HRP.CFrame = objetivo.Personaje.ParteRaízHumanoid.CFrame + Vector3.new(0,3,0)
+            HRP.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0,3,0)
 
-            tarea.esperar(0.15)
+            task.wait(0.15)
 
-            aviso de proximidad al fuego (aviso)
+            fireproximityprompt(prompt)
 
-            tarea.esperar(0.25)
+            task.wait(0.25)
 
             HRP.CFrame = trollCFrame
 
-        fin
+        end
 
-    fin
+    end
 
-fin
+end
 
--- Bucle automático
+-- Loop automático
 
-función local autoModeLoop()
+local function autoModeLoop()
 
-    mientras que autoModeEnabled lo hace
+    while autoModeEnabled do
 
-        si currentMode == "Modo Guardar" entonces
+        if currentMode == "Save Mode" then
 
-            guardarRandomPlayer()
+            saveRandomPlayer()
 
-        de lo contrario, si currentMode == "Modo Troll" entonces
+        elseif currentMode == "Troll Mode" then
 
-            trollJugadorAleatorio()
+            trollRandomPlayer()
 
-        fin
+        end
 
-        tarea.esperar(0.5)
+        task.wait(0.5)
 
-    fin
+    end
 
-fin
-
--- ================================
-
--- IU: PESTAÑA LUZ ROJA, LUZ VERDE
+end
 
 -- ================================
 
--- Alternar
+-- UI: RED LIGHT, GREEN LIGHT TAB
 
-GroupBoxes["Luz roja, luz verde"]:AddToggle("Modo automático", {
+-- ================================
 
-	Texto = "MODO AUTOMÁTICO", Información sobre herramientas = "Realiza automáticamente el modo seleccionado",
+-- Toggle
 
-	Predeterminado = falso,
+GroupBoxes["Red Light, Green Light"]:AddToggle("AutoMode", {
 
-	Devolución de llamada = función(Valor)
+	Text = "AUTO MODE",	Tooltip = "Automatically performs the selected mode",
 
-		autoModeEnabled = Valor
+	Default = false,
 
-		Si autoModeEnabled entonces
+	Callback = function(Value)
 
-			tarea.spawn(autoModeLoop)
+		autoModeEnabled = Value
 
-		fin
+		if autoModeEnabled then
 
-	fin
+			task.spawn(autoModeLoop)
 
-})
+		end
 
--- Menú desplegable
-
-GroupBoxes["Luz roja, luz verde"]:AddDropdown("ModeDropdown", {
-
-	Texto = "MODO : ",
-
-	Información sobre herramientas = "Seleccione el modo a ejecutar",
-
-	Valor = "Modo Guardar", -- valor inicial
-
-	Valores = {"Modo Guardar", "Modo Troll"}, -- lista de opciones
-
-	Devolución de llamada = función(Opción)
-
-		currentMode = Opción
-
-	fin
+	end
 
 })
 
--- Haga clic en el botón
+-- Dropdown
 
-GroupBoxes["Luz roja, luz verde"]:AddButton({
+GroupBoxes["Red Light, Green Light"]:AddDropdown("ModeDropdown", {
 
-	Texto = "MODO JUGADOR ALEATORIO",
+	Text = "MODE : ",
 
-	Tooltip = "Realiza el modo seleccionado una vez",
+	Tooltip = "Select which mode to perform",
 
-	Func = función()
+	Value = "Save Mode", -- valor inicial
 
-		si currentMode == "Modo Guardar" entonces
+	Values = {"Save Mode", "Troll Mode"}, -- lista de opções
 
-			guardarRandomPlayer()
+	Callback = function(Option)
 
-		de lo contrario, si currentMode == "Modo Troll" entonces
+		currentMode = Option
 
-			trollJugadorAleatorio()
-
-		fin
-
-	fin
+	end
 
 })
 
--- =========================================
+-- Click Button
 
--- PESTAÑA LUZ ROJA, LUZ VERDE
+GroupBoxes["Red Light, Green Light"]:AddButton({
 
--- =========================================
+	Text = "MODE RANDOM PLAYER",
 
--- DESTRUYE HERIDOS + ATURDIDO
+	Tooltip = "Performs the selected mode once",
 
-GroupBoxes["Luz roja, luz verde"]:AddButton("DestroyInjuredStun", {
+	Func = function()
 
-	Texto = "QUITAR OBJETOS HERIDOS/ATURDIDOS", Descripción emergente = "Destruye todos los objetos heridos, caminantes y aturdidos",
+		if currentMode == "Save Mode" then
 
-	Func = función()
+			saveRandomPlayer()
 
-		recuento local = 0
+		elseif currentMode == "Troll Mode" then
 
-		para _, obj en ipairs(workspace:GetDescendants()) hacer
+			trollRandomPlayer()
 
-			nombre localLower = obj.Nombre:lower()
+		end
 
-			si nombreInferior == "caminandoherido" o nombreInferior == "aturdido" entonces
-
-				obj:Destruir()
-
-				contar += 1
-
-			fin
-
-		fin
-
-		print("[DESTRUIR] Destruidos", count, "Objetos heridos que caminan/aturden")
-
-	fin
+	end
 
 })
 
 -- =========================================
 
--- PESTAÑA DE ESCONDER Y BUSCAR
+-- RED LIGHT, GREEN LIGHT TAB
 
 -- =========================================
 
--- QUITAR LAS PINCHAS
+-- DESTROY INJURED + STUN
 
-GroupBoxes["Esconder y buscar"]:AddButton("Eliminar picos", {
+GroupBoxes["Red Light, Green Light"]:AddButton("DestroyInjuredStun", {
 
-	Texto = "QUITAR PUNTA",
+	Text = "REMOVE INJURED/STUN",	Tooltip = "Destroys all InjuredWalking and Stun objects",
 
-	Tooltip = "Destruye todas las KillingParts en HideAndSeekMap",
+	Func = function()
 
-	Func = función()
+		local count = 0
 
-		recuento local = 0
+		for _, obj in ipairs(workspace:GetDescendants()) do
 
-		para _, obj en ipairs(workspace:GetDescendants()) hacer
+			local nameLower = obj.Name:lower()
 
-			si obj.Name:lower() == "killingparts" entonces
+			if nameLower == "injuredwalking" or nameLower == "stun" then
 
-				obj:Destruir()
+				obj:Destroy()
 
-				contar += 1
+				count += 1
 
-			fin
+			end
 
-		fin
+		end
 
-		si el conteo > 0 entonces
+		print("[DESTROY] Destroyed", count, "InjuredWalking/Stun objects")
 
-			warn("[ÉXITO] Eliminado", count, "KillingParts")
-
-		demás
-
-			warn("[INFO] No se encontraron KillingParts")
-
-		fin
-
-	fin
+	end
 
 })
 
 -- =========================================
 
--- PESTAÑA DALGONA
+-- HIDE 'N' SEEK TAB
 
 -- =========================================
 
--- ELIMINAR LA PARED DE FOTOS
+-- REMOVE SPIKES
 
-GroupBoxes["Dalgona"]:AddButton("Eliminar PhotoWall", {
+GroupBoxes["Hide 'N' Seek"]:AddButton("RemoveSpikes", {
 
-	Texto = "QUITAR PARED DE FOTOS",
+	Text = "REMOVE SPIKE",
 
-	Tooltip = "Destruye el objeto de pared de fotos en StairWalkWay",
+	Tooltip = "Destroys all KillingParts in HideAndSeekMap",
 
-	Func = función()
+	Func = function()
 
-		escalera local = espacio de trabajo:FindFirstChild("StairWalkWay")
+		local count = 0
 
-		si no es escalera entonces devuelve warn("[ERROR] StairWalkWay no encontrado") fin
+		for _, obj in ipairs(workspace:GetDescendants()) do
 
-		costumbre local = escalera:FindFirstChild("Personalizado")
+			if obj.Name:lower() == "killingparts" then
 
-		Si no es personalizado, devuelve warn("[ERROR] Carpeta personalizada no encontrada") fin
+				obj:Destroy()
 
-		recuento local = 0
+				count += 1
 
-		para _, obj en ipairs(custom:GetDescendants()) hacer
+			end
 
-			si obj.Name:lower() == "startingcrossedovercollision" entonces
+		end
 
-				obj:Destruir()
+		if count > 0 then
 
-				contar += 1
+			warn("[SUCCESS] Removed", count, "KillingParts")
 
-			fin
+		else
 
-		fin
+			warn("[INFO] No KillingParts found")
 
-		si el conteo > 0 entonces
+		end
 
-			warn("[ÉXITO] Eliminado", count, "startingcrossedoverCOLLISION")
+	end
 
-		demás
+})
 
-			warn("[INFO] StartingcrossedoverCOLLISION no encontrado")
+-- =========================================
 
-		fin
+-- DALGONA TAB
 
-	fin
+-- =========================================
+
+-- REMOVE PHOTO WALL
+
+GroupBoxes["Dalgona"]:AddButton("RemovePhotoWall", {
+
+	Text = "REMOVE PHOTO WALL",
+
+	Tooltip = "Destroys the photo wall object in StairWalkWay",
+
+	Func = function()
+
+		local stair = workspace:FindFirstChild("StairWalkWay")
+
+		if not stair then return warn("[ERROR] StairWalkWay not found") end
+
+		local custom = stair:FindFirstChild("Custom")
+
+		if not custom then return warn("[ERROR] Custom folder not found") end
+
+		local count = 0
+
+		for _, obj in ipairs(custom:GetDescendants()) do
+
+			if obj.Name:lower() == "startingcrossedovercollision" then
+
+				obj:Destroy()
+
+				count += 1
+
+			end
+
+		end
+
+		if count > 0 then
+
+			warn("[SUCCESS] Removed", count, "startingcrossedoverCOLLISION")
+
+		else
+
+			warn("[INFO] startingcrossedoverCOLLISION not found")
+
+		end
+
+	end
 
 })
