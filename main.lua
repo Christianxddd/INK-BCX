@@ -12,7 +12,7 @@ SaveManager local = loadstring(juego:HttpGet(repo .. "addons/SaveManager.lua"))(
 
 Ventana local = Biblioteca:CreateWindow({
 
-Título = "XRNL HUB",
+Título = "CENTRO MEOWL",
 
 Pie de página = "v7.40.39 [BETA HUB]",
 
